@@ -1,17 +1,20 @@
-﻿using System.Collections.Generic;
-using System.Net;
-using System.Threading.Tasks;
-
+﻿using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
-using Petstore.Models;
-using Microsoft.OpenApi.Models;
-using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
-using System.IO;
+using Microsoft.Extensions.Primitives;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using PetStore.Models;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace PetStore.Controllers
 {
