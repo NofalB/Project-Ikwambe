@@ -1,12 +1,9 @@
-﻿using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Abstractions;
+﻿using System.Collections.Generic;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Abstractions;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Resolvers;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using PetStore.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PetStore.Models
 {
