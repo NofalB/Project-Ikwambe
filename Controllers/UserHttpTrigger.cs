@@ -1,25 +1,20 @@
-﻿using Microsoft.AspNetCore.WebUtilities;
+using System.Collections.Generic;
+using System.IO;
+using System.Net;
+using System.Threading.Tasks;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Primitives;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using PetStore.Models;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PetStore.Controllers
 {
-    class UserHttpTrigger
-    {
+	class UserHttpTrigger
+	{
 		ILogger Logger { get; }
 
 		public UserHttpTrigger(ILogger<UserHttpTrigger> Logger)
@@ -61,7 +56,7 @@ namespace PetStore.Controllers
 			// Generate output
 			HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
-			User user = new User();
+			User user = new User(100, "Kratos", "Jumbo", "bruh@gmail.com", "100");
 
 			await response.WriteAsJsonAsync(user);
 
