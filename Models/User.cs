@@ -60,7 +60,7 @@ namespace ProjectIkwambe.Models
 		{
 			public override IOpenApiExample<List<User>> Build(NamingStrategy NamingStrategy = null)
 			{
-				Examples.Add(OpenApiExampleResolver.Resolve("Pets", new List<User> {
+				Examples.Add(OpenApiExampleResolver.Resolve("Users", new List<User> {
 				new User(100,"Kratos","Jumbo","bruh@gmail.com","420"),
 				new User(101, "Bam", "Test", "bruh@gmail.com", "420"),
 				new User(102, "Jumbo", "Kratos", "bruh@gmail.com", "420"),
