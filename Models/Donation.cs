@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PetStore.Models
+namespace ProjectIkwambe.Models
 {
     public class Donation
     {

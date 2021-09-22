@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
-using PetStore.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,7 +15,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PetStore.Controllers
+namespace ProjectIkwambe.Controllers
 {
 	public class DonationsHttpTrigger
 	{
