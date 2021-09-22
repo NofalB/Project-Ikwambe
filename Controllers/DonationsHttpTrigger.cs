@@ -29,15 +29,24 @@ namespace ProjectIkwambe.Controllers
 
 		[Function(nameof(DonationsHttpTrigger.GetDonations))]
 		[OpenApiOperation(tags: new[] { "donation" }, Summary = "Get all donations", Description = "This will retrieve all donations", Visibility = OpenApiVisibilityType.Important)]
-		[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Donation), Summary = "Successful donation operation", Description = "Donations Successfully Retrieved", Example = typeof(DummyDonationsExamples))]
+		[OpenApiParameter(name: "donationId", In = ParameterLocation.Query, Required = false, Type = typeof(int), Summary = "ID of donation to return", Description = "Retrieves a specific donation by ID", Visibility = OpenApiVisibilityType.Important)]
+		[OpenApiParameter(name: "projectId", In = ParameterLocation.Query, Required = false, Type = typeof(int), Summary = "ID of project to return donations", Description = "Retrieves donations with this project ID", Visibility = OpenApiVisibilityType.Important)]
+		[OpenApiParameter(name: "transactionId", In = ParameterLocation.Query, Required = false, Type = typeof(int), Summary = "ID of transaction to return donation", Description = "Retrieves donations with this transaction ID", Visibility = OpenApiVisibilityType.Important)]
+		[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Donation), Summary = "Successfully fetched donations", Description = "Donations successfully retrieved", Example = typeof(DummyDonationsExamples))]
+		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid donation ID", Description = "Invalid donation ID was provided")]
 		public async Task<HttpResponseData> GetDonations([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "donations")] HttpRequestData req, FunctionContext executionContext)
 		{
 			{
 				HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
-				Donation donation = new Donation();
+				List<Donation> donations = new List<Donation>() 
+				{
+					new Donation(123, 31, 3, 42, 3211),
+					new Donation(542, 21, 9, 21, 634),
+					new Donation(43, 2, 29, 6, 300)
+				};
 
-				await response.WriteAsJsonAsync(donation);
+				await response.WriteAsJsonAsync(donations);
 
 				return response;
 			}
@@ -55,27 +64,6 @@ namespace ProjectIkwambe.Controllers
 			Donation donation = JsonConvert.DeserializeObject<Donation>(requestBody);
 
 			donation.DonationId += 100;
-
-			// Generate output
-			HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
-
-			await response.WriteAsJsonAsync(donation);
-
-			return response;
-		}
-
-		[Function(nameof(DonationsHttpTrigger.UpdateDonation))]
-		[OpenApiOperation(operationId: "updateDonation", tags: new[] { "donation" }, Summary = "Update an existing donation", Description = "This updates an existing donation.", Visibility = OpenApiVisibilityType.Important)]
-		[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(Donation), Required = true, Description = "Donation object that needs to be updated")]
-		[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Donation), Summary = "Donation details updated", Description = "Donation details updated", Example = typeof(DummyDonationExample))]
-		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid ID supplied", Description = "Invalid ID supplied")]
-		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "Donation not found", Description = "Donation not found")]
-		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Validation exception", Description = "Validation exception")]
-		public async Task<HttpResponseData> UpdateDonation([HttpTrigger(AuthorizationLevel.Function, "PUT", Route = "donation")] HttpRequestData req, FunctionContext executionContext)
-		{
-			// Parse input
-			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-			Donation donation = JsonConvert.DeserializeObject<Donation>(requestBody);
 
 			// Generate output
 			HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
