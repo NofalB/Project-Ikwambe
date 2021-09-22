@@ -4,7 +4,7 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Configurations;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.OpenApi.Models;
 
-namespace PetStore.Configurations {
+namespace ProjectIkwambe.Configurations {
 	public class OpenApiConfigurationOptions : DefaultOpenApiConfigurationOptions {
 		public override OpenApiInfo Info { get; set; } = new OpenApiInfo() {
 			Version = "3.0.0",

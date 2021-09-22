@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace Petstore.Models {
+namespace ProjectIkwambe.Models {
 	/// <summary>
 	/// This specifices the pet status.
 	/// </summary>

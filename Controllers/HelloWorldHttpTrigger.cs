@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using Microsoft.OpenApi.Models;
 
-namespace Petstore.Controllers {
+namespace ProjectIkwambe.Controllers {
 	public class HelloWorldHttpTrigger {
 		ILogger Logger { get; }
 

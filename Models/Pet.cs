@@ -5,7 +5,7 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Resolvers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace Petstore.Models {
+namespace ProjectIkwambe.Models {
 	//[OpenApiProperty(Description = "This represents the model entity for pet of Swagger Pet Store.")]
 
 	[OpenApiExample(typeof(DummyPetExample))]

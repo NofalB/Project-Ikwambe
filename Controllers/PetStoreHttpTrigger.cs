@@ -5,14 +5,14 @@ using System.Threading.Tasks;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
-using Petstore.Models;
+using ProjectIkwambe.Models;
 using Microsoft.OpenApi.Models;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using System.IO;
 using Newtonsoft.Json;
 
-namespace Petstore.Controllers {
+namespace ProjectIkwambe.Controllers {
 	public class PetStoreHttpTrigger {
 		ILogger Logger { get; }
 

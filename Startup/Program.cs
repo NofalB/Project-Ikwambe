@@ -4,7 +4,7 @@ using Microsoft.Azure.Functions.Worker.Extensions.OpenApi.Functions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace PetStore.Startup {
+namespace ProjectIkwambe.Startup {
 	public class Program {
 		public static void Main() {
 			IHost host = new HostBuilder()
