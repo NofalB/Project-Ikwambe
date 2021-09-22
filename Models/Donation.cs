@@ -1,4 +1,5 @@
 ﻿using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Abstractions;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Resolvers;
 using Newtonsoft.Json.Serialization;
 using System;
@@ -11,16 +12,22 @@ namespace ProjectIkwambe.Models
 {
     public class Donation
     {
+        [OpenApiProperty(Description = "Gets or sets the donation ID.")]
         public int DonationId { get; set; }
 
-        public int UserId { get; set; }
+        [OpenApiProperty(Description = "Gets or sets the user ID.")]
+        public int? UserId { get; set; }
 
+        [OpenApiProperty(Description = "Gets or sets the project ID.")]
         public int ProjectId { get; set; }
 
+        [OpenApiProperty(Description = "Gets or sets the transaction ID.")]
         public int TransactionId { get; set; }
 
+        [OpenApiProperty(Description = "Gets or sets the amount.")]
         public double Amount { get; set; }
 
+        [OpenApiProperty(Description = "Gets or sets the date the donation was made.")]
         public DateTime DonationDate { get; set; }
 
         public Donation()
@@ -28,11 +35,14 @@ namespace ProjectIkwambe.Models
 
         }
 
-        public Donation(int donationId, int userId, double amount)
+        public Donation(int donationId, int userId, int projectId, int transactionId, double amount)
         {
             DonationId = donationId;
             UserId = userId;
+            ProjectId = projectId;
+            TransactionId = transactionId;
             Amount = amount;
+            DonationDate = DateTime.Now;
         }
     }
 
@@ -40,9 +50,9 @@ namespace ProjectIkwambe.Models
     {
         public override IOpenApiExample<Donation> Build(NamingStrategy NamingStrategy = null)
         {
-            Examples.Add(OpenApiExampleResolver.Resolve("Example1", new Donation(421, 23, 4000), NamingStrategy));
-            Examples.Add(OpenApiExampleResolver.Resolve("Example2", new Donation(521, 12, 599), NamingStrategy));
-            Examples.Add(OpenApiExampleResolver.Resolve("Example3", new Donation(631, 3, 300), NamingStrategy));
+            Examples.Add(OpenApiExampleResolver.Resolve("Donation 1", new Donation(421, 23, 4, 24, 4000), NamingStrategy));
+            Examples.Add(OpenApiExampleResolver.Resolve("Donation 2", new Donation(521, 12, 10, 12, 599), NamingStrategy));
+            Examples.Add(OpenApiExampleResolver.Resolve("Donation 3", new Donation(631, 3, 30, 7, 200), NamingStrategy));
 
             return this;
         }
@@ -52,10 +62,10 @@ namespace ProjectIkwambe.Models
     {
         public override IOpenApiExample<List<Donation>> Build(NamingStrategy NamingStrategy = null)
         {
-            Examples.Add(OpenApiExampleResolver.Resolve("Pets", new List<Donation> {
-                    new Donation(421, 23, 4000),
-                    new Donation(521, 12, 599),
-                    new Donation(631, 3, 300)
+            Examples.Add(OpenApiExampleResolver.Resolve("Donations", new List<Donation> {
+                    new Donation(421, 23, 4, 24, 4000),
+                    new Donation(521, 12, 10, 12, 599),
+                    new Donation(631, 3, 30, 7, 200)
                 }));
 
             return this;
