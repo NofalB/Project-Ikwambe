@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PetStore.Models
+namespace ProjectIkwambe.Models
 {
 	[OpenApiExample(typeof(DummyUserExample))]
 	public class User
