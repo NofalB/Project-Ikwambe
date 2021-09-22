@@ -16,21 +16,24 @@ namespace PetStore.Models
 
         public int UserId { get; set; }
 
+        public int ProjectId { get; set; }
+
+        public int TransactionId { get; set; }
+
         public double Amount { get; set; }
 
-        public bool Recurring { get; set; }
+        public DateTime DonationDate { get; set; }
 
         public Donation()
         {
 
         }
 
-        public Donation(int donationId, int userId, double amount, bool recurring)
+        public Donation(int donationId, int userId, double amount)
         {
             DonationId = donationId;
             UserId = userId;
             Amount = amount;
-            Recurring = recurring;
         }
     }
 
@@ -38,9 +41,9 @@ namespace PetStore.Models
     {
         public override IOpenApiExample<Donation> Build(NamingStrategy NamingStrategy = null)
         {
-            Examples.Add(OpenApiExampleResolver.Resolve("Example1", new Donation(421, 23, 4000, false), NamingStrategy));
-            Examples.Add(OpenApiExampleResolver.Resolve("Example2", new Donation(521, 12, 599, true), NamingStrategy));
-            Examples.Add(OpenApiExampleResolver.Resolve("Example3", new Donation(631, 3, 300, true), NamingStrategy));
+            Examples.Add(OpenApiExampleResolver.Resolve("Example1", new Donation(421, 23, 4000), NamingStrategy));
+            Examples.Add(OpenApiExampleResolver.Resolve("Example2", new Donation(521, 12, 599), NamingStrategy));
+            Examples.Add(OpenApiExampleResolver.Resolve("Example3", new Donation(631, 3, 300), NamingStrategy));
 
             return this;
         }
@@ -51,9 +54,9 @@ namespace PetStore.Models
         public override IOpenApiExample<List<Donation>> Build(NamingStrategy NamingStrategy = null)
         {
             Examples.Add(OpenApiExampleResolver.Resolve("Pets", new List<Donation> {
-                    new Donation(421, 23, 4000, false),
-                    new Donation(521, 12, 599, true),
-                    new Donation(631, 3, 300, true)
+                    new Donation(421, 23, 4000),
+                    new Donation(521, 12, 599),
+                    new Donation(631, 3, 300)
                 }));
 
             return this;
