@@ -28,7 +28,7 @@ namespace ProjectIkwambe.Controllers
 		}
 
 		[Function(nameof(DonationsHttpTrigger.GetDonations))]
-		[OpenApiOperation(tags: new[] { "donation" }, Summary = "Get all donations", Description = "This will retrieve all donations", Visibility = OpenApiVisibilityType.Important)]
+		[OpenApiOperation(tags: new[] { "Donations" }, Summary = "Get all donations", Description = "This will retrieve all donations", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiParameter(name: "donationId", In = ParameterLocation.Query, Required = false, Type = typeof(int), Summary = "ID of donation to return", Description = "Retrieves a specific donation by ID", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiParameter(name: "userId", In = ParameterLocation.Query, Required = false, Type = typeof(int), Summary = "ID of user to return donations", Description = "Retrieves donations with this user ID", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiParameter(name: "projectId", In = ParameterLocation.Query, Required = false, Type = typeof(int), Summary = "ID of project to return donations", Description = "Retrieves donations with this project ID", Visibility = OpenApiVisibilityType.Important)]
@@ -53,11 +53,11 @@ namespace ProjectIkwambe.Controllers
 		}
 
 		[Function(nameof(DonationsHttpTrigger.MakeDonation))]
-		[OpenApiOperation(operationId: "donation", tags: new[] { "donation" }, Summary = "Make a donation", Description = "This will make a donation", Visibility = OpenApiVisibilityType.Important)]
+		[OpenApiOperation(operationId: "donation", tags: new[] { "Donations" }, Summary = "Make a donation", Description = "This will make a donation", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(Donation), Required = true, Description = "Donation object for donation details")]
 		[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Donation), Summary = "New donation details included", Description = "New donation details included", Example = typeof(DummyDonationExample))]
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Invalid input", Description = "Invalid input")]
-		public async Task<HttpResponseData> MakeDonation([HttpTrigger(AuthorizationLevel.Function, "POST", Route = "donation")] HttpRequestData req, FunctionContext executionContext)
+		public async Task<HttpResponseData> MakeDonation([HttpTrigger(AuthorizationLevel.Function, "POST", Route = "donations")] HttpRequestData req, FunctionContext executionContext)
 		{
 			// Parse input
 			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();

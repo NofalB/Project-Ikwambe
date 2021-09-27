@@ -34,7 +34,7 @@ namespace ProjectIkwambe.Models
         [JsonRequired]
         public string description { get; set; }
 
-        public static implicit operator Story(waterPumpProject v)
+        public static implicit operator Story(WaterpumpProject v)
         {
             throw new NotImplementedException();
         }
