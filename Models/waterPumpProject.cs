@@ -8,30 +8,31 @@ using Newtonsoft.Json.Serialization;
 
 namespace ProjectIkwambe.Models
 {
-    public class waterPumpProject : Project
+    public class WaterPumpProject : Project
     {
 		[OpenApiProperty(Description = "The maximum power input needed for the waterpump")]
 		[JsonRequired]
-		public int ratedPower { get; set; }
+		public int RatedPower { get; set; }
 
 		[OpenApiProperty(Description = "The pump speed of the device")]
 		[JsonRequired]
 		public int FlowRate { get; set; }
 
-		public class DummyWaterPumpProjectExample : OpenApiExample<waterPumpProject>
+		public class DummyWaterPumpProjectExample : OpenApiExample<WaterPumpProject>
 		{
-			public override IOpenApiExample<waterPumpProject> Build(NamingStrategy NamingStrategy = null)
+			public override IOpenApiExample<WaterPumpProject> Build(NamingStrategy NamingStrategy = null)
 			{
-				Examples.Add(OpenApiExampleResolver.Resolve("waterPumpIkwambe", new waterPumpProject()
+				Examples.Add(OpenApiExampleResolver.Resolve("waterPumpIkwambe", new WaterPumpProject()
 				{
 					Id = 1,
-					nameOfProject = "waterPumpIkwambe",
-					location = "Village of Ikwambe",
-					currentDonation = 0,
-					targetGoal = 25000,
-					startDate = DateTime.Now,
-					endDate = DateTime.Now,
-					ratedPower = 650,
+					NameOfProject = "waterPumpIkwambe",
+					Location = "Village of Ikwambe",
+					//Coordination = 
+					CurrentDonation = 0,
+					TargetGoal = 25000,
+					StartDate = DateTime.Now,
+					EndDate = DateTime.Now,
+					RatedPower = 650,
 					FlowRate = 200,
 				}));
 
@@ -40,14 +41,14 @@ namespace ProjectIkwambe.Models
 		}
 
 
-		public class DummyWaterPumpProjectExamples : OpenApiExample<List<waterPumpProject>>
+		public class DummyWaterPumpProjectExamples : OpenApiExample<List<WaterPumpProject>>
 		{
-			public override IOpenApiExample<List<waterPumpProject>> Build(NamingStrategy NamingStrategy = null)
+			public override IOpenApiExample<List<WaterPumpProject>> Build(NamingStrategy NamingStrategy = null)
 			{
-				Examples.Add(OpenApiExampleResolver.Resolve("waterPumps", new List<waterPumpProject> {
-				new waterPumpProject() { Id = 1, nameOfProject = "waterPump Ikwambe", location = "Village of Ikwambe", currentDonation = 0, targetGoal = 25000, startDate = DateTime.Now, endDate = DateTime.Now , ratedPower = 20, FlowRate = 20},
-				new waterPumpProject() { Id = 2, nameOfProject = "waterPumpAlmere", location = "Almere", currentDonation = 123, targetGoal = 40000, startDate = DateTime.Now, endDate = DateTime.Now, ratedPower = 100, FlowRate = 50},
-				new waterPumpProject() { Id = 3, nameOfProject = "waterPumpAmsterdam", location = "Amsterdam", currentDonation = 456, targetGoal = 66000, startDate = DateTime.Now, endDate = DateTime.Now, ratedPower = 50, FlowRate = 200}
+				Examples.Add(OpenApiExampleResolver.Resolve("waterPumps", new List<WaterPumpProject> {
+				new WaterPumpProject() { Id = 1, NameOfProject = "waterPump Ikwambe", Location = "Village of Ikwambe", CurrentDonation = 0, TargetGoal = 25000, StartDate = DateTime.Now, EndDate = DateTime.Now , RatedPower = 20, FlowRate = 20},
+				new WaterPumpProject() { Id = 2, NameOfProject = "waterPumpAlmere", Location = "Almere", CurrentDonation = 123, TargetGoal = 40000, StartDate = DateTime.Now, EndDate = DateTime.Now, RatedPower = 100, FlowRate = 50},
+				new WaterPumpProject() { Id = 3, NameOfProject = "waterPumpAmsterdam", Location = "Amsterdam", CurrentDonation = 456, TargetGoal = 66000, StartDate = DateTime.Now, EndDate = DateTime.Now, RatedPower = 50, FlowRate = 200}
 			}));
 				
 				return this;
