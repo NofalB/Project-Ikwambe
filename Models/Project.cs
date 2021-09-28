@@ -22,7 +22,7 @@ namespace ProjectIkwambe.Models
 		[JsonRequired]
 		public string Location { get; set; }
 
-		[OpenApiProperty(Description = "Get or sets the geo coordination of the water pump")]
+		[OpenApiProperty(Description = "Get or sets the Coordination of the water pump")]
 		[JsonRequired]
 		public GeoCoordinate Coordination { get; set; }
 
@@ -36,7 +36,7 @@ namespace ProjectIkwambe.Models
 
 		[OpenApiProperty(Description = "Get or sets the date when the project started.")]
 		[JsonRequired]
-		public DateTime? StartDate { get; set; }
+		public DateTime? startDate { get; set; }
 
 		[OpenApiProperty(Description = "Get or sets the date when the project will end.")]
 		[JsonRequired]
