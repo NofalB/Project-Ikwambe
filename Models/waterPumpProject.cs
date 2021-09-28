@@ -46,9 +46,9 @@ namespace ProjectIkwambe.Models
 			public override IOpenApiExample<List<WaterPumpProject>> Build(NamingStrategy NamingStrategy = null)
 			{
 				Examples.Add(OpenApiExampleResolver.Resolve("waterPumps", new List<WaterPumpProject> {
-				new WaterPumpProject() { Id = 1, NameOfProject = "waterPump Ikwambe", Location = "Village of Ikwambe", CurrentDonation = 0, TargetGoal = 25000, startDate = DateTime.Now, EndDate = DateTime.Now , ratedPower = 20, FlowRate = 20},
-				new WaterPumpProject() { Id = 2, NameOfProject = "waterPumpAlmere", Location = "Almere", CurrentDonation = 123, TargetGoal = 40000, startDate = DateTime.Now, EndDate = DateTime.Now, ratedPower = 100, FlowRate = 50},
-				new WaterPumpProject() { Id = 3, NameOfProject = "waterPumpAmsterdam", Location = "Amsterdam", CurrentDonation = 456, TargetGoal = 66000, startDate = DateTime.Now, EndDate = DateTime.Now, ratedPower = 50, FlowRate = 200}
+				new WaterPumpProject() { Id = 1, NameOfProject = "waterPump Ikwambe", Location = "Village of Ikwambe", CurrentDonation = 0 ,Coordination = new System.Device.Location.GeoCoordinate(-8.000, 36.833330), TargetGoal = 25000, startDate = DateTime.Now, EndDate = DateTime.Now , ratedPower = 20, FlowRate = 20},
+				new WaterPumpProject() { Id = 2, NameOfProject = "waterPumpAlmere", Location = "Almere", CurrentDonation = 123, Coordination = new System.Device.Location.GeoCoordinate(-8.000, 36.833330), TargetGoal = 40000, startDate = DateTime.Now, EndDate = DateTime.Now, ratedPower = 100, FlowRate = 50},
+				new WaterPumpProject() { Id = 3, NameOfProject = "waterPumpAmsterdam", Location = "Amsterdam", CurrentDonation = 456, Coordination = new System.Device.Location.GeoCoordinate(-8.000, 36.833330), TargetGoal = 66000, startDate = DateTime.Now, EndDate = DateTime.Now, ratedPower = 50, FlowRate = 200}
 			}));
 				
 				return this;
