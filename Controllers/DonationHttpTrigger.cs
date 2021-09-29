@@ -18,16 +18,16 @@ using System.Threading.Tasks;
 
 namespace ProjectIkwambe.Controllers
 {
-	public class DonationsHttpTrigger
+	public class DonationHttpTrigger
 	{
 		ILogger Logger { get; }
 
-		public DonationsHttpTrigger(ILogger<DonationsHttpTrigger> Logger)
+		public DonationHttpTrigger(ILogger<DonationHttpTrigger> Logger)
 		{
 			this.Logger = Logger;
 		}
 
-		[Function(nameof(DonationsHttpTrigger.GetDonations))]
+		[Function(nameof(DonationHttpTrigger.GetDonations))]
 		[OpenApiOperation(tags: new[] { "Donations" }, Summary = "Get all donations", Description = "This will retrieve all donations", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiParameter(name: "donationId", In = ParameterLocation.Query, Required = false, Type = typeof(int), Summary = "ID of donation to return", Description = "Retrieves a specific donation by ID", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiParameter(name: "userId", In = ParameterLocation.Query, Required = false, Type = typeof(int), Summary = "ID of user to return donations", Description = "Retrieves donations with this user ID", Visibility = OpenApiVisibilityType.Important)]
@@ -52,7 +52,7 @@ namespace ProjectIkwambe.Controllers
 			}
 		}
 
-		[Function(nameof(DonationsHttpTrigger.MakeDonation))]
+		[Function(nameof(DonationHttpTrigger.MakeDonation))]
 		[OpenApiOperation(operationId: "donation", tags: new[] { "Donations" }, Summary = "Make a donation", Description = "This will make a donation", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(Donation), Required = true, Description = "Donation object for donation details")]
 		[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Donation), Summary = "New donation details included", Description = "New donation details included", Example = typeof(DummyDonationExample))]

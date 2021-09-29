@@ -33,13 +33,18 @@ namespace ProjectIkwambe.Models
 		[JsonRequired]
 		public string Password { get; set; }
 
-		public User(int id, string firstName, string lastName, string email, string password)
+		[OpenApiProperty(Description = "Gets or sets the subscription status.")]
+		[JsonRequired]
+		public bool Subscription { get; set; }
+
+		public User(int id, string firstName, string lastName, string email, string password,bool subscription)
 		{
 			Id = id;
 			FirstName = firstName;
 			LastName = lastName;
 			Email = email;
 			Password = password;
+			Subscription = subscription;
 		}
 
 
@@ -48,9 +53,9 @@ namespace ProjectIkwambe.Models
 		{
 			public override IOpenApiExample<User> Build(NamingStrategy NamingStrategy = null)
 			{
-				Examples.Add(OpenApiExampleResolver.Resolve("Hamza", new User(100, "Kratos", "Jumbo", "bruh@gmail.com", "420"), NamingStrategy));
-				Examples.Add(OpenApiExampleResolver.Resolve("Bruno", new User(101, "Bam", "Test", "bruh@gmail.com", "420"), NamingStrategy));
-				Examples.Add(OpenApiExampleResolver.Resolve("Jumbo", new User(102, "Jumbo", "Kratos", "bruh@gmail.com", "420"), NamingStrategy));
+				Examples.Add(OpenApiExampleResolver.Resolve("Hamza", new User(100, "Kratos", "Jumbo", "bruh@gmail.com", "380",true), NamingStrategy));
+				Examples.Add(OpenApiExampleResolver.Resolve("Bruno", new User(101, "Bam", "Test", "bruh@gmail.com", "Hello123",true), NamingStrategy));
+				Examples.Add(OpenApiExampleResolver.Resolve("Jumbo", new User(102, "Jumbo", "Kratos", "bruh@gmail.com", "tEst12345",false), NamingStrategy));
 
 				return this;
 			}
@@ -61,9 +66,9 @@ namespace ProjectIkwambe.Models
 			public override IOpenApiExample<List<User>> Build(NamingStrategy NamingStrategy = null)
 			{
 				Examples.Add(OpenApiExampleResolver.Resolve("Users", new List<User> {
-				new User(100,"Kratos","Jumbo","bruh@gmail.com","420"),
-				new User(101, "Bam", "Test", "bruh@gmail.com", "420"),
-				new User(102, "Jumbo", "Kratos", "bruh@gmail.com", "420"),
+				new User(100, "Kratos", "Jumbo", "bruh@gmail.com", "380",true),
+				new User(101, "Bam", "Test", "bruh@gmail.com", "Hello123",true),
+				new User(102, "Jumbo", "Kratos", "bruh@gmail.com", "tEst12345",false),
 			}));
 
 				return this;
