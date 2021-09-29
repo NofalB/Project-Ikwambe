@@ -18,7 +18,7 @@ namespace ProjectIkwambe.Utils
 			}
 		}
 
-		/*public static ClaimsPrincipal GetAdmin(this FunctionContext FunctionContext)
+		public static ClaimsPrincipal GetAdmin(this FunctionContext FunctionContext)
         {
 			try
 			{
@@ -26,8 +26,8 @@ namespace ProjectIkwambe.Utils
 			}
 			catch (Exception e)
 			{
-				throw new UnauthorizedAccessException(*//*e.Message*//*);
+				throw new UnauthorizedAccessException(/*e.Message*/);
 			}
-		}*/
+		}
 	}
 }

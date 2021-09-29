@@ -41,7 +41,11 @@ namespace ProjectIkwambe.Security
 
                     ClaimsPrincipal User = await TokenService.GetByValue(BearerHeader.Parameter);
 
+                    ClaimsPrincipal Admin = await TokenService.GetByValue(BearerHeader.Parameter);
+
                     Context.Items["User"] = User;
+
+                    Context.Items["Admin"] = Admin;
                 }
                 catch (Exception e)
                 {

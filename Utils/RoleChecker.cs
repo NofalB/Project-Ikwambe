@@ -57,9 +57,9 @@ namespace ProjectIkwambe.Utils
 			try
 			{
 				ClaimsPrincipal User = ExecutionContext.GetUser();
-				//ClaimsPrincipal Admin = ExecutionContext.GetAdmin();
+				ClaimsPrincipal Admin = ExecutionContext.GetAdmin();
 
-				if (!User.IsInRole("User") /*|| !Admin.IsInRole("Admin")*/)
+				if (!User.IsInRole("User") || !Admin.IsInRole("Admin"))
 				{
 					HttpResponseData Response = Request.CreateResponse(HttpStatusCode.Forbidden);
 

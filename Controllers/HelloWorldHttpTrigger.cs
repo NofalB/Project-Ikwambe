@@ -34,7 +34,7 @@ namespace ProjectIkwambe.Controllers
 		//[ForbiddenResponse]
 		public async Task<HttpResponseData> HelloWorld([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData req, FunctionContext executionContext)
 		{
-			return await RoleChecker.ExecuteForUser(req, executionContext, async (ClaimsPrincipal User) => {
+			return await RoleChecker.ExecuteForUser(req, executionContext, async (ClaimsPrincipal Admin) => {
 				Logger.LogInformation("C# HTTP trigger function processed a request.");
 
 				Dictionary<string, StringValues> QueryParams = QueryHelpers.ParseQuery(req.Url.Query);
@@ -44,7 +44,7 @@ namespace ProjectIkwambe.Controllers
 				HttpResponseData Response = req.CreateResponse(HttpStatusCode.OK);
 				Response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
 
-				Response.WriteString($"{User.Identity.Name} greets you, {name}");
+				Response.WriteString($"{Admin.Identity.Name} greets you, {name}");
 
 				return Response;
 			});
