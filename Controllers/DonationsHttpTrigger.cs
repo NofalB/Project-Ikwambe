@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using ProjectIkwambe.CosmosDAL;
 using ProjectIkwambe.Models;
 using System;
 using System.Collections.Generic;
@@ -20,11 +21,13 @@ namespace ProjectIkwambe.Controllers
 {
 	public class DonationsHttpTrigger
 	{
-		ILogger Logger { get; }
+		private ILogger Logger { get; }
+		private readonly IkambeContext _ikambeContext;
 
-		public DonationsHttpTrigger(ILogger<DonationsHttpTrigger> Logger)
+		public DonationsHttpTrigger(ILogger<DonationsHttpTrigger> Logger, IkambeContext ikambeContext)
 		{
 			this.Logger = Logger;
+			_ikambeContext = ikambeContext;
 		}
 
 		[Function(nameof(DonationsHttpTrigger.GetDonations))]
@@ -59,11 +62,14 @@ namespace ProjectIkwambe.Controllers
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Invalid input", Description = "Invalid input")]
 		public async Task<HttpResponseData> MakeDonation([HttpTrigger(AuthorizationLevel.Function, "POST", Route = "donation")] HttpRequestData req, FunctionContext executionContext)
 		{
+
 			// Parse input
 			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 			Donation donation = JsonConvert.DeserializeObject<Donation>(requestBody);
 
 			donation.DonationId += 100;
+			await _ikambeContext.Donations.AddAsync(donation);
+			_ikambeContext.SaveChanges();
 
 			// Generate output
 			HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
