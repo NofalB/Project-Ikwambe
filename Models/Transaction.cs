@@ -1,5 +1,8 @@
-﻿using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
+﻿using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Abstractions;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Resolvers;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,9 +51,52 @@ namespace ProjectIkwambe.Models
 
         [OpenApiProperty(Description = "Gets or sets an object with several URL objects relevant to the payment. Every URL object will contain an href and a type field.")]
         [JsonRequired]
-        public TransactionLink Links { get; set; }
+        public TransactionLink Link { get; set; }
 
+        public Transaction(string resource,string transactionId,TransactionAmount amount,string description,string redirectUrl,string mode,DateTime createdAt, string status,string method,TransactionLink link)
+        {
+            Resource = resource;
+            TransactionId = transactionId;
+            Amount = amount;
+            Description = description;
+            RedirectUrl = redirectUrl;
+            Mode = mode;
+            CreatedAt = createdAt;
+            Status = status;
+            Method = method;
+            Link = link;
+        }
 
+        public class DummyDonationExample : OpenApiExample<Transaction>
+        {
+            public override IOpenApiExample<Transaction> Build(NamingStrategy NamingStrategy = null)
+            {
+                TransactionAmount transactionAmount = new TransactionAmount("EUR", "10.00");
+                TransactionLink transactionLink = new("https://api.mollie.com/v2/payments/tr_WDqYK6vllg", "https://www.mollie.com/payscreen/select-method/WDqYK6vllg");
+
+                Examples.Add(OpenApiExampleResolver.Resolve("Transaction 1", new Transaction("payment", "tr_WDqYK6vllg",transactionAmount, "Donation #12345", "https://webshop.example.org/order/12345/", "test", DateTime.Now, "open", null,transactionLink), NamingStrategy));
+                Examples.Add(OpenApiExampleResolver.Resolve("Transaction 1", new Transaction("payment", "tr_WDqYK6vllg", transactionAmount, "Donation #676", "https://webshop.example.org/order/12345/", "live", DateTime.Now, "open", null, transactionLink), NamingStrategy));
+                Examples.Add(OpenApiExampleResolver.Resolve("Transaction 1", new Transaction("payment", "tr_WDqYK6vllg", transactionAmount, "Donation #234", "https://webshop.example.org/order/12345/", "test", DateTime.Now, "open", null, transactionLink), NamingStrategy));
+
+                return this;
+            }
+        }
+
+        public class DummyDonationsExamples : OpenApiExample<List<Transaction>>
+        {
+            readonly TransactionAmount transactionAmount = new TransactionAmount("EUR", "54.00");
+            readonly TransactionLink transactionLink = new("https://api.mollie.com/v2/payments/tr_WDqYK6vllg", "https://www.mollie.com/payscreen/select-method/WDqYK6vllg");
+            public override IOpenApiExample<List<Transaction>> Build(NamingStrategy NamingStrategy = null)
+            {
+                Examples.Add(OpenApiExampleResolver.Resolve("Donations", new List<Transaction> {
+                    new Transaction("payment", "tr_WDqYK6vllg",transactionAmount, "Donation #12345", "https://webshop.example.org/order/12345/", "test", DateTime.Now, "open", null,transactionLink),
+                    new Transaction("payment", "tr_WDqYK6vllg",transactionAmount, "Donation #12345", "https://webshop.example.org/order/12345/", "test", DateTime.Now, "open", null,transactionLink),
+                    new Transaction("payment", "tr_WDqYK6vllg",transactionAmount, "Donation #12345", "https://webshop.example.org/order/12345/", "test", DateTime.Now, "open", null,transactionLink)
+                }));
+
+                return this;
+            }
+        }
 
     }
 }

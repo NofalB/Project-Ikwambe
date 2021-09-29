@@ -13,5 +13,13 @@ namespace ProjectIkwambe.Models
         //The URL your customer should visit to make the payment. This is where you should redirect the consumer to.
         public string Checkout { get; set; }
 
+        public TransactionLink(string selfUrl, string checkout)
+        {
+            SelfUrl = selfUrl;
+            Checkout = checkout;
+
+        }
+
+
     }
 }

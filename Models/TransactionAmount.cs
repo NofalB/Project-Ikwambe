@@ -14,5 +14,12 @@ namespace ProjectIkwambe.Models
         // A string containing the exact amount of the payment in the given currency.
         public string Value { get; set; }
 
+        public TransactionAmount(string currency, string value)
+        {
+            Currency = currency;
+            Value = value;
+              
+        }
+
     }
 }

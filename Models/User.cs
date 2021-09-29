@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 
 namespace ProjectIkwambe.Models
 {
-	[OpenApiExample(typeof(DummyUserExample))]
 	public class User
 	{
 		[OpenApiProperty(Description = "Gets or sets the user ID.")]
