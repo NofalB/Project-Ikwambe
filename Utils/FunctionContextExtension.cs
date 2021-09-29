@@ -17,5 +17,17 @@ namespace ProjectIkwambe.Utils
 				throw new UnauthorizedAccessException(/*e.Message*/);
 			}
 		}
+
+		/*public static ClaimsPrincipal GetAdmin(this FunctionContext FunctionContext)
+        {
+			try
+			{
+				return (ClaimsPrincipal)FunctionContext.Items["Admin"];
+			}
+			catch (Exception e)
+			{
+				throw new UnauthorizedAccessException(*//*e.Message*//*);
+			}
+		}*/
 	}
 }
