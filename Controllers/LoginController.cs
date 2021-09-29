@@ -19,11 +19,11 @@ namespace ProjectIkwambe.Controllers
     public class LoginController
     {
         //ILogger Logger { get; }
-        ITokenService TokenService { get; }
+        private readonly ITokenService _tokenService;
 
         public LoginController(ITokenService TokenService/*, ILogger<HelloWorldHttpTrigger> Logger*/)
         {
-            this.TokenService = TokenService;
+            this._tokenService = TokenService;
             //this.Logger = Logger;
         }
 
@@ -36,7 +36,7 @@ namespace ProjectIkwambe.Controllers
         {
             LoginRequest login = JsonConvert.DeserializeObject<LoginRequest>(await new StreamReader(req.Body).ReadToEndAsync());
 
-            LoginResult result = await TokenService.CreateToken(login);
+            LoginResult result = await _tokenService.CreateToken(login);
 
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
             await response.WriteAsJsonAsync(result);
