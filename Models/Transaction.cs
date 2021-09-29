@@ -67,31 +67,31 @@ namespace ProjectIkwambe.Models
             Link = link;
         }
 
-        public class DummyDonationExample : OpenApiExample<Transaction>
+        public class DummyTransactionExample : OpenApiExample<Transaction>
         {
             public override IOpenApiExample<Transaction> Build(NamingStrategy NamingStrategy = null)
             {
                 TransactionAmount transactionAmount = new TransactionAmount("EUR", "10.00");
                 TransactionLink transactionLink = new("https://api.mollie.com/v2/payments/tr_WDqYK6vllg", "https://www.mollie.com/payscreen/select-method/WDqYK6vllg");
 
-                Examples.Add(OpenApiExampleResolver.Resolve("Transaction 1", new Transaction("payment", "tr_WDqYK6vllg",transactionAmount, "Donation #12345", "https://webshop.example.org/order/12345/", "test", DateTime.Now, "open", null,transactionLink), NamingStrategy));
-                Examples.Add(OpenApiExampleResolver.Resolve("Transaction 1", new Transaction("payment", "tr_WDqYK6vllg", transactionAmount, "Donation #676", "https://webshop.example.org/order/12345/", "live", DateTime.Now, "open", null, transactionLink), NamingStrategy));
-                Examples.Add(OpenApiExampleResolver.Resolve("Transaction 1", new Transaction("payment", "tr_WDqYK6vllg", transactionAmount, "Donation #234", "https://webshop.example.org/order/12345/", "test", DateTime.Now, "open", null, transactionLink), NamingStrategy));
+                Examples.Add(OpenApiExampleResolver.Resolve("Transaction 1", new Transaction("payment", "tr_WDqYK6vllg",transactionAmount, "Donation #12345", "https://webshop.example.org/order/12345/", "test", DateTime.Now, "open", "Paypal",transactionLink), NamingStrategy));
+                Examples.Add(OpenApiExampleResolver.Resolve("Transaction 2", new Transaction("payment", "tr_WDqYK6vllg", transactionAmount, "Donation #676", "https://webshop.example.org/order/12345/", "live", DateTime.Now, "open", "Banq", transactionLink), NamingStrategy));
+                Examples.Add(OpenApiExampleResolver.Resolve("Transaction 3", new Transaction("payment", "tr_WDqYK6vllg", transactionAmount, "Donation #234", "https://webshop.example.org/order/12345/", "test", DateTime.Now, "open", "Ideal", transactionLink), NamingStrategy));
 
                 return this;
             }
         }
 
-        public class DummyDonationsExamples : OpenApiExample<List<Transaction>>
+        public class DummyTransactionsExamples : OpenApiExample<List<Transaction>>
         {
-            readonly TransactionAmount transactionAmount = new TransactionAmount("EUR", "54.00");
-            readonly TransactionLink transactionLink = new("https://api.mollie.com/v2/payments/tr_WDqYK6vllg", "https://www.mollie.com/payscreen/select-method/WDqYK6vllg");
+             TransactionAmount transactionAmount = new TransactionAmount("EUR", "54.00");
+             TransactionLink transactionLink = new("https://api.mollie.com/v2/payments/tr_WDqYK6vllg", "https://www.mollie.com/payscreen/select-method/WDqYK6vllg");
             public override IOpenApiExample<List<Transaction>> Build(NamingStrategy NamingStrategy = null)
             {
-                Examples.Add(OpenApiExampleResolver.Resolve("Donations", new List<Transaction> {
-                    new Transaction("payment", "tr_WDqYK6vllg",transactionAmount, "Donation #12345", "https://webshop.example.org/order/12345/", "test", DateTime.Now, "open", null,transactionLink),
-                    new Transaction("payment", "tr_WDqYK6vllg",transactionAmount, "Donation #12345", "https://webshop.example.org/order/12345/", "test", DateTime.Now, "open", null,transactionLink),
-                    new Transaction("payment", "tr_WDqYK6vllg",transactionAmount, "Donation #12345", "https://webshop.example.org/order/12345/", "test", DateTime.Now, "open", null,transactionLink)
+                Examples.Add(OpenApiExampleResolver.Resolve("Transactions", new List<Transaction> {
+                    new Transaction("payment", "tr_WDqYK6vllg",transactionAmount, "Donation #12345", "https://webshop.example.org/order/12345/", "test", DateTime.Now, "open", "Paypal",transactionLink),
+                    new Transaction("payment", "tr_WDqYK6vllg",transactionAmount, "Donation #12345", "https://webshop.example.org/order/12345/", "test", DateTime.Now, "open", "Banq",transactionLink),
+                    new Transaction("payment", "tr_WDqYK6vllg",transactionAmount, "Donation #12345", "https://webshop.example.org/order/12345/", "test", DateTime.Now, "open", "Ideal",transactionLink)
                 }));
 
                 return this;
