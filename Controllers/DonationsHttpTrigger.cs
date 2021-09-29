@@ -9,6 +9,7 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using ProjectIkwambe.CosmosDAL;
 using ProjectIkwambe.Models;
+using ProjectIkwambe.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,12 +23,12 @@ namespace ProjectIkwambe.Controllers
 	public class DonationsHttpTrigger
 	{
 		private ILogger Logger { get; }
-		private readonly IkambeContext _ikambeContext;
+		private readonly IDonationService _donationService;
 
-		public DonationsHttpTrigger(ILogger<DonationsHttpTrigger> Logger, IkambeContext ikambeContext)
+		public DonationsHttpTrigger(ILogger<DonationsHttpTrigger> Logger, IDonationService donationService)
 		{
 			this.Logger = Logger;
-			_ikambeContext = ikambeContext;
+			_donationService = donationService;
 		}
 
 		[Function(nameof(DonationsHttpTrigger.GetDonations))]
@@ -68,8 +69,7 @@ namespace ProjectIkwambe.Controllers
 			Donation donation = JsonConvert.DeserializeObject<Donation>(requestBody);
 
 			donation.DonationId += 100;
-			await _ikambeContext.Donations.AddAsync(donation);
-			_ikambeContext.SaveChanges();
+			await _donationService.AddDonation(donation);
 
 			// Generate output
 			HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);

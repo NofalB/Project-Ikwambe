@@ -1,0 +1,35 @@
+﻿using ProjectIkwambe.Models;
+using ProjectIkwambe.Repositories;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ProjectIkwambe.Services
+{
+    public class DonationService : IDonationService
+    {
+        private readonly ICosmosRepository _cosmosRepository;
+
+        public DonationService(ICosmosRepository cosmosRepository)
+        {
+            _cosmosRepository = cosmosRepository;
+        }
+
+        public IEnumerable<Donation> GetAllDonations()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task AddDonation(Donation donation)
+        {
+            await _cosmosRepository.AddAsync(donation);
+        }
+
+        public Donation GetDonation()
+        {
+            throw new NotImplementedException();
+        }
+    }
+}

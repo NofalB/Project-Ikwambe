@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ProjectIkwambe.CosmosDAL;
+using ProjectIkwambe.Repositories;
+using ProjectIkwambe.Services;
 
 namespace ProjectIkwambe.Startup {
 	public class Program {
@@ -30,6 +32,8 @@ namespace ProjectIkwambe.Startup {
                 );
             });
 
+			Services.AddTransient<ICosmosRepository, CosmosRepository>();
+			Services.AddScoped<IDonationService, DonationService>();
         }
 	}
 }
