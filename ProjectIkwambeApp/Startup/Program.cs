@@ -1,14 +1,13 @@
+using Domain;
+using Infrastructure.DBContext;
+using Infrastructure.Repositories;
+using Infrastructure.Services;
 using Microsoft.Azure.Functions.Worker.Extensions.OpenApi;
 using Microsoft.Azure.Functions.Worker.Extensions.OpenApi.Extensions;
 using Microsoft.Azure.Functions.Worker.Extensions.OpenApi.Functions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using NPOI.SS.Formula.Functions;
-using ProjectIkwambe.CosmosDAL;
-using ProjectIkwambe.Models;
-using ProjectIkwambe.Repositories;
-using ProjectIkwambe.Services;
 
 namespace ProjectIkwambe.Startup {
 	public class Program {
@@ -25,7 +24,7 @@ namespace ProjectIkwambe.Startup {
 			Services.AddSingleton<IOpenApiHttpTriggerContext, OpenApiHttpTriggerContext>();
 			Services.AddSingleton<IOpenApiTriggerFunction, OpenApiTriggerFunction>();
 
-            Services.AddDbContext<IkambeContext>(option =>
+            Services.AddDbContext<IkwambeContext>(option =>
             {
                 option.UseCosmos(
                     Builder.Configuration["CosmosDb:Account"],

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.WebUtilities;
+﻿using Domain;
+using Infrastructure.Services;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
@@ -7,9 +9,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
-using ProjectIkwambe.CosmosDAL;
-using ProjectIkwambe.Models;
-using ProjectIkwambe.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;

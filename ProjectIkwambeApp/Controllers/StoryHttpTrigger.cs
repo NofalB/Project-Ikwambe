@@ -1,11 +1,11 @@
-﻿using Microsoft.Azure.Functions.Worker;
+﻿using Domain;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
-using ProjectIkwambe.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,7 +13,6 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using static ProjectIkwambe.Models.Story;
 
 namespace ProjectIkwambe.Controllers
 {
