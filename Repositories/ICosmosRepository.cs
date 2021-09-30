@@ -7,15 +7,17 @@ using System.Threading.Tasks;
 
 namespace ProjectIkwambe.Repositories
 {
-    public interface ICosmosRepository
+    public interface ICosmosRepository<TEntity> where TEntity : class, new()
     {
-        IEnumerable<T> GetAll();
+        IEnumerable<TEntity> GetAll();
 
-        Task AddAsync<T>(T entity);
+        TEntity GetById(string id);
 
-        void Update<T>(T entity);
+        Task AddAsync(TEntity entity);
 
-        void Delete<T>(T entity);
+        void Update(TEntity entity);
+
+        void Delete(TEntity entity);
 
     }
 }

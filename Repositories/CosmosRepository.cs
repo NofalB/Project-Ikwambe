@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ProjectIkwambe.Repositories
 {
-    public class CosmosRepository : ICosmosRepository
+    public class CosmosRepository<TEntity> : ICosmosRepository<TEntity> where TEntity : class, new()
     {
 
         private readonly IkambeContext _ikambeContext;
@@ -20,12 +20,17 @@ namespace ProjectIkwambe.Repositories
             _ikambeContext = ikambeContext;
         }
 
-        public IEnumerable<T> GetAll()
+        public IEnumerable<TEntity> GetAll()
         {
             throw new NotImplementedException();
         }
 
-        public async Task AddAsync<T>(T entity)
+        public TEntity GetById(string id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task AddAsync(TEntity entity)
         {
             if (entity == null)
             {
@@ -36,14 +41,14 @@ namespace ProjectIkwambe.Repositories
             await _ikambeContext.SaveChangesAsync();
         }
 
-        public void Update<T>(T entity)
+        public void Update(TEntity entity)
         {
              _ikambeContext.Update(entity);
              _ikambeContext.SaveChanges();
 
         }
 
-        public void Delete<T>(T entity)
+        public void Delete(TEntity entity)
         {
              _ikambeContext.Remove(entity);
              _ikambeContext.SaveChanges();

@@ -4,6 +4,7 @@ using Microsoft.Azure.Functions.Worker.Extensions.OpenApi.Functions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using NPOI.SS.Formula.Functions;
 using ProjectIkwambe.CosmosDAL;
 using ProjectIkwambe.Repositories;
 using ProjectIkwambe.Services;
@@ -32,7 +33,7 @@ namespace ProjectIkwambe.Startup {
                 );
             });
 
-			Services.AddTransient<ICosmosRepository, CosmosRepository>();
+			Services.AddTransient<ICosmosRepository<T>, CosmosRepository<T>>();
 			Services.AddScoped<IDonationService, DonationService>();
         }
 	}

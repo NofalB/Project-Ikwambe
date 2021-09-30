@@ -10,9 +10,9 @@ namespace ProjectIkwambe.Services
 {
     public class DonationService : IDonationService
     {
-        private readonly ICosmosRepository _cosmosRepository;
+        private readonly ICosmosRepository<Donation> _cosmosRepository;
 
-        public DonationService(ICosmosRepository cosmosRepository)
+        public DonationService(ICosmosRepository<Donation> cosmosRepository)
         {
             _cosmosRepository = cosmosRepository;
         }
