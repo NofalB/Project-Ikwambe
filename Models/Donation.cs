@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace ProjectIkwambe.Models
@@ -29,6 +30,8 @@ namespace ProjectIkwambe.Models
 
         [OpenApiProperty(Description = "Gets or sets the date the donation was made.")]
         public DateTime DonationDate { get; set; }
+
+        public string PartitionKey { get; set; }
 
         public Donation()
         {
