@@ -47,10 +47,6 @@
             "System.Device.Location.Portable": {
               "target": "Package",
               "version": "[1.0.0, )"
-            },
-            "System.IdentityModel.Tokens.Jwt": {
-              "target": "Package",
-              "version": "[6.12.2, )"
             }
           },
           "imports": [
