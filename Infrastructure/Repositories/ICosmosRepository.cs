@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,7 +9,7 @@ namespace Infrastructure.Repositories
     {
         IEnumerable<TEntity> GetAll();
 
-        TEntity GetById(string id);
+        Task<TEntity> GetByIdAsync(int id);
 
         Task AddAsync(TEntity entity);
 

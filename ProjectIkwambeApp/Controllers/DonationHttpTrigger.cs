@@ -42,14 +42,7 @@ namespace ProjectIkwambe.Controllers
 			{
 				HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
-				List<Donation> donations = new List<Donation>() 
-				{
-					new Donation(123, 31, 3, 42, 3211),
-					new Donation(542, 21, 9, 21, 634),
-					new Donation(43, 2, 29, 6, 300)
-				};
-
-				await response.WriteAsJsonAsync(donations);
+				await response.WriteAsJsonAsync(_donationService.GetAllDonations());
 
 				return response;
 			}
