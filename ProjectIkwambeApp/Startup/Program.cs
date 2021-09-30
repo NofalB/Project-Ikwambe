@@ -24,6 +24,7 @@ namespace ProjectIkwambe.Startup {
 			Services.AddSingleton<IOpenApiHttpTriggerContext, OpenApiHttpTriggerContext>();
 			Services.AddSingleton<IOpenApiTriggerFunction, OpenApiTriggerFunction>();
 
+			// DBContext
             Services.AddDbContext<IkwambeContext>(option =>
             {
                 option.UseCosmos(
@@ -33,7 +34,11 @@ namespace ProjectIkwambe.Startup {
                 );
             });
 
-			Services.AddTransient<ICosmosRepository<Donation>, CosmosRepository<Donation>>();
+			// Repositories
+			//Services.AddTransient<ICosmosRepository<Donation>, CosmosRepository<Donation>>();
+			Services.AddTransient<CosmosRepository<Donation>, DonationRepository>();
+
+			// Services
 			Services.AddScoped<IDonationService, DonationService>();
         }
 	}
