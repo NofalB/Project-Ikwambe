@@ -36,7 +36,7 @@ namespace ProjectIkwambe.Models
 
 		[OpenApiProperty(Description = "Get or sets the date when the project started.")]
 		[JsonRequired]
-		public DateTime? startDate { get; set; }
+		public DateTime? StartDate { get; set; }
 
 		[OpenApiProperty(Description = "Get or sets the date when the project will end.")]
 		[JsonRequired]
