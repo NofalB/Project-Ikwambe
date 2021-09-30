@@ -7798,19 +7798,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Stephen Pangga\\.nuget\\packages\\": {}
+    "C:\\Users\\Huis\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Stephen Pangga\\Documents\\GitHub\\Api-design-code\\Infrastructure\\Infrastructure.csproj",
+      "projectUniqueName": "G:\\Nofal\\University\\IT 4.1\\api-design\\Api-design-code\\Infrastructure\\Infrastructure.csproj",
       "projectName": "Infrastructure",
-      "projectPath": "C:\\Users\\Stephen Pangga\\Documents\\GitHub\\Api-design-code\\Infrastructure\\Infrastructure.csproj",
-      "packagesPath": "C:\\Users\\Stephen Pangga\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Stephen Pangga\\Documents\\GitHub\\Api-design-code\\Infrastructure\\obj\\",
+      "projectPath": "G:\\Nofal\\University\\IT 4.1\\api-design\\Api-design-code\\Infrastructure\\Infrastructure.csproj",
+      "packagesPath": "C:\\Users\\Huis\\.nuget\\packages\\",
+      "outputPath": "G:\\Nofal\\University\\IT 4.1\\api-design\\Api-design-code\\Infrastructure\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Stephen Pangga\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Huis\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -7824,8 +7824,8 @@
         "net5.0": {
           "targetAlias": "net5.0",
           "projectReferences": {
-            "C:\\Users\\Stephen Pangga\\Documents\\GitHub\\Api-design-code\\Domain\\Domain.csproj": {
-              "projectPath": "C:\\Users\\Stephen Pangga\\Documents\\GitHub\\Api-design-code\\Domain\\Domain.csproj"
+            "G:\\Nofal\\University\\IT 4.1\\api-design\\Api-design-code\\Domain\\Domain.csproj": {
+              "projectPath": "G:\\Nofal\\University\\IT 4.1\\api-design\\Api-design-code\\Domain\\Domain.csproj"
             }
           }
         }

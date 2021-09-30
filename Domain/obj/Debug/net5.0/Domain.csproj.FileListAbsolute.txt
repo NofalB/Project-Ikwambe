@@ -22,3 +22,15 @@ C:\Users\Stephen Pangga\Documents\GitHub\Api-design-code\Domain\obj\Debug\net5.0
 C:\Users\Stephen Pangga\Documents\GitHub\Api-design-code\Domain\obj\Debug\net5.0\Domain.dll
 C:\Users\Stephen Pangga\Documents\GitHub\Api-design-code\Domain\obj\Debug\net5.0\ref\Domain.dll
 C:\Users\Stephen Pangga\Documents\GitHub\Api-design-code\Domain\obj\Debug\net5.0\Domain.pdb
+G:\Nofal\University\IT 4.1\api-design\Api-design-code\Domain\bin\Debug\net5.0\Domain.deps.json
+G:\Nofal\University\IT 4.1\api-design\Api-design-code\Domain\bin\Debug\net5.0\Domain.dll
+G:\Nofal\University\IT 4.1\api-design\Api-design-code\Domain\bin\Debug\net5.0\ref\Domain.dll
+G:\Nofal\University\IT 4.1\api-design\Api-design-code\Domain\bin\Debug\net5.0\Domain.pdb
+G:\Nofal\University\IT 4.1\api-design\Api-design-code\Domain\obj\Debug\net5.0\Domain.csproj.AssemblyReference.cache
+G:\Nofal\University\IT 4.1\api-design\Api-design-code\Domain\obj\Debug\net5.0\Domain.GeneratedMSBuildEditorConfig.editorconfig
+G:\Nofal\University\IT 4.1\api-design\Api-design-code\Domain\obj\Debug\net5.0\Domain.AssemblyInfoInputs.cache
+G:\Nofal\University\IT 4.1\api-design\Api-design-code\Domain\obj\Debug\net5.0\Domain.AssemblyInfo.cs
+G:\Nofal\University\IT 4.1\api-design\Api-design-code\Domain\obj\Debug\net5.0\Domain.csproj.CoreCompileInputs.cache
+G:\Nofal\University\IT 4.1\api-design\Api-design-code\Domain\obj\Debug\net5.0\Domain.dll
+G:\Nofal\University\IT 4.1\api-design\Api-design-code\Domain\obj\Debug\net5.0\ref\Domain.dll
+G:\Nofal\University\IT 4.1\api-design\Api-design-code\Domain\obj\Debug\net5.0\Domain.pdb
