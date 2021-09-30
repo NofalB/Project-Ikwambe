@@ -115,3 +115,6 @@ Infrastructure/obj/Infrastructure.csproj.nuget.dgspec.json
 Infrastructure/obj/Infrastructure.csproj.nuget.g.props
 Infrastructure/obj/project.assets.json
 Infrastructure/obj/project.nuget.cache
+Domain/obj/Debug/net5.0/Domain.csproj.AssemblyReference.cache
+Infrastructure/obj/Debug/net5.0/Infrastructure.csproj.AssemblyReference.cache
+.vs/ProjectIkwambe/v16/.suo
