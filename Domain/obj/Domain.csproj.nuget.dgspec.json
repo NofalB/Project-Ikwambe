@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "G:\\Nofal\\University\\IT 4.1\\api-design\\Api-design-code\\Domain\\Domain.csproj": {}
+    "C:\\Users\\Stephen Pangga\\Documents\\GitHub\\Api-design-code\\Domain\\Domain.csproj": {}
   },
   "projects": {
-    "G:\\Nofal\\University\\IT 4.1\\api-design\\Api-design-code\\Domain\\Domain.csproj": {
+    "C:\\Users\\Stephen Pangga\\Documents\\GitHub\\Api-design-code\\Domain\\Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "G:\\Nofal\\University\\IT 4.1\\api-design\\Api-design-code\\Domain\\Domain.csproj",
+        "projectUniqueName": "C:\\Users\\Stephen Pangga\\Documents\\GitHub\\Api-design-code\\Domain\\Domain.csproj",
         "projectName": "Domain",
-        "projectPath": "G:\\Nofal\\University\\IT 4.1\\api-design\\Api-design-code\\Domain\\Domain.csproj",
-        "packagesPath": "C:\\Users\\Huis\\.nuget\\packages\\",
-        "outputPath": "G:\\Nofal\\University\\IT 4.1\\api-design\\Api-design-code\\Domain\\obj\\",
+        "projectPath": "C:\\Users\\Stephen Pangga\\Documents\\GitHub\\Api-design-code\\Domain\\Domain.csproj",
+        "packagesPath": "C:\\Users\\Stephen Pangga\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Stephen Pangga\\Documents\\GitHub\\Api-design-code\\Domain\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Huis\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Stephen Pangga\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
