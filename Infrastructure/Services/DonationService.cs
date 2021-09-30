@@ -10,26 +10,26 @@ namespace Infrastructure.Services
 {
     public class DonationService : IDonationService
     {
-        private readonly ICosmosRepository<Donation> _cosmosRepository;
+        private readonly CosmosRepository<Donation> _donationRepository;
 
-        public DonationService(ICosmosRepository<Donation> cosmosRepository)
+        public DonationService(CosmosRepository<Donation> cosmosRepository)
         {
-            _cosmosRepository = cosmosRepository;
+            _donationRepository = cosmosRepository;
         }
 
         public IEnumerable<Donation> GetAllDonations()
         {
-            throw new NotImplementedException();
+            return _donationRepository.GetAll().ToList();
         }
 
         public async Task AddDonation(Donation donation)
         {
-            await _cosmosRepository.AddAsync(donation);
+            await _donationRepository.AddAsync(donation);
         }
 
-        public Donation GetDonation()
+        public async Task<Donation> GetDonationById(int donationId)
         {
-            throw new NotImplementedException();
+            return await _donationRepository.GetByIdAsync(donationId);
         }
     }
 }
