@@ -13,6 +13,9 @@ using Microsoft.Azure.Functions.Worker;
 using System.IO;
 using Newtonsoft.Json;
 using Domain;
+using ProjectIkwambe.Attributes;
+using ProjectIkwambe.Utils;
+using System.Security.Claims;
 
 namespace ProjectIkwambe.Controllers
 {
@@ -27,20 +30,32 @@ namespace ProjectIkwambe.Controllers
 
         //get all the waterpumps
         [Function(nameof(WaterpumpHttpTrigger.GetWaterpumps))]
+        [Auth]
         [OpenApiOperation(operationId: "getWaterpump", tags: new[] { "Waterpumps" }, Summary = "Find all waterpumps", Description = "return all waterpumps", Visibility = OpenApiVisibilityType.Important)]
         //[OpenApiSecurity("petstore_auth", SecuritySchemeType.Http, In = OpenApiSecurityLocationType.Header, Scheme = OpenApiSecuritySchemeType.Bearer, BearerFormat = "JWT")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WaterPumpProject), Summary = "successful operation", Description = "successful operation", Example = typeof(DummyWaterPumpProjectExamples))]
-        //[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid ID supplied", Description = "Invalid ID supplied")]
-        //[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "Pet not found", Description = "Pet not found")]
+        [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid ID supplied", Description = "Invalid ID supplied")]
+        [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "waterpump not found", Description = "waterpump not found")]
         public async Task<HttpResponseData> GetWaterpumps([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "waterpumps")] HttpRequestData req, FunctionContext executionContext) 
         {
-            HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
+            return await RoleChecker.ExecuteForUser(req, executionContext, async (ClaimsPrincipal Admin) => {
+
+                HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
+
+                WaterPumpProject waterpump = new WaterPumpProject();
+
+                await response.WriteAsJsonAsync(waterpump);
+
+                return response;
+            });
+            
+            /*HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
             WaterPumpProject waterpump = new WaterPumpProject();
 
             await response.WriteAsJsonAsync(waterpump);
 
-            return response;
+            return response;*/
         }
 
         //get water pump information by ID
