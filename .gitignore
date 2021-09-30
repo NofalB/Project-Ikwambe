@@ -118,3 +118,7 @@ Infrastructure/obj/project.nuget.cache
 Domain/obj/Debug/net5.0/Domain.csproj.AssemblyReference.cache
 Infrastructure/obj/Debug/net5.0/Infrastructure.csproj.AssemblyReference.cache
 .vs/ProjectIkwambe/v16/.suo
+Domain/obj/Debug/net5.0/Domain.csproj.AssemblyReference.cache
+.vs/ProjectIkwambe/DesignTimeBuild/.dtbcache.v2
+.vs/ProjectIkwambe/v16/.suo
+Infrastructure/obj/Debug/net5.0/Infrastructure.csproj.AssemblyReference.cache
