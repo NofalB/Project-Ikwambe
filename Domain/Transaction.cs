@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProjectIkwambe.Models
+namespace Domain
 {
     public class Transaction
     {
