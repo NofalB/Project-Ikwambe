@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ProjectIkwambe.Repositories
 {
-    public interface ICosmosRepository<TEntity> where TEntity : class, new()
+    public interface ICosmosRepository<TEntity>
     {
         IEnumerable<TEntity> GetAll();
 

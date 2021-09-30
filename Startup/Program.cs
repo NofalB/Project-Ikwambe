@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NPOI.SS.Formula.Functions;
 using ProjectIkwambe.CosmosDAL;
+using ProjectIkwambe.Models;
 using ProjectIkwambe.Repositories;
 using ProjectIkwambe.Services;
 
@@ -33,7 +34,7 @@ namespace ProjectIkwambe.Startup {
                 );
             });
 
-			Services.AddTransient<ICosmosRepository<T>, CosmosRepository<T>>();
+			Services.AddTransient<ICosmosRepository<Donation>, CosmosRepository<Donation>>();
 			Services.AddScoped<IDonationService, DonationService>();
         }
 	}

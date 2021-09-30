@@ -68,7 +68,6 @@ namespace ProjectIkwambe.Controllers
 			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 			Donation donation = JsonConvert.DeserializeObject<Donation>(requestBody);
 
-			donation.DonationId += 100;
 			await _donationService.AddDonation(donation);
 
 			// Generate output
