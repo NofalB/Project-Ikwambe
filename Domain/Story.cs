@@ -20,19 +20,23 @@ namespace Domain
 
         [OpenApiProperty(Description = "get or sets the image URL")]
         [JsonRequired]
-        public string imageURL { get; set; }
+        public string ImageURL { get; set; }
 
         [OpenApiProperty(Description = "Get or sets the date when the story is published.")]
         [JsonRequired]
-        public DateTime? publishDate { get; set; }
+        public DateTime? PublishDate { get; set; }
         
         [OpenApiProperty(Description = "Get or sets the summary of the story.")]
         [JsonRequired]
-        public string summary { get; set; }
+        public string Summary { get; set; }
 
         [OpenApiProperty(Description = "Get or sets the summary of the story.")]
         [JsonRequired]
-        public string description { get; set; }
+        public string Description { get; set; }
+
+        [OpenApiProperty(Description = "Get or sets the author of the story.")]
+        [JsonRequired]
+        public string Author { get; set; }
 
     }
 
@@ -40,8 +44,8 @@ namespace Domain
     {
         public override IOpenApiExample<Story> Build(NamingStrategy NamingStrategy = null)
         {
-            Examples.Add(OpenApiExampleResolver.Resolve("story1", new Story() { Id = 1, imageURL = "owf4fzify7by.jpg", publishDate = DateTime.Now, summary = "this is the story", description = "this should be a long description" }, NamingStrategy));
-            Examples.Add(OpenApiExampleResolver.Resolve("story2", new Story() { Id = 2, imageURL = "randomImage.jpg", publishDate = DateTime.Now, summary = "this is the second story", description = "this should be a long second description" }, NamingStrategy));
+            Examples.Add(OpenApiExampleResolver.Resolve("story1", new Story() { Id = 1, ImageURL = "owf4fzify7by.jpg", PublishDate = DateTime.Now, Summary = "this is the story", Description = "this should be a long description", Author = "stephen" }, NamingStrategy));
+            Examples.Add(OpenApiExampleResolver.Resolve("story2", new Story() { Id = 2, ImageURL = "randomImage.jpg", PublishDate = DateTime.Now, Summary = "this is the second story", Description = "this should be a long second description", Author = "stephen" }, NamingStrategy));
 
             return this;
         }
@@ -54,8 +58,8 @@ namespace Domain
         {
             Examples.Add(OpenApiExampleResolver.Resolve("stories", new List<Story>()
                 {
-                   new Story () { Id = 1, imageURL = "owf4fzify7by.jpg", publishDate = DateTime.Now, summary = "this is the story",  description = "this should be a long description" },
-                   new Story() { Id = 2, imageURL = "randomImage.jpg", publishDate = DateTime.Now, summary = "this is the second story", description = "this should be a long second description"}
+                   new Story () { Id = 1, ImageURL = "owf4fzify7by.jpg", PublishDate = DateTime.Now, Summary = "this is the story",  Description = "this should be a long description", Author ="stephen" },
+                   new Story() { Id = 2, ImageURL = "randomImage.jpg", PublishDate = DateTime.Now, Summary = "this is the second story", Description = "this should be a long second description", Author ="stephen"}
                 }));
 
             return this;

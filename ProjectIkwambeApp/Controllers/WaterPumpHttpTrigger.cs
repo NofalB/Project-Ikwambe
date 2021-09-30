@@ -63,7 +63,7 @@ namespace ProjectIkwambe.Controllers
 
         //add water pumps
         [Function(nameof(WaterpumpHttpTrigger.AddWaterpumps))]
-        [OpenApiOperation(operationId: "addWaterPumps", tags: new[] { "waterpump" }, Summary = "Add a new waterpump to the database", Description = "This add waterpump information to the database.", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiOperation(operationId: "addWaterPumps", tags: new[] { "Waterpumps" }, Summary = "Add a new waterpump to the database", Description = "This add waterpump information to the database.", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(WaterPumpProject), Required = true, Description = "waterpump object that needs to be added to the database")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WaterPumpProject), Summary = "New waterpump details added", Description = "New waterpump details added to the database", Example = typeof(DummyWaterPumpProjectExample))]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Invalid input", Description = "Invalid input")]
@@ -82,7 +82,7 @@ namespace ProjectIkwambe.Controllers
 
         //edit waterpump by id
         [Function(nameof(WaterpumpHttpTrigger.UpdatWaterpump))]
-        [OpenApiOperation(operationId: "updatWaterPump", tags: new[] { "waterpump" }, Summary = "Update an existing waterpump information", Description = "This updates an existing waterpump.", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiOperation(operationId: "updatWaterPump", tags: new[] { "Waterpumps" }, Summary = "Update an existing waterpump information", Description = "This updates an existing waterpump.", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(WaterPumpProject), Required = true, Description = "waterpump object that needs to be change in the database")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WaterPumpProject), Summary = "updated the waterpump details", Description = "waterpump details is updated", Example = typeof(WaterPumpProject))]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid waterpump ID supplied", Description = "The waterpump ID does not exist or invalid ID ")]

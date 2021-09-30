@@ -13,3 +13,18 @@ C:\Users\Hamza\Documents\GitHub\Api-design-code\Infrastructure\obj\Debug\net5.0\
 C:\Users\Hamza\Documents\GitHub\Api-design-code\Infrastructure\obj\Debug\net5.0\Infrastructure.dll
 C:\Users\Hamza\Documents\GitHub\Api-design-code\Infrastructure\obj\Debug\net5.0\ref\Infrastructure.dll
 C:\Users\Hamza\Documents\GitHub\Api-design-code\Infrastructure\obj\Debug\net5.0\Infrastructure.pdb
+C:\Users\Stephen Pangga\Documents\GitHub\Api-design-code\Infrastructure\bin\Debug\net5.0\Infrastructure.deps.json
+C:\Users\Stephen Pangga\Documents\GitHub\Api-design-code\Infrastructure\bin\Debug\net5.0\Infrastructure.dll
+C:\Users\Stephen Pangga\Documents\GitHub\Api-design-code\Infrastructure\bin\Debug\net5.0\ref\Infrastructure.dll
+C:\Users\Stephen Pangga\Documents\GitHub\Api-design-code\Infrastructure\bin\Debug\net5.0\Infrastructure.pdb
+C:\Users\Stephen Pangga\Documents\GitHub\Api-design-code\Infrastructure\bin\Debug\net5.0\Domain.dll
+C:\Users\Stephen Pangga\Documents\GitHub\Api-design-code\Infrastructure\bin\Debug\net5.0\Domain.pdb
+C:\Users\Stephen Pangga\Documents\GitHub\Api-design-code\Infrastructure\obj\Debug\net5.0\Infrastructure.csproj.AssemblyReference.cache
+C:\Users\Stephen Pangga\Documents\GitHub\Api-design-code\Infrastructure\obj\Debug\net5.0\Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Stephen Pangga\Documents\GitHub\Api-design-code\Infrastructure\obj\Debug\net5.0\Infrastructure.AssemblyInfoInputs.cache
+C:\Users\Stephen Pangga\Documents\GitHub\Api-design-code\Infrastructure\obj\Debug\net5.0\Infrastructure.AssemblyInfo.cs
+C:\Users\Stephen Pangga\Documents\GitHub\Api-design-code\Infrastructure\obj\Debug\net5.0\Infrastructure.csproj.CoreCompileInputs.cache
+C:\Users\Stephen Pangga\Documents\GitHub\Api-design-code\Infrastructure\obj\Debug\net5.0\Infrastructure.csproj.CopyComplete
+C:\Users\Stephen Pangga\Documents\GitHub\Api-design-code\Infrastructure\obj\Debug\net5.0\Infrastructure.dll
+C:\Users\Stephen Pangga\Documents\GitHub\Api-design-code\Infrastructure\obj\Debug\net5.0\ref\Infrastructure.dll
+C:\Users\Stephen Pangga\Documents\GitHub\Api-design-code\Infrastructure\obj\Debug\net5.0\Infrastructure.pdb
