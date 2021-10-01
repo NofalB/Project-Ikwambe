@@ -118,3 +118,17 @@ Infrastructure/obj/project.nuget.cache
 Domain/obj/Debug/net5.0/Domain.csproj.AssemblyReference.cache
 Infrastructure/obj/Debug/net5.0/Infrastructure.csproj.AssemblyReference.cache
 .vs/ProjectIkwambe/v16/.suo
+Domain/obj/Debug/net5.0/Domain.assets.cache
+Domain/obj/Debug/net5.0/Domain.csproj.AssemblyReference.cache
+Domain/obj/Debug/net5.0/Domain.GeneratedMSBuildEditorConfig.editorconfig
+Domain/obj/Domain.csproj.nuget.dgspec.json
+Domain/obj/Domain.csproj.nuget.g.props
+Domain/obj/project.assets.json
+Domain/obj/project.nuget.cache
+Infrastructure/obj/Debug/net5.0/Infrastructure.assets.cache
+Infrastructure/obj/Debug/net5.0/Infrastructure.csproj.AssemblyReference.cache
+Infrastructure/obj/Debug/net5.0/Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+Infrastructure/obj/Infrastructure.csproj.nuget.dgspec.json
+Infrastructure/obj/Infrastructure.csproj.nuget.g.props
+Infrastructure/obj/project.assets.json
+Infrastructure/obj/project.nuget.cache
