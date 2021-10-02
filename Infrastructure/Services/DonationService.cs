@@ -27,7 +27,7 @@ namespace Infrastructure.Services
             await _donationRepository.AddAsync(donation);
         }
 
-        public async Task<Donation> GetDonationById(int donationId)
+        public async Task<Donation> GetDonationById(string donationId)
         {
             return await _donationRepository.GetByIdAsync(donationId);
         }

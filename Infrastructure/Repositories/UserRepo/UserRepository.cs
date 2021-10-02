@@ -20,9 +20,9 @@ namespace Infrastructure.Repositories.UserRepo
             return _ikambeContext.Users;
         }
 
-        public override async Task<User> GetByIdAsync(int id)
+        public override async Task<User> GetByIdAsync(string Userid)
         {
-            return await _ikambeContext.Users.FindAsync(id);
+            return await _ikambeContext.Users.FindAsync(Userid);
         }
     }
 }

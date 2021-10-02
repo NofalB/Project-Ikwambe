@@ -9,7 +9,7 @@ namespace Infrastructure.Repositories
     {
         IEnumerable<TEntity> GetAll();
 
-        Task<TEntity> GetByIdAsync(int id);
+        Task<TEntity> GetByIdAsync(string entityId);
 
         Task AddAsync(TEntity entity);
 

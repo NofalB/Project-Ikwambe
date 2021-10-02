@@ -20,9 +20,9 @@ namespace Infrastructure.Repositories.DonationRepo
             return _ikambeContext.Donations;
         }
 
-        public override async Task<Donation> GetByIdAsync(int id)
+        public override async Task<Donation> GetByIdAsync(string donationId)
         {
-            return await _ikambeContext.Donations.FindAsync(id);
+            return await _ikambeContext.Donations.FindAsync(donationId);
         }
     }
 }

@@ -18,7 +18,7 @@ namespace Infrastructure.Repositories
 
         public abstract IEnumerable<TEntity> GetAll();
 
-        public abstract Task<TEntity> GetByIdAsync(int id);
+        public abstract Task<TEntity> GetByIdAsync(string entityId);
 
         public async Task AddAsync(TEntity entity)
         {

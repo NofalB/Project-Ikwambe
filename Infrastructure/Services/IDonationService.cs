@@ -8,7 +8,7 @@ namespace Infrastructure.Services
     {
         IEnumerable<Donation> GetAllDonations();
 
-        Task<Donation> GetDonationById(int donationId);
+        Task<Donation> GetDonationById(string donationId);
 
         Task AddDonation(Donation donation);
 
