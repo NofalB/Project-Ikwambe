@@ -11,6 +11,7 @@ namespace Infrastructure.DBContext
     public class IkwambeContext : DbContext // DB Context represents the database
     {
         public DbSet<Donation> Donations { get; set; }
+        public DbSet<User> Users { get; set; }
 
         public IkwambeContext(DbContextOptions options) : base(options)
         {
@@ -31,6 +32,16 @@ namespace Infrastructure.DBContext
                 .HasPartitionKey(d => d.PartitionKey);  // sets partion key
 
             modelBuilder.Entity<Donation>()
+                .UseETagConcurrency();
+
+            // users
+            modelBuilder.Entity<User>()
+               .ToContainer(nameof(Users)); // sets the container
+
+            modelBuilder.Entity<User>() // EF Core adds a discriminator value to identify the entity type that a given item represent
+                .HasNoDiscriminator(); // HasNoDiscriminator() removes the discriminator since no other entity type will be stored in this container
+
+            modelBuilder.Entity<User>()
                 .UseETagConcurrency();
 
         }

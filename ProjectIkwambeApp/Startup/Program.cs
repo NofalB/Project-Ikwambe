@@ -1,6 +1,8 @@
 using Domain;
 using Infrastructure.DBContext;
 using Infrastructure.Repositories;
+using Infrastructure.Repositories.DonationRepo;
+using Infrastructure.Repositories.UserRepo;
 using Infrastructure.Services;
 using Microsoft.Azure.Functions.Worker.Extensions.OpenApi;
 using Microsoft.Azure.Functions.Worker.Extensions.OpenApi.Extensions;
@@ -37,9 +39,11 @@ namespace ProjectIkwambe.Startup {
 			// Repositories
 			//Services.AddTransient<ICosmosRepository<Donation>, CosmosRepository<Donation>>();
 			Services.AddTransient<CosmosRepository<Donation>, DonationRepository>();
+			Services.AddTransient<CosmosRepository<User>, UserRepository>();
 
 			// Services
 			Services.AddScoped<IDonationService, DonationService>();
+			Services.AddScoped<IUserService, UserService>();
         }
 	}
 }
