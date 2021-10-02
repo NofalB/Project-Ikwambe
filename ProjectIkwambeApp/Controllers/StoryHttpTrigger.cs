@@ -13,16 +13,19 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Infrastructure.Services;
 
 namespace ProjectIkwambe.Controllers
 {
     public class StoryHttpTrigger
     {
         ILogger Logger { get; }
+        private readonly IStoryService _storyService;
 
-        public StoryHttpTrigger(ILogger<StoryHttpTrigger> Logger)
+        public StoryHttpTrigger(ILogger<StoryHttpTrigger> Logger, IStoryService storyService)
         {
             this.Logger = Logger;
+            _storyService = storyService;
         }
 
 
@@ -35,9 +38,7 @@ namespace ProjectIkwambe.Controllers
         {
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
-            Story story = new Story();
-
-            await response.WriteAsJsonAsync(story);
+            await response.WriteAsJsonAsync(_storyService.GetAllStories());
 
             return response;
         }
@@ -49,13 +50,11 @@ namespace ProjectIkwambe.Controllers
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Story), Summary = "successful operation", Description = "successful operation", Example = typeof(DummyStoryExamples))]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid ID supplied", Description = "Invalid ID supplied")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "story details not found", Description = "story details not found")]
-        public async Task<HttpResponseData> GetStoryById([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "stories/{storyId}")] HttpRequestData req, long storyId, FunctionContext executionContext)
+        public async Task<HttpResponseData> GetStoryById([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "stories/{storyId}")] HttpRequestData req, string storyId, FunctionContext executionContext)
         {
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
-            Story story = new Story();
-
-            await response.WriteAsJsonAsync(story);
+            await response.WriteAsJsonAsync(_storyService.GetStoryById(storyId));
 
             return response;
         }
@@ -71,6 +70,8 @@ namespace ProjectIkwambe.Controllers
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
             Story story = JsonConvert.DeserializeObject<Story>(requestBody);
+
+            await _storyService.AddStory(story);
 
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
@@ -97,7 +98,7 @@ namespace ProjectIkwambe.Controllers
             // Generate output
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
-            await response.WriteAsJsonAsync(story);
+            await response.WriteAsJsonAsync(_storyService.UpdateStory(story));
 
             return response;
         }
@@ -110,10 +111,12 @@ namespace ProjectIkwambe.Controllers
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid story ID supplied", Description = "The story ID does not exist or invalid ID ")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "Story not found", Description = "Story not found")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Validation exception", Description = "Validation exception")]
-        public async Task<HttpResponseData> DeleteStory([HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "stories/{storyId}")] HttpRequestData req, long storyId, FunctionContext executionContext)
+        public async Task<HttpResponseData> DeleteStory([HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "stories/{storyId}")] HttpRequestData req, string storyId, FunctionContext executionContext)
         {
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
+            _storyService.DeleteStory(storyId);
+            
             return response;
         }
 

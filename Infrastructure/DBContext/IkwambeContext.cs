@@ -13,6 +13,10 @@ namespace Infrastructure.DBContext
         public DbSet<Donation> Donations { get; set; }
         public DbSet<User> Users { get; set; }
 
+        public DbSet<Story> Stories { get; set; }
+        
+        public DbSet<WaterPumpProject> WaterpumpProject { get; set; }
+
         public IkwambeContext(DbContextOptions options) : base(options)
         {
             Database.EnsureCreated();
@@ -42,6 +46,26 @@ namespace Infrastructure.DBContext
                 .HasNoDiscriminator(); // HasNoDiscriminator() removes the discriminator since no other entity type will be stored in this container
 
             modelBuilder.Entity<User>()
+                .UseETagConcurrency();
+
+            // story
+            modelBuilder.Entity<Story>()
+               .ToContainer(nameof(Story));
+
+            modelBuilder.Entity<Story>()
+                .HasNoDiscriminator();
+            //need partition key
+            modelBuilder.Entity<Story>()
+                .UseETagConcurrency();
+
+            //waterpump
+            modelBuilder.Entity<WaterPumpProject>()
+               .ToContainer(nameof(WaterPumpProject));
+
+            modelBuilder.Entity<WaterPumpProject>()
+                .HasNoDiscriminator();
+            //need partition key
+            modelBuilder.Entity<WaterPumpProject>()
                 .UseETagConcurrency();
 
         }

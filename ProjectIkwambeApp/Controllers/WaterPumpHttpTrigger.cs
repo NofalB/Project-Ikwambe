@@ -13,16 +13,19 @@ using Microsoft.Azure.Functions.Worker;
 using System.IO;
 using Newtonsoft.Json;
 using Domain;
+using Infrastructure.Services;
 
 namespace ProjectIkwambe.Controllers
 {
     public class WaterpumpHttpTrigger
     {
+        private readonly IWaterpumpProjectService _waterpumpProjectService;
         ILogger Logger { get; }
 
-        public WaterpumpHttpTrigger(ILogger<WaterpumpHttpTrigger> Logger)
+        public WaterpumpHttpTrigger(ILogger<WaterpumpHttpTrigger> Logger, IWaterpumpProjectService waterpumpProjectService)
         {
             this.Logger = Logger;
+            _waterpumpProjectService = waterpumpProjectService;
         }
 
         //get all the waterpumps
@@ -31,14 +34,12 @@ namespace ProjectIkwambe.Controllers
         //[OpenApiSecurity("petstore_auth", SecuritySchemeType.Http, In = OpenApiSecurityLocationType.Header, Scheme = OpenApiSecuritySchemeType.Bearer, BearerFormat = "JWT")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WaterPumpProject), Summary = "successful operation", Description = "successful operation", Example = typeof(DummyWaterPumpProjectExamples))]
         //[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid ID supplied", Description = "Invalid ID supplied")]
-        //[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "Pet not found", Description = "Pet not found")]
+        //[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "waterpumps not found", Description = "waterpumps not found")]
         public async Task<HttpResponseData> GetWaterpumps([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "waterpumps")] HttpRequestData req, FunctionContext executionContext) 
         {
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
-            WaterPumpProject waterpump = new WaterPumpProject();
-
-            await response.WriteAsJsonAsync(waterpump);
+            await response.WriteAsJsonAsync(_waterpumpProjectService.GetAllWaterPumpProjects());
 
             return response;
         }
@@ -50,13 +51,11 @@ namespace ProjectIkwambe.Controllers
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WaterPumpProject), Summary = "successful operation", Description = "successful operation", Example = typeof(DummyWaterPumpProjectExamples))]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid ID supplied", Description = "Invalid ID supplied")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "waterpump details not found", Description = "waterpump details not found")]
-        public async Task<HttpResponseData> GetWaterpumpById([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "waterpumps/{waterPumpId}")] HttpRequestData req, long waterPumpId, FunctionContext executionContext)
+        public async Task<HttpResponseData> GetWaterpumpById([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "waterpumps/{waterPumpId}")] HttpRequestData req, string waterPumpId, FunctionContext executionContext)
         {
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
-            WaterPumpProject waterpump = new WaterPumpProject();
-
-            await response.WriteAsJsonAsync(waterpump);
+            await response.WriteAsJsonAsync(_waterpumpProjectService.GetWaterPumpProjectById(waterPumpId));
 
             return response;
         }
@@ -75,7 +74,7 @@ namespace ProjectIkwambe.Controllers
 
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
-            await response.WriteAsJsonAsync(waterpump);
+            await response.WriteAsJsonAsync(_waterpumpProjectService.AddWaterpumpProject(waterpump));
 
             return response;
         }
@@ -97,7 +96,7 @@ namespace ProjectIkwambe.Controllers
 
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
-            await response.WriteAsJsonAsync(waterPumpProject);
+            await response.WriteAsJsonAsync(_waterpumpProjectService.UpdateWaterPumpProject(waterPumpProject));
 
             return response;
         }
@@ -111,17 +110,13 @@ namespace ProjectIkwambe.Controllers
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid waterpump ID supplied", Description = "The waterpump ID does not exist or invalid ID ")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "waterpump not found", Description = "waterpump not found")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Validation exception", Description = "Validation exception")]
-        public async Task<HttpResponseData> DeleteWaterpump([HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "waterpumps")] HttpRequestData req, long waterPumpId, FunctionContext executionContext)
+        public async Task<HttpResponseData> DeleteWaterpump([HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "waterpumps")] HttpRequestData req, string waterPumpId, FunctionContext executionContext)
         {
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
+            _waterpumpProjectService.DeleteWaterPumpProject(waterPumpId);
 
-            //return response;
-            return null;
+            return response;
         }
-
-
-
-
     }
 }

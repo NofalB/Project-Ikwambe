@@ -16,7 +16,7 @@ namespace Domain
 
         [OpenApiProperty(Description = "get or sets the id of the story")]
         [JsonRequired]
-        public long? Id { get; set; }
+        public string StoryId { get; set; }
 
         [OpenApiProperty(Description = "get or sets the image URL")]
         [JsonRequired]
@@ -44,8 +44,8 @@ namespace Domain
     {
         public override IOpenApiExample<Story> Build(NamingStrategy NamingStrategy = null)
         {
-            Examples.Add(OpenApiExampleResolver.Resolve("story1", new Story() { Id = 1, ImageURL = "owf4fzify7by.jpg", PublishDate = DateTime.Now, Summary = "this is the story", Description = "this should be a long description", Author = "stephen" }, NamingStrategy));
-            Examples.Add(OpenApiExampleResolver.Resolve("story2", new Story() { Id = 2, ImageURL = "randomImage.jpg", PublishDate = DateTime.Now, Summary = "this is the second story", Description = "this should be a long second description", Author = "stephen" }, NamingStrategy));
+            Examples.Add(OpenApiExampleResolver.Resolve("story1", new Story() { StoryId = "1", ImageURL = "owf4fzify7by.jpg", PublishDate = DateTime.Now, Summary = "this is the story", Description = "this should be a long description", Author = "stephen" }, NamingStrategy));
+            Examples.Add(OpenApiExampleResolver.Resolve("story2", new Story() { StoryId = "2", ImageURL = "randomImage.jpg", PublishDate = DateTime.Now, Summary = "this is the second story", Description = "this should be a long second description", Author = "stephen" }, NamingStrategy));
 
             return this;
         }
@@ -58,8 +58,8 @@ namespace Domain
         {
             Examples.Add(OpenApiExampleResolver.Resolve("stories", new List<Story>()
                 {
-                   new Story () { Id = 1, ImageURL = "owf4fzify7by.jpg", PublishDate = DateTime.Now, Summary = "this is the story",  Description = "this should be a long description", Author ="stephen" },
-                   new Story() { Id = 2, ImageURL = "randomImage.jpg", PublishDate = DateTime.Now, Summary = "this is the second story", Description = "this should be a long second description", Author ="stephen"}
+                   new Story () { StoryId = "1", ImageURL = "owf4fzify7by.jpg", PublishDate = DateTime.Now, Summary = "this is the story",  Description = "this should be a long description", Author ="stephen" },
+                   new Story() { StoryId = "2", ImageURL = "randomImage.jpg", PublishDate = DateTime.Now, Summary = "this is the second story", Description = "this should be a long second description", Author ="stephen"}
                 }));
 
             return this;
