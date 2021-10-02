@@ -6,18 +6,23 @@ using Infrastructure.Repositories.StoryRepo;
 using Infrastructure.Repositories.UserRepo;
 using Infrastructure.Repositories.WaterpumpProjectRepo;
 using Infrastructure.Services;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Extensions.OpenApi;
 using Microsoft.Azure.Functions.Worker.Extensions.OpenApi.Extensions;
 using Microsoft.Azure.Functions.Worker.Extensions.OpenApi.Functions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ProjectIkwambe.Security;
 
 namespace ProjectIkwambe.Startup {
 	public class Program {
 		public static void Main() {
 			IHost host = new HostBuilder()
-				.ConfigureFunctionsWorkerDefaults(worker => worker.UseNewtonsoftJson())
+				//.ConfigureFunctionsWorkerDefaults(worker => worker.UseNewtonsoftJson())
+				.ConfigureFunctionsWorkerDefaults((IFunctionsWorkerApplicationBuilder Builder) => {
+					Builder.UseNewtonsoftJson().UseMiddleware<JwtMiddleware>();
+				})
 				.ConfigureServices(Configure)
 				.Build();
 
@@ -27,9 +32,11 @@ namespace ProjectIkwambe.Startup {
 		static void Configure(HostBuilderContext Builder, IServiceCollection Services) {
 			Services.AddSingleton<IOpenApiHttpTriggerContext, OpenApiHttpTriggerContext>();
 			Services.AddSingleton<IOpenApiTriggerFunction, OpenApiTriggerFunction>();
+			//jwt security
+			Services.AddSingleton<ITokenService, TokenService>();
 
 			// DBContext
-            Services.AddDbContext<IkwambeContext>(option =>
+			Services.AddDbContext<IkwambeContext>(option =>
             {
                 option.UseCosmos(
                     Builder.Configuration["CosmosDb:Account"],
