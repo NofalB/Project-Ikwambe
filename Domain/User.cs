@@ -14,7 +14,7 @@ namespace Domain
 	public class User
 	{
 		[OpenApiProperty(Description = "Gets or sets the user ID.")]
-		public long? Id { get; set; }
+		public string UserId { get; set; }
 
 		[OpenApiProperty(Description = "Gets or sets the first name.")]
 		[JsonRequired]
@@ -36,24 +36,29 @@ namespace Domain
 		[JsonRequired]
 		public bool Subscription { get; set; }
 
-		public User(int id, string firstName, string lastName, string email, string password,bool subscription)
+		public User(string UserId, string firstName, string lastName, string email, string password,bool subscription)
 		{
-			Id = id;
+			UserId = UserId;
 			FirstName = firstName;
 			LastName = lastName;
 			Email = email;
 			Password = password;
 			Subscription = subscription;
 		}
+
+        public User()
+        {
+
+        }
 	}
 
 	public class DummyUserExample : OpenApiExample<User>
 	{
 		public override IOpenApiExample<User> Build(NamingStrategy NamingStrategy = null)
 		{
-			Examples.Add(OpenApiExampleResolver.Resolve("Hamza", new User(100, "Kratos", "Jumbo", "bruh@gmail.com", "380", true), NamingStrategy));
-			Examples.Add(OpenApiExampleResolver.Resolve("Bruno", new User(101, "Bam", "Test", "bruh@gmail.com", "Hello123", true), NamingStrategy));
-			Examples.Add(OpenApiExampleResolver.Resolve("Jumbo", new User(102, "Jumbo", "Kratos", "bruh@gmail.com", "tEst12345", false), NamingStrategy));
+			Examples.Add(OpenApiExampleResolver.Resolve("Hamza", new User("100", "Kratos", "Jumbo", "bruh@gmail.com", "380", true), NamingStrategy));
+			Examples.Add(OpenApiExampleResolver.Resolve("Bruno", new User("101", "Bam", "Test", "bruh@gmail.com", "Hello123", true), NamingStrategy));
+			Examples.Add(OpenApiExampleResolver.Resolve("Jumbo", new User("102", "Jumbo", "Kratos", "bruh@gmail.com", "tEst12345", false), NamingStrategy));
 
 			return this;
 		}
@@ -64,9 +69,9 @@ namespace Domain
 		public override IOpenApiExample<List<User>> Build(NamingStrategy NamingStrategy = null)
 		{
 			Examples.Add(OpenApiExampleResolver.Resolve("Users", new List<User> {
-				new User(100, "Kratos", "Jumbo", "bruh@gmail.com", "380",true),
-				new User(101, "Bam", "Test", "bruh@gmail.com", "Hello123",true),
-				new User(102, "Jumbo", "Kratos", "bruh@gmail.com", "tEst12345",false),
+				new User("100", "Kratos", "Jumbo", "bruh@gmail.com", "380",true),
+				new User("101", "Bam", "Test", "bruh@gmail.com", "Hello123",true),
+				new User("102", "Jumbo", "Kratos", "bruh@gmail.com", "tEst12345",false),
 			}));
 
 			return this;

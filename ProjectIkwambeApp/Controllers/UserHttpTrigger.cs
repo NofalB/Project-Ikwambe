@@ -34,9 +34,9 @@ namespace ProjectIkwambe.Controllers
 			HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
 			List<User> users = new List<User>();
-			users.Add(new User(100, "Kratos", "Jumbo", "bruh@gmail.com", "100",true));
-			users.Add(new User(101, "Bam", "Test", "bruh@gmail.com", "602",false));
-			users.Add(new User(102, "Jumbo", "Kratos", "bruh@gmail.com", "750",true));
+			users.Add(new User("100", "Kratos", "Jumbo", "bruh@gmail.com", "100",true));
+			users.Add(new User("101", "Bam", "Test", "bruh@gmail.com", "602",false));
+			users.Add(new User("102", "Jumbo", "Kratos", "bruh@gmail.com", "750",true));
 
 
 			await response.WriteAsJsonAsync(users);
@@ -56,7 +56,7 @@ namespace ProjectIkwambe.Controllers
 			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 			User user = JsonConvert.DeserializeObject<User>(requestBody);
 
-			user.Id += 1;
+			user.UserId += 1;
 
 			// Generate output
 			HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
@@ -78,7 +78,7 @@ namespace ProjectIkwambe.Controllers
 			// Generate output
 			HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
-			User user = new User(100, "Kratos", "Jumbo", "bruh@gmail.com", "HSJSH6767",true);
+			User user = new User("100", "Kratos", "Jumbo", "bruh@gmail.com", "HSJSH6767",true);
 
 			await response.WriteAsJsonAsync(user);
 

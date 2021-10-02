@@ -12,7 +12,7 @@ namespace Domain
 	public abstract class Project
 	{
 		[OpenApiProperty(Description = "Get or sets  of the ID")]
-		public long? Id { get; set; }
+		public string ProjectId { get; set; }
 
 		[OpenApiProperty(Description = "The name of the project")]
 		[JsonRequired]
