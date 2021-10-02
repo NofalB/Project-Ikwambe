@@ -12,9 +12,9 @@ namespace Infrastructure.Services
     {
         private readonly CosmosRepository<Donation> _donationRepository;
 
-        public DonationService(CosmosRepository<Donation> cosmosRepository)
+        public DonationService(CosmosRepository<Donation> donationRepository)
         {
-            _donationRepository = cosmosRepository;
+            _donationRepository = donationRepository;
         }
 
         public IEnumerable<Donation> GetAllDonations()
@@ -22,14 +22,14 @@ namespace Infrastructure.Services
             return _donationRepository.GetAll().ToList();
         }
 
+        public Donation GetDonationById(string donationId)
+        {
+            return _donationRepository.GetById(donationId);
+        }
+
         public async Task AddDonation(Donation donation)
         {
             await _donationRepository.AddAsync(donation);
-        }
-
-        public async Task<Donation> GetDonationById(string donationId)
-        {
-            return await _donationRepository.GetByIdAsync(donationId);
         }
     }
 }

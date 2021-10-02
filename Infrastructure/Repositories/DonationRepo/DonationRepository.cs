@@ -17,12 +17,27 @@ namespace Infrastructure.Repositories.DonationRepo
 
         public override IEnumerable<Donation> GetAll()
         {
-            return _ikambeContext.Donations;
+            try
+            {
+                return _ikambeContext.Donations;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving donations. {ex.Message}");
+            }
         }
 
-        public override async Task<Donation> GetByIdAsync(string donationId)
+
+        public override Donation GetById(string donationId)
         {
-            return await _ikambeContext.Donations.FindAsync(donationId);
+            try
+            {
+                return _ikambeContext.Donations.FirstOrDefault(d => d.DonationId == donationId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving donation {donationId}. {ex.Message}");
+            }
         }
     }
 }

@@ -36,6 +36,8 @@ namespace Domain
 		[JsonRequired]
 		public bool Subscription { get; set; }
 
+		public string PartitionKey { get; set; }
+
 		public User(string UserId, string firstName, string lastName, string email, string password,bool subscription)
 		{
 			UserId = UserId;

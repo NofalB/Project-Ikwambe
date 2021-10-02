@@ -18,39 +18,62 @@ namespace Infrastructure.Repositories
 
         public abstract IEnumerable<TEntity> GetAll();
 
-        public abstract Task<TEntity> GetByIdAsync(string entityId);
+        public abstract TEntity GetById(string entityId);
 
         public async Task AddAsync(TEntity entity)
         {
-            if (entity == null)
+            try
             {
-                throw new ArgumentNullException("Entity must not be null.");
-            }
+                if (entity == null)
+                {
+                    throw new ArgumentNullException("Entity must not be null.");
+                }
 
-            await _ikambeContext.AddAsync(entity);
-            await _ikambeContext.SaveChangesAsync();
+                await _ikambeContext.AddAsync(entity);
+                await _ikambeContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error inserting a new record of {nameof(entity)}. {ex.Message}");
+            }
         }
 
-        public void Update(TEntity entity)
+        public TEntity Update(TEntity entity)
         {
-            if (entity == null)
+            try
             {
-                throw new ArgumentNullException("Entity must not be null.");
-            }
+                if (entity == null)
+                {
+                    throw new ArgumentNullException("Entity must not be null.");
+                }
 
-            _ikambeContext.Update(entity);
-             _ikambeContext.SaveChanges();
+                _ikambeContext.Update(entity);
+                _ikambeContext.SaveChanges();
+
+                return entity;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error updating {nameof(entity)}. {ex.Message}");
+            }
         }
 
         public void Delete(TEntity entity)
         {
-            if (entity == null)
+            try
             {
-                throw new ArgumentNullException("Entity must not be null.");
-            }
+                if (entity == null)
+                {
+                    throw new ArgumentNullException("Entity must not be null.");
+                }
 
-            _ikambeContext.Remove(entity);
-            _ikambeContext.SaveChanges();
+                _ikambeContext.Remove(entity);
+                _ikambeContext.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error deleting {nameof(entity)}. {ex.Message}");
+            }
         }
     }
 }

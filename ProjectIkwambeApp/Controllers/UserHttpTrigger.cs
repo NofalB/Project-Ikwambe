@@ -3,6 +3,7 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using Domain;
+using Infrastructure.Services;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
@@ -16,10 +17,12 @@ namespace ProjectIkwambe.Controllers
 	class UserHttpTrigger
 	{
 		ILogger Logger { get; }
+		private readonly IUserService _userService;
 
-		public UserHttpTrigger(ILogger<UserHttpTrigger> Logger)
+		public UserHttpTrigger(ILogger<UserHttpTrigger> Logger, IUserService userService)
 		{
 			this.Logger = Logger;
+			_userService = userService;
 		}
 
 		[Function(nameof(UserHttpTrigger.GetUsers))]
@@ -33,13 +36,7 @@ namespace ProjectIkwambe.Controllers
 			// Generate output
 			HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
-			List<User> users = new List<User>();
-			users.Add(new User("100", "Kratos", "Jumbo", "bruh@gmail.com", "100",true));
-			users.Add(new User("101", "Bam", "Test", "bruh@gmail.com", "602",false));
-			users.Add(new User("102", "Jumbo", "Kratos", "bruh@gmail.com", "750",true));
-
-
-			await response.WriteAsJsonAsync(users);
+			await response.WriteAsJsonAsync(_userService.GetAllUsers());
 
 			return response;
 		}
@@ -56,12 +53,10 @@ namespace ProjectIkwambe.Controllers
 			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 			User user = JsonConvert.DeserializeObject<User>(requestBody);
 
-			user.UserId += 1;
-
 			// Generate output
 			HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
-			await response.WriteAsJsonAsync(user);
+			await response.WriteAsJsonAsync(_userService.AddUser(user));
 
 			return response;
 		}
@@ -73,14 +68,12 @@ namespace ProjectIkwambe.Controllers
 		[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(User), Summary = "successful operation", Description = "successful operation", Example = typeof(DummyUserExamples))]
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid user ID supplied", Description = "Invalid ID supplied")]
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "User not found", Description = "User not found")]
-		public async Task<HttpResponseData> GetUserById([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "users/{userId}")] HttpRequestData req, long userId, FunctionContext executionContext)
+		public async Task<HttpResponseData> GetUserById([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "users/{userId}")] HttpRequestData req, string userId, FunctionContext executionContext)
 		{
 			// Generate output
 			HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
-			User user = new User("100", "Kratos", "Jumbo", "bruh@gmail.com", "HSJSH6767",true);
-
-			await response.WriteAsJsonAsync(user);
+			await response.WriteAsJsonAsync(_userService.GetUserById(userId));
 
 			return response;
 		}
@@ -92,9 +85,11 @@ namespace ProjectIkwambe.Controllers
 		[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(User), Summary = "successfull operation", Description = "the user has been deleted successfully", Example = typeof(User))]
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid user ID supplied", Description = "The user ID is invalid ")]
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "user not found", Description = "user not found by the inserted ID,please check again")]
-		public Task<HttpResponseData> DeleteUser([HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "users/{userId}")] HttpRequestData req, long userId, FunctionContext executionContext)
+		public Task<HttpResponseData> DeleteUser([HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "users/{userId}")] HttpRequestData req, string userId, FunctionContext executionContext)
 		{
 			HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
+			
+			_userService.DeleteUser(userId);
 
 			return Task.FromResult(response);
 		}
@@ -113,7 +108,7 @@ namespace ProjectIkwambe.Controllers
 			// Generate output
 			HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
-			await response.WriteAsJsonAsync(user);
+			await response.WriteAsJsonAsync(_userService.UpdateUser(user));
 
 			return response;
 		}
