@@ -17,6 +17,11 @@ namespace Domain
 		[OpenApiProperty(Description = "The pump speed of the device")]
 		[JsonRequired]
 		public int FlowRate { get; set; }
+
+        public WaterPumpProject()
+        {
+
+        }
 	}
 
 	public class DummyWaterPumpProjectExample : OpenApiExample<WaterPumpProject>
@@ -27,8 +32,9 @@ namespace Domain
 			{
 				ProjectId = "1",
 				NameOfProject = "waterPumpIkwambe",
-				Location = "Village of Ikwambe",
-				Coordination = new System.Device.Location.GeoCoordinate(-8.000, 36.833330),
+				/*Location = "Village of Ikwambe",
+				Coordination = new System.Device.Location.GeoCoordinate(-8.000, 36.833330),*/
+				Coordinates = new Coordinates("ikwambe", -8.000, 36.833330),
 				CurrentDonation = 0,
 				TargetGoal = 25000,
 				StartDate = DateTime.Now,
@@ -47,9 +53,9 @@ namespace Domain
 		public override IOpenApiExample<List<WaterPumpProject>> Build(NamingStrategy NamingStrategy = null)
 		{
 			Examples.Add(OpenApiExampleResolver.Resolve("waterPumps", new List<WaterPumpProject> {
-				new WaterPumpProject() { ProjectId = "1", NameOfProject = "waterPump Ikwambe", Location = "Village of Ikwambe", Coordination = new System.Device.Location.GeoCoordinate(-8.000, 36.833330), CurrentDonation = 0, TargetGoal = 25000, StartDate = DateTime.Now, EndDate = DateTime.Now , RatedPower = 20, FlowRate = 20},
-				new WaterPumpProject() { ProjectId = "2", NameOfProject = "waterPumpAlmere", Location = "Almere", Coordination = new System.Device.Location.GeoCoordinate(-8.000, 36.833330), CurrentDonation = 123, TargetGoal = 40000, StartDate = DateTime.Now, EndDate = DateTime.Now, RatedPower = 100, FlowRate = 50},
-				new WaterPumpProject() { ProjectId = "3", NameOfProject = "waterPumpAmsterdam", Location = "Amsterdam", Coordination = new System.Device.Location.GeoCoordinate(-8.000, 36.833330), CurrentDonation = 456, TargetGoal = 66000, StartDate = DateTime.Now, EndDate = DateTime.Now, RatedPower = 50, FlowRate = 200}
+				new WaterPumpProject() { ProjectId = "1", NameOfProject = "waterPump Ikwambe", Coordinates = new Coordinates("ikwambe", -8.000, 36.833330), /*Location = "Village of Ikwambe", Coordination = new System.Device.Location.GeoCoordinate(-8.000, 36.833330),*/ CurrentDonation = 0, TargetGoal = 25000, StartDate = DateTime.Now, EndDate = DateTime.Now , RatedPower = 20, FlowRate = 20},
+				new WaterPumpProject() { ProjectId = "2", NameOfProject = "waterPumpAlmere", Coordinates = new Coordinates("ikwambe", -8.000, 36.833330), /*Location = "Almere", Coordination = new System.Device.Location.GeoCoordinate(-8.000, 36.833330),*/ CurrentDonation = 123, TargetGoal = 40000, StartDate = DateTime.Now, EndDate = DateTime.Now, RatedPower = 100, FlowRate = 50},
+				new WaterPumpProject() { ProjectId = "3", NameOfProject = "waterPumpAmsterdam", Coordinates = new Coordinates("ikwambe", -8.000, 36.833330), /*Location = "Amsterdam", Coordination = new System.Device.Location.GeoCoordinate(-8.000, 36.833330),*/ CurrentDonation = 456, TargetGoal = 66000, StartDate = DateTime.Now, EndDate = DateTime.Now, RatedPower = 50, FlowRate = 200}
 			}));
 
 			return this;
