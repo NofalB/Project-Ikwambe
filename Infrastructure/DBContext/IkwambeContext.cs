@@ -67,18 +67,48 @@ namespace Infrastructure.DBContext
                 .HasNoDiscriminator();
             //need partition key
             modelBuilder.Entity<WaterPumpProject>()
-                .HasKey(w => w.ProjectId);  // sets partion key
+                .HasKey(w => w.ProjectId); 
 
             modelBuilder.Entity<WaterPumpProject>()
                 .UseETagConcurrency();
+            
+            modelBuilder.Ignore<Coordinates>();
 
-            modelBuilder.Entity<WaterPumpProject>()
-                .HasOne(w => w.Coordination);
+            /* modelBuilder.Entity<Coordinates>()
+                 .HasKey(c => c.ProjectId);*/
+
+            /*modelBuilder.Entity<WaterPumpProject>()
+                .Property(s => s.Coordinates).IsRequired();*/
+
+
+
+            /*modelBuilder.Entity<Coordinates>(
+                c =>
+                {
+                    c.HasNoKey();
+                    c.ToContainer("WaterPumpProject");
+                    c.Property(a => a.LocationName);
+                });*/
+
+           /* modelBuilder.Entity<WaterPumpProject>()
+                .HasKey(w => w.Coordinates);*/
+            /* modelBuilder.Entity<WaterPumpProject>()
+                 .HasOne(w => w.Coordination);*/
+
+            /*modelBuilder.Entity<GeoCoordinate>(entity =>
+                entity
+                    .HasNoKey()
+                    .ToContainer("WaterPumpProject")
+                    .
+                );*/
+
+            /* modelBuilder.Entity<GeoCoordinate>()
+                 .HasKey(gc => gc.Longitude);*/
 
             /*modelBuilder.Entity<GeoCoordinate>()
                 .HasNoKey();*/
 
-            modelBuilder.Ignore<GeoCoordinate>();
+            //modelBuilder.Ignore<GeoCoordinate>();
 
             /*modelBuilder.Entity<WaterPumpProject>()
                 .HasOne(w => w.Coordination);

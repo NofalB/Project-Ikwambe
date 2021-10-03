@@ -6,6 +6,7 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Resolvers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.Device.Location;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain
 {
@@ -18,13 +19,18 @@ namespace Domain
 		[JsonRequired]
 		public string NameOfProject { get; set; }
 
-		[OpenApiProperty(Description = "Get or sets the location of the water pump")]
+		/*[OpenApiProperty(Description = "Get or sets the location of the water pump")]
 		[JsonRequired]
-		public string Location { get; set; }
+		public string Location { get; set; } 
 
 		[OpenApiProperty(Description = "Get or sets the Coordination of the water pump")]
 		[JsonRequired]
-		public GeoCoordinate Coordination { get; set; }
+		public GeoCoordinate Coordination { get; set; }*/
+
+		//[NotMapped]
+		[OpenApiProperty(Description = "Get or sets the Coordination of the project")]
+		[JsonRequired]
+		public Coordinates Coordinates { get; set; }
 
 		[OpenApiProperty(Description = "The current amount collected from all the donations")]
 		[JsonRequired]
