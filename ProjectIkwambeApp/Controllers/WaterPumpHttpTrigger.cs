@@ -72,9 +72,11 @@ namespace ProjectIkwambe.Controllers
 
             WaterPumpProject waterpump = JsonConvert.DeserializeObject<WaterPumpProject>(requestBody);
 
+            await _waterpumpProjectService.AddWaterpumpProject(waterpump);
+
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
-            await response.WriteAsJsonAsync(_waterpumpProjectService.AddWaterpumpProject(waterpump));
+            await response.WriteAsJsonAsync(waterpump);
 
             return response;
         }
