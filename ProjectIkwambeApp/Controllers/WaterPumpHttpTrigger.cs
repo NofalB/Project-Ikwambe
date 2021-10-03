@@ -52,9 +52,7 @@ namespace ProjectIkwambe.Controllers
 
                 HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
-                WaterPumpProject waterpump = new WaterPumpProject();
-
-                await response.WriteAsJsonAsync(waterpump);
+                await response.WriteAsJsonAsync(_waterpumpProjectService.GetAllWaterPumpProjects());
 
                 return response;
             });
@@ -88,9 +86,11 @@ namespace ProjectIkwambe.Controllers
 
             WaterPumpProject waterpump = JsonConvert.DeserializeObject<WaterPumpProject>(requestBody);
 
+            await _waterpumpProjectService.AddWaterpumpProject(waterpump);
+
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
-            await response.WriteAsJsonAsync(_waterpumpProjectService.AddWaterpumpProject(waterpump));
+            await response.WriteAsJsonAsync(waterpump);
 
             return response;
         }
@@ -121,18 +121,18 @@ namespace ProjectIkwambe.Controllers
         [Function(nameof(WaterpumpHttpTrigger.DeleteWaterpump))]
         [OpenApiOperation(operationId: "deleteWaterpump", tags: new[] { "Waterpumps" }, Summary = "Delete waterpump", Description = "Delete an existing waterpump details from the database", Visibility = OpenApiVisibilityType.Important)]
         //[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(waterpumpProject), Required = true, Description = "waterpump object that will be deleted from the database")]
-        [OpenApiParameter(name: "waterPumpId", In = ParameterLocation.Path, Required = true, Type = typeof(long), Summary = "The id of the waterpump to be deleted", Description = "Delete the waterpump from the database using the id provided", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiParameter(name: "waterPumpId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "The id of the waterpump to be deleted", Description = "Delete the waterpump from the database using the id provided", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WaterPumpProject), Summary = "Delete the waterpump details", Description = "waterpump details is removed", Example = typeof(WaterPumpProject))]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid waterpump ID supplied", Description = "The waterpump ID does not exist or invalid ID ")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "waterpump not found", Description = "waterpump not found")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Validation exception", Description = "Validation exception")]
-        public async Task<HttpResponseData> DeleteWaterpump([HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "waterpumps")] HttpRequestData req, string waterPumpId, FunctionContext executionContext)
+        public Task<HttpResponseData> DeleteWaterpump([HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "waterpumps")] HttpRequestData req, string waterPumpId, FunctionContext executionContext)
         {
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
             _waterpumpProjectService.DeleteWaterPumpProject(waterPumpId);
 
-            return response;
+            return Task.FromResult(response);
         }
     }
 }

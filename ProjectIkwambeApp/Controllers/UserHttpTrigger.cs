@@ -53,10 +53,11 @@ namespace ProjectIkwambe.Controllers
 			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 			User user = JsonConvert.DeserializeObject<User>(requestBody);
 
+			await _userService.AddUser(user);
 			// Generate output
 			HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
-			await response.WriteAsJsonAsync(_userService.AddUser(user));
+			await response.WriteAsJsonAsync(user);
 
 			return response;
 		}

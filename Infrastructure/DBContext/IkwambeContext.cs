@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Device.Location;
 
 namespace Infrastructure.DBContext
 {
@@ -66,7 +67,26 @@ namespace Infrastructure.DBContext
                 .HasNoDiscriminator();
             //need partition key
             modelBuilder.Entity<WaterPumpProject>()
+                .HasKey(w => w.ProjectId);  // sets partion key
+
+            modelBuilder.Entity<WaterPumpProject>()
                 .UseETagConcurrency();
+
+            modelBuilder.Entity<WaterPumpProject>()
+                .HasOne(w => w.Coordination);
+
+            /*modelBuilder.Entity<GeoCoordinate>()
+                .HasNoKey();*/
+
+            modelBuilder.Ignore<GeoCoordinate>();
+
+            /*modelBuilder.Entity<WaterPumpProject>()
+                .HasOne(w => w.Coordination);
+
+            modelBuilder.Entity<GeoCoordinate>()
+                .HasNoKey();*/
+
+            //modelBuilder.Ignore<GeoCoordinate>();
 
         }
     }
