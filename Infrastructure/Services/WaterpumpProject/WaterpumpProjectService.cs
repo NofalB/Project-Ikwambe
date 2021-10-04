@@ -19,6 +19,13 @@ namespace Infrastructure.Services
 
         public async Task AddWaterpumpProject(WaterPumpProject waterPumpProject)
         {
+            //add geo coordinate here
+            Coordinates c = new Coordinates(
+                waterPumpProject.Coordinates.CoordinateId + 1,
+                waterPumpProject.Coordinates.LocationName,
+                waterPumpProject.Coordinates.Longitude,
+                waterPumpProject.Coordinates.Latitude
+                );
             await _waterPumpProjectRepository.AddAsync(waterPumpProject);
         }
 

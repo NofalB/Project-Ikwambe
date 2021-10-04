@@ -65,14 +65,47 @@ namespace Infrastructure.DBContext
 
             modelBuilder.Entity<WaterPumpProject>()
                 .HasNoDiscriminator();
+            
             //need partition key
             modelBuilder.Entity<WaterPumpProject>()
                 .HasKey(w => w.ProjectId); 
 
             modelBuilder.Entity<WaterPumpProject>()
                 .UseETagConcurrency();
+
+
+            modelBuilder.Entity<Coordinates>
+                (c =>
+                {
+                    c.HasKey(c => c.CoordinateId);
+                    c.ToContainer("Coordinates");
+                    c.Property(v => v.LocationName);
+                });
+                
+           /* modelBuilder.Entity<Coordinates>()
+                .HasKey(c => c.CoordinateId);*/
+
+            /*modelBuilder.Entity<Coordinates>()
+                .Navigation(c => c.LocationName)
+                .UsePropertyAccessMode(PropertyAccessMode.Property);*/
+
+            /*modelBuilder.Entity<Coordinates>()
+                .ToContainer(nameof(Coordinates));
+
+            modelBuilder.Entity<Coordinates>()
+                .HasNoDiscriminator();
+            //need partition key
+            modelBuilder.Entity<Coordinates>()
+                .HasKey(w => w.LocationName);
+
+            modelBuilder.Entity<Coordinates>()
+                .UseETagConcurrency();*/
+
+            //stuff
+            /*modelBuilder.Entity<Coordinates>()
+                .HasKey(c => c.CoordinateId);*/
             
-            modelBuilder.Ignore<Coordinates>();
+            //modelBuilder.Ignore<Coordinates>();
 
             /* modelBuilder.Entity<Coordinates>()
                  .HasKey(c => c.ProjectId);*/

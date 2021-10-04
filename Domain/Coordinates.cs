@@ -10,20 +10,23 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Domain
 {
-    [Keyless]
-    public class Coordinates : GeoCoordinate
+    public class Coordinates
     {
-        //public string CoordinateId { get; set; }
+        public string CoordinateId { get; set; }
+
         public string LocationName { get; set; }
 
+        public double Longitude { get; set; }
+
+        public double Latitude { get; set; }
         public Coordinates()
         {
 
         }
 
-        public Coordinates(/*string coordinationId,*/ string locationName, double longitude, double latitude)
+        public Coordinates(string coordinateId, string locationName, double longitude, double latitude)
         {
-			//CoordinateId = coordinationId;
+			CoordinateId = coordinateId;
 			LocationName = locationName;
             Longitude = longitude;
             Latitude = latitude;
@@ -37,7 +40,7 @@ namespace Domain
 		{
 			Examples.Add(OpenApiExampleResolver.Resolve("coordinates", new Coordinates()
 			{
-				//CoordinateId = "1",
+				CoordinateId = "1",
                 LocationName = "Ikwambe",
                 Longitude = -8.000,
                 Latitude = 36.833330
@@ -52,8 +55,8 @@ namespace Domain
         public override IOpenApiExample<List<Coordinates>> Build(NamingStrategy NamingStrategy = null)
         {
             Examples.Add(OpenApiExampleResolver.Resolve("coordinates", new List<Coordinates> {
-                    new Coordinates(/*"1",*/ "Ikwambe", -8.000, 36.833330),
-                    new Coordinates(/*"2",*/ "Haarlem", -1.000, 69.833330)
+                    new Coordinates("1", "Ikwambe", -8.000, 36.833330),
+                    new Coordinates("2", "Haarlem", -1.000, 69.833330)
 
             }));
             return this;
