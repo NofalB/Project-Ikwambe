@@ -5,6 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Repositories\WaterpumpProjectRepo\**" />
+    <EmbeddedResource Remove="Repositories\WaterpumpProjectRepo\**" />
+    <None Remove="Repositories\WaterpumpProjectRepo\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos" Version="5.0.10" />
