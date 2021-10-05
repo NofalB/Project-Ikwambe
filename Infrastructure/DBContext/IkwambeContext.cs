@@ -13,9 +13,9 @@ namespace Infrastructure.DBContext
         public DbSet<Donation> Donations { get; set; }
         public DbSet<User> Users { get; set; }
 
-        public DbSet<Story> Stories { get; set; }
+        //public DbSet<Story> Stories { get; set; }
         
-        public DbSet<WaterPumpProject> WaterpumpProject { get; set; }
+        //public DbSet<WaterPumpProject> WaterpumpProject { get; set; }
 
         public IkwambeContext(DbContextOptions options) : base(options)
         {
@@ -49,7 +49,7 @@ namespace Infrastructure.DBContext
                 .UseETagConcurrency();
 
             // story
-            modelBuilder.Entity<Story>()
+            /*modelBuilder.Entity<Story>()
                .ToContainer(nameof(Story));
 
             modelBuilder.Entity<Story>()
@@ -66,7 +66,7 @@ namespace Infrastructure.DBContext
                 .HasNoDiscriminator();
             //need partition key
             modelBuilder.Entity<WaterPumpProject>()
-                .UseETagConcurrency();
+                .UseETagConcurrency();*/
 
         }
     }

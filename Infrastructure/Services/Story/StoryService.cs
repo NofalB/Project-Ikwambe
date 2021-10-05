@@ -35,7 +35,8 @@ namespace Infrastructure.Services
 
         public Story GetStoryById(string storyId)
         {
-            return _storyRepository.GetById(storyId);
+            //return _storyRepository.GetById(storyId);
+            return null;
         }
 
         public Story UpdateStory(Story story)

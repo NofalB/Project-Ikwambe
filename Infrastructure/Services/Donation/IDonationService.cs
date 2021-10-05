@@ -6,9 +6,9 @@ namespace Infrastructure.Services
 {
     public interface IDonationService
     {
-        IEnumerable<Donation> GetAllDonations();
+        Task<List<Donation>> GetAllDonationsAsync();
 
-        Donation GetDonationById(string donationId);
+        Task<Donation> GetDonationByIdAsync(string donationId);
 
         Task AddDonation(Donation donation);
 

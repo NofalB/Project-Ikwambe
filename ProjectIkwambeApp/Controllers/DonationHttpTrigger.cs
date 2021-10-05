@@ -42,7 +42,9 @@ namespace ProjectIkwambe.Controllers
 			{
 				HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
-				await response.WriteAsJsonAsync(_donationService.GetAllDonations());
+				var donations = await _donationService.GetAllDonationsAsync();
+
+				await response.WriteAsJsonAsync(donations);
 
 				return response;
 			}

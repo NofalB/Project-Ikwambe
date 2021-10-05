@@ -30,7 +30,8 @@ namespace Infrastructure.Services
 
         public WaterPumpProject GetWaterPumpProjectById(string projectId)
         {
-            return _waterPumpProjectRepository.GetById(projectId);
+            //return _waterPumpProjectRepository.GetById(projectId);
+            return null;
         }
 
         public IEnumerable<WaterPumpProject> GetAllWaterPumpProjects()

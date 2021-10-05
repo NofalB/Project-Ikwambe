@@ -24,7 +24,8 @@ namespace Infrastructure.Services
 
         public User GetUserById(string userId)
         {
-            return _userRepository.GetById(userId);
+            //return _userRepository.GetById(userId);
+            return null;
         }
 
         public async Task AddUser(User user)
