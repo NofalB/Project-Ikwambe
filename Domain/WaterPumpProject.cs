@@ -18,7 +18,10 @@ namespace Domain
 		[JsonRequired]
 		public int FlowRate { get; set; }
 
-        public WaterPumpProject()
+		public string PartitionKey { get; set; }
+
+
+		public WaterPumpProject()
         {
 
         }

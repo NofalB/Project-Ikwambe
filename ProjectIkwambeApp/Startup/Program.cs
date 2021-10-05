@@ -49,7 +49,7 @@ namespace ProjectIkwambe.Startup {
             Services.AddScoped<IDonationService, DonationService>();
             Services.AddScoped<IUserService, UserService>();
             Services.AddScoped<IStoryService, StoryService>();
-            /*Services.AddScoped<IWaterpumpProjectService, WaterpumpProjectService>();*/
+            Services.AddScoped<IWaterpumpProjectService, WaterpumpProjectService>();
         }
 	}
 }

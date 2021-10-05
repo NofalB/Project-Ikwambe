@@ -1,5 +1,6 @@
 ﻿using Domain;
 using Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,46 +11,37 @@ namespace Infrastructure.Services
 {
     public class WaterpumpProjectService : IWaterpumpProjectService
     {
-        private readonly CosmosRepository<WaterPumpProject> _waterPumpProjectRepository;
+        private readonly ICosmosRepository<WaterPumpProject> _waterPumpProjectRepository;
 
-        public WaterpumpProjectService(CosmosRepository<WaterPumpProject> waterpumpProjectRepository)
+        public WaterpumpProjectService(ICosmosRepository<WaterPumpProject> waterpumpProjectRepository)
         {
             _waterPumpProjectRepository = waterpumpProjectRepository;
         }
 
-        public async Task AddWaterpumpProject(WaterPumpProject waterPumpProject)
+        public async Task<IEnumerable<WaterPumpProject>> GetAllWaterPumpProjects()
         {
-            //add geo coordinate here
-            Coordinates c = new Coordinates(
-                waterPumpProject.Coordinates.CoordinateId + 1,
-                waterPumpProject.Coordinates.LocationName,
-                waterPumpProject.Coordinates.Longitude,
-                waterPumpProject.Coordinates.Latitude
-                );
-            await _waterPumpProjectRepository.AddAsync(waterPumpProject);
+            return await _waterPumpProjectRepository.GetAll().ToListAsync();
         }
 
-        public void DeleteWaterPumpProject(string projectId)
+        public async Task<WaterPumpProject> GetWaterPumpProjectById(string projectId)
         {
-            WaterPumpProject waterPumpProject = GetWaterPumpProjectById(projectId);
-            _waterPumpProjectRepository.Delete(waterPumpProject);
+            return await _waterPumpProjectRepository.GetAll().FirstOrDefaultAsync(w => w.ProjectId == projectId);
         }
 
-        public WaterPumpProject GetWaterPumpProjectById(string projectId)
+        public async Task<WaterPumpProject> AddWaterpumpProject(WaterPumpProject waterPumpProject)
         {
-            //return _waterPumpProjectRepository.GetById(projectId);
-            return null;
+            return await _waterPumpProjectRepository.AddAsync(waterPumpProject);
         }
 
-        public IEnumerable<WaterPumpProject> GetAllWaterPumpProjects()
+        public async Task<WaterPumpProject> UpdateWaterPumpProject(WaterPumpProject waterPumProject)
         {
-            return _waterPumpProjectRepository.GetAll().ToList();
+            return await _waterPumpProjectRepository.Update(waterPumProject);
         }
 
-        public WaterPumpProject UpdateWaterPumpProject(WaterPumpProject waterPumProject)
+        public async Task DeleteWaterPumpProject(string projectId)
         {
-            // return _waterPumpProjectRepository.Update(waterPumProject);
-            return null;
+            WaterPumpProject waterPumpProject = await GetWaterPumpProjectById(projectId);
+            await _waterPumpProjectRepository.Delete(waterPumpProject);
         }
     }
 }
