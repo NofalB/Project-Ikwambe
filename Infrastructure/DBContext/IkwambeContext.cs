@@ -13,7 +13,7 @@ namespace Infrastructure.DBContext
         public DbSet<Donation> Donations { get; set; }
         public DbSet<User> Users { get; set; }
 
-        //public DbSet<Story> Stories { get; set; }
+        public DbSet<Story> Stories { get; set; }
         
         //public DbSet<WaterPumpProject> WaterpumpProject { get; set; }
 
@@ -52,16 +52,20 @@ namespace Infrastructure.DBContext
                 .UseETagConcurrency();
 
             // story
-            /*modelBuilder.Entity<Story>()
+            modelBuilder.Entity<Story>()
                .ToContainer(nameof(Story));
 
             modelBuilder.Entity<Story>()
                 .HasNoDiscriminator();
+
+            modelBuilder.Entity<Story>()
+                .HasPartitionKey(s => s.PartitionKey);  // sets partion key
+
             //need partition key
             modelBuilder.Entity<Story>()
                 .UseETagConcurrency();
 
-            //waterpump
+            /*//waterpump
             modelBuilder.Entity<WaterPumpProject>()
                .ToContainer(nameof(WaterPumpProject));
 

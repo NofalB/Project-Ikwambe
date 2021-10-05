@@ -61,9 +61,9 @@ namespace ProjectIkwambe.Controllers
 			Donation donation = JsonConvert.DeserializeObject<Donation>(requestBody);
 
 			// Generate output
-			HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
+			HttpResponseData response = req.CreateResponse(HttpStatusCode.Created);
 
-			await response.WriteAsJsonAsync(_donationService.AddDonation(donation));
+			await response.WriteAsJsonAsync(await _donationService.AddDonation(donation));
 
 			return response;
 		}

@@ -64,33 +64,16 @@ namespace ProjectIkwambe.Controllers
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Invalid input", Description = "Invalid input")]
 		public async Task<HttpResponseData> AddUser([HttpTrigger(AuthorizationLevel.Function, "POST", Route = "users")] HttpRequestData req, FunctionContext executionContext)
 		{
-            try
-            {
-				// Parse input
-				string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-				User user = JsonConvert.DeserializeObject<User>(requestBody);
+			// Parse input
+			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+			User user = JsonConvert.DeserializeObject<User>(requestBody);
 
-				// Generate output
-				HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
+			// Generate output
+			HttpResponseData response = req.CreateResponse(HttpStatusCode.Created);
 
-				await response.WriteAsJsonAsync(await _userService.AddUser(user));
+			await response.WriteAsJsonAsync(await _userService.AddUser(user));
 
-				return response;
-			}
-            catch (Exception ex)
-            {
-				Logger.LogError($"User was not saved to the database. {ex.Message}");
-				
-				HttpResponseData response = req.CreateResponse(HttpStatusCode.BadRequest);
-				var errorResponse = new {
-					Status = HttpStatusCode.BadRequest,
-					Message = $"User was not saved to the database. {ex.Message}",
-					Data = ""
-				};
-				await response.WriteAsJsonAsync(errorResponse);
-
-				return response;
-            }
+			return response;
 		}
 
 		[Function(nameof(UserHttpTrigger.UpdateUser))]

@@ -10,7 +10,7 @@ namespace Infrastructure.Services
 
         Task<Donation> GetDonationByIdAsync(string donationId);
 
-        Task AddDonation(Donation donation);
+        Task<Donation> AddDonation(Donation donation);
 
     }
 }

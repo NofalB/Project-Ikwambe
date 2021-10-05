@@ -28,9 +28,9 @@ namespace Infrastructure.Services
             return await _donationRepository.GetAll().FirstOrDefaultAsync(d => d.DonationId == donationId);
         }
 
-        public async Task AddDonation(Donation donation)
+        public async Task<Donation> AddDonation(Donation donation)
         {
-            await _donationRepository.AddAsync(donation);
+            return await _donationRepository.AddAsync(donation);
         }
     }
 }

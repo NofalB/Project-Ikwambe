@@ -38,6 +38,7 @@ namespace Domain
         [JsonRequired]
         public string Author { get; set; }
 
+        public string PartitionKey { get; set; }
     }
 
     public class DummyPetExample : OpenApiExample<Story>

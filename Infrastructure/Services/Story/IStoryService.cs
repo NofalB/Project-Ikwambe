@@ -9,14 +9,14 @@ namespace Infrastructure.Services
 {
     public interface IStoryService
     {
-        IEnumerable<Story> GetAllStories();
+        Task<IEnumerable<Story>> GetAllStories();
 
-        Story GetStoryById(string storyId);
+        Task<Story> GetStoryById(string storyId);
 
-        Task AddStory(Story story);
+        Task<Story> AddStory(Story story);
 
-        Story UpdateStory(Story story);
+        Task<Story> UpdateStory(Story story);
 
-        void DeleteStory(string storyId);
+        Task DeleteStory(string storyId);
     }
 }
