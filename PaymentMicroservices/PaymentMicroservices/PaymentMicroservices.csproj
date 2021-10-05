@@ -8,7 +8,11 @@
     <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http" Version="3.0.12" />
     <PackageReference Include="Microsoft.Azure.Functions.Worker.Sdk" Version="1.0.3" OutputItemType="Analyzer" />
     <PackageReference Include="Microsoft.Azure.Functions.Worker" Version="1.1.0" />
-    <PackageReference Include="PayPalCheckoutSdk" Version="1.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="PayPalCheckoutSdk.DotNet5" Version="1.0.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="netstandard" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">
