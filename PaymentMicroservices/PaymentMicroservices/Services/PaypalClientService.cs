@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using PayPalCheckoutSdk.Core;
 using System;
 using System.Collections.Generic;
@@ -13,8 +14,12 @@ namespace PaymentMicroservices.Services
 {
     public class PaypalClientService
     {
-        static String clientId = "AVqSBkkqxw0jOZsOL1meIPnI25Ozcj12Ec8xgZqTrf6R80GftrWaxPDFvC0j4YO2K_Kyze2yNTgwhPRi";
-        static String secret = "EBBGNsdoiHdTKNZk1ax86VSNmzxIYG3A1rO2m0C3A2Hoa24Z5hvrQsm2oZmnF0KF2dL3iOkQNtf7tob5";
+        static readonly IConfigurationRoot config = new ConfigurationBuilder()
+            .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
+            .AddEnvironmentVariables()
+            .Build();
+        static readonly String clientId = config["Values:CLIENT_ID"];
+        static readonly String secret = config["Values:SECRET"];
 
         public static PayPalHttpClient Client()
         {

@@ -7,7 +7,6 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using PaymentMicroservices.DTO;
 using PaymentMicroservices.Services;
 using PayPalCheckoutSdk.Orders;
 
