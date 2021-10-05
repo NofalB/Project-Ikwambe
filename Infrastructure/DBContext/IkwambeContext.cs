@@ -12,11 +12,14 @@ namespace Infrastructure.DBContext
     public class IkwambeContext : DbContext // DB Context represents the database
     {
         public DbSet<Donation> Donations { get; set; }
+
         public DbSet<User> Users { get; set; }
 
         public DbSet<Story> Stories { get; set; }
         
         public DbSet<WaterPumpProject> WaterpumpProject { get; set; }
+
+        public DbSet<Coordinates> Coordinates { get; set; }
 
         public IkwambeContext(DbContextOptions options) : base(options)
         {
@@ -73,83 +76,46 @@ namespace Infrastructure.DBContext
             modelBuilder.Entity<WaterPumpProject>()
                 .UseETagConcurrency();
 
+            /*modelBuilder.Entity<WaterPumpProject>()
+                .HasData(Coordinates);*/
 
+
+            //coordinates
             modelBuilder.Entity<Coordinates>
                 (c =>
                 {
-                    c.HasKey(c => c.CoordinateId);
+                    //c.HasKey(c => c.CoordinateId);
                     c.ToContainer("Coordinates");
-                    c.Property(v => v.LocationName);
+                    //c.Property(v => v.LocationName);
                 });
-                
-           /* modelBuilder.Entity<Coordinates>()
-                .HasKey(c => c.CoordinateId);*/
-
-            /*modelBuilder.Entity<Coordinates>()
-                .Navigation(c => c.LocationName)
-                .UsePropertyAccessMode(PropertyAccessMode.Property);*/
-
-            /*modelBuilder.Entity<Coordinates>()
-                .ToContainer(nameof(Coordinates));
-
-            modelBuilder.Entity<Coordinates>()
-                .HasNoDiscriminator();
-            //need partition key
-            modelBuilder.Entity<Coordinates>()
-                .HasKey(w => w.LocationName);
-
-            modelBuilder.Entity<Coordinates>()
-                .UseETagConcurrency();*/
-
-            //stuff
-            /*modelBuilder.Entity<Coordinates>()
-                .HasKey(c => c.CoordinateId);*/
-            
-            //modelBuilder.Ignore<Coordinates>();
-
-            /* modelBuilder.Entity<Coordinates>()
-                 .HasKey(c => c.ProjectId);*/
 
             /*modelBuilder.Entity<WaterPumpProject>()
-                .Property(s => s.Coordinates).IsRequired();*/
-
-
-
-            /*modelBuilder.Entity<Coordinates>(
-                c =>
-                {
-                    c.HasNoKey();
-                    c.ToContainer("WaterPumpProject");
-                    c.Property(a => a.LocationName);
-                });*/
-
-           /* modelBuilder.Entity<WaterPumpProject>()
-                .HasKey(w => w.Coordinates);*/
-            /* modelBuilder.Entity<WaterPumpProject>()
-                 .HasOne(w => w.Coordination);*/
-
-            /*modelBuilder.Entity<GeoCoordinate>(entity =>
-                entity
-                    .HasNoKey()
-                    .ToContainer("WaterPumpProject")
-                    .
-                );*/
-
-            /* modelBuilder.Entity<GeoCoordinate>()
-                 .HasKey(gc => gc.Longitude);*/
-
-            /*modelBuilder.Entity<GeoCoordinate>()
-                .HasNoKey();*/
-
-            //modelBuilder.Ignore<GeoCoordinate>();
+                .HasOne(c => c.Coordinates)
+                .WithOne();*/
 
             /*modelBuilder.Entity<WaterPumpProject>()
-                .HasOne(w => w.Coordination);
+                .HasOne(w => w.Coordinates)
+                .WithOne()
+                .IsRequired();*/
 
-            modelBuilder.Entity<GeoCoordinate>()
-                .HasNoKey();*/
+            /*modelBuilder.Entity<WaterPumpProject>()
+                .HasOne(w => w.Coordinates)
+                .WithOne(i => i.ProjectId)
+                .HasForeignKey<Coordinates>(c => c.CoordinateId);*/
+            //.WithOne(p => p.LocationName);
 
-            //modelBuilder.Ignore<GeoCoordinate>();
+
+
+            /*modelBuilder.Entity<WaterPumpProject>()
+                .HasOne(s => s.Coordinates)
+                .WithOne()
+                //.IsRequired()
+                .HasForeignKey(c => c.Coor)*/
+
+
+            //1 to 1 coordinates and waterpump
+            //modelBuilder.Entity<WaterPumpProject>()
+
 
         }
     }

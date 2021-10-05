@@ -7,18 +7,28 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.Device.Location;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain
 {
     public class Coordinates
     {
+        //need open api parameters.
+        [Key]
         public string CoordinateId { get; set; }
 
+        [OpenApiProperty(Description = "get or set the location of the project")]
         public string LocationName { get; set; }
 
+        [OpenApiProperty(Description = "get or set the longitude of the location")]
         public double Longitude { get; set; }
 
+        [OpenApiProperty(Description = "get or set the latitude of the location")]
         public double Latitude { get; set; }
+
+        //public virtual Project Project { get; set; }
+
         public Coordinates()
         {
 
@@ -57,7 +67,6 @@ namespace Domain
             Examples.Add(OpenApiExampleResolver.Resolve("coordinates", new List<Coordinates> {
                     new Coordinates("1", "Ikwambe", -8.000, 36.833330),
                     new Coordinates("2", "Haarlem", -1.000, 69.833330)
-
             }));
             return this;
         }

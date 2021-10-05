@@ -19,15 +19,6 @@ namespace Domain
 		[JsonRequired]
 		public string NameOfProject { get; set; }
 
-		/*[OpenApiProperty(Description = "Get or sets the location of the water pump")]
-		[JsonRequired]
-		public string Location { get; set; } 
-
-		[OpenApiProperty(Description = "Get or sets the Coordination of the water pump")]
-		[JsonRequired]
-		public GeoCoordinate Coordination { get; set; }*/
-
-		//[NotMapped]
 		[OpenApiProperty(Description = "Get or sets the Coordination of the project")]
 		[JsonRequired]
 		public Coordinates Coordinates { get; set; }
@@ -47,6 +38,5 @@ namespace Domain
 		[OpenApiProperty(Description = "Get or sets the date when the project will end.")]
 		[JsonRequired]
 		public DateTime? EndDate { get; set; }
-
 	}
 }
