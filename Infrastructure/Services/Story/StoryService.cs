@@ -41,7 +41,8 @@ namespace Infrastructure.Services
 
         public Story UpdateStory(Story story)
         {
-            return _storyRepository.Update(story);
+            //return _storyRepository.Update(story);
+            return null;
         }
     }
 }

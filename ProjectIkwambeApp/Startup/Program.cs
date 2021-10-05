@@ -39,9 +39,9 @@ namespace ProjectIkwambe.Startup {
 
 
             // Services
-            Services.AddScoped<IDonationService, DonationService>();/*
+            Services.AddScoped<IDonationService, DonationService>();
             Services.AddScoped<IUserService, UserService>();
-            Services.AddScoped<IStoryService, StoryService>();
+            /*Services.AddScoped<IStoryService, StoryService>();
             Services.AddScoped<IWaterpumpProjectService, WaterpumpProjectService>();*/
         }
 	}

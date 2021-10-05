@@ -18,7 +18,7 @@ namespace Infrastructure.Services
             _donationRepository = donationRepository;
         }
 
-        public async Task<List<Donation>> GetAllDonationsAsync()
+        public async Task<IEnumerable<Donation>> GetAllDonationsAsync()
         {
             return await _donationRepository.GetAll().ToListAsync();
         }

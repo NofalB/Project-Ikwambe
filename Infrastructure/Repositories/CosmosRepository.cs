@@ -30,7 +30,7 @@ namespace Infrastructure.Repositories
             }
         }
 
-        public async Task AddAsync(TEntity entity)
+        public async Task<TEntity> AddAsync(TEntity entity)
         {
             try
             {
@@ -41,6 +41,8 @@ namespace Infrastructure.Repositories
 
                 await _ikambeContext.AddAsync(entity);
                 await _ikambeContext.SaveChangesAsync();
+
+                return entity;
             }
             catch (Exception ex)
             {
@@ -48,7 +50,7 @@ namespace Infrastructure.Repositories
             }
         }
 
-        public TEntity Update(TEntity entity)
+        public async Task<TEntity> Update(TEntity entity)
         {
             try
             {
@@ -58,7 +60,7 @@ namespace Infrastructure.Repositories
                 }
 
                 _ikambeContext.Update(entity);
-                _ikambeContext.SaveChanges();
+                await _ikambeContext.SaveChangesAsync();
 
                 return entity;
             }
@@ -68,7 +70,7 @@ namespace Infrastructure.Repositories
             }
         }
 
-        public void Delete(TEntity entity)
+        public async Task Delete(TEntity entity)
         {
             try
             {
@@ -78,7 +80,7 @@ namespace Infrastructure.Repositories
                 }
 
                 _ikambeContext.Remove(entity);
-                _ikambeContext.SaveChanges();
+                await _ikambeContext.SaveChangesAsync();
             }
             catch (Exception ex)
             {

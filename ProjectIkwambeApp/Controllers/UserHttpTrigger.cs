@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -27,7 +28,6 @@ namespace ProjectIkwambe.Controllers
 
 		[Function(nameof(UserHttpTrigger.GetUsers))]
 		[OpenApiOperation(operationId: "getUsers", tags: new[] { "Users" }, Summary = "Get all users", Description = "Returns a list of users.", Visibility = OpenApiVisibilityType.Important)]
-		//[OpenApiSecurity("petstore_auth", SecuritySchemeType.Http, In = OpenApiSecurityLocationType.Header, Scheme = OpenApiSecuritySchemeType.Bearer, BearerFormat = "JWT")]
 		[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(User), Summary = "successful operation", Description = "successful operation", Example = typeof(DummyUserExamples))]
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Check connection", Description = "Check connection")]
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "User not found", Description = "User not found")]
@@ -36,35 +36,14 @@ namespace ProjectIkwambe.Controllers
 			// Generate output
 			HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
-			await response.WriteAsJsonAsync(_userService.GetAllUsers());
-
-			return response;
-		}
-
-		[Function(nameof(UserHttpTrigger.AddUser))]
-		[OpenApiOperation(operationId: "addUser", tags: new[] { "Users" }, Summary = "Add a new user to the system", Description = "This adds a new user to the system.", Visibility = OpenApiVisibilityType.Important)]
-		//[OpenApiSecurity("petstore_auth", SecuritySchemeType.Http, In = OpenApiSecurityLocationType.Header, Scheme = OpenApiSecuritySchemeType.Bearer, BearerFormat = "JWT")]
-		[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(User), Required = true, Description = "User object that needs to be added to the system")]
-		[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(User), Summary = "New user details added", Description = "New user details added", Example = typeof(UserHttpTrigger))]
-		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Invalid input", Description = "Invalid input")]
-		public async Task<HttpResponseData> AddUser([HttpTrigger(AuthorizationLevel.Function, "POST", Route = "users")] HttpRequestData req, FunctionContext executionContext)
-		{
-			// Parse input
-			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-			User user = JsonConvert.DeserializeObject<User>(requestBody);
-
-			// Generate output
-			HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
-
-			await response.WriteAsJsonAsync(_userService.AddUser(user));
+			await response.WriteAsJsonAsync(await _userService.GetAllUsers());
 
 			return response;
 		}
 
 		[Function(nameof(UserHttpTrigger.GetUserById))]
 		[OpenApiOperation(operationId: "getUserById", tags: new[] { "Users" }, Summary = "Find user by ID", Description = "Returns a single user.", Visibility = OpenApiVisibilityType.Important)]
-		//[OpenApiSecurity("petstore_auth", SecuritySchemeType.Http, In = OpenApiSecurityLocationType.Header, Scheme = OpenApiSecuritySchemeType.Bearer, BearerFormat = "JWT")]
-		[OpenApiParameter(name: "userId", In = ParameterLocation.Path, Required = true, Type = typeof(long), Summary = "ID of user to return", Description = "ID of user to return", Visibility = OpenApiVisibilityType.Important)]
+		[OpenApiParameter(name: "userId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "ID of user to return", Description = "ID of user to return", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(User), Summary = "successful operation", Description = "successful operation", Example = typeof(DummyUserExamples))]
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid user ID supplied", Description = "Invalid ID supplied")]
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "User not found", Description = "User not found")]
@@ -73,25 +52,45 @@ namespace ProjectIkwambe.Controllers
 			// Generate output
 			HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
-			await response.WriteAsJsonAsync(_userService.GetUserById(userId));
+			await response.WriteAsJsonAsync(await _userService.GetUserById(userId));
 
 			return response;
 		}
 
-		
-		[Function(nameof(UserHttpTrigger.DeleteUser))]
-		[OpenApiOperation(operationId: "deleteUser", tags: new[] { "Users" }, Summary = "Delete user by ID", Description = "Delete an existing user by ID", Visibility = OpenApiVisibilityType.Important)]
-		[OpenApiParameter(name: "userId", In = ParameterLocation.Path, Required = true, Type = typeof(long), Summary = "ID of user to return", Description = "ID of user to return", Visibility = OpenApiVisibilityType.Important)]
-		[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(User), Summary = "successfull operation", Description = "the user has been deleted successfully", Example = typeof(User))]
-		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid user ID supplied", Description = "The user ID is invalid ")]
-		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "user not found", Description = "user not found by the inserted ID,please check again")]
-		public Task<HttpResponseData> DeleteUser([HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "users/{userId}")] HttpRequestData req, string userId, FunctionContext executionContext)
+		[Function(nameof(UserHttpTrigger.AddUser))]
+		[OpenApiOperation(operationId: "addUser", tags: new[] { "Users" }, Summary = "Add a new user to the system", Description = "This adds a new user to the system.", Visibility = OpenApiVisibilityType.Important)]
+		[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(User), Required = true, Description = "User object that needs to be added to the system")]
+		[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(User), Summary = "New user details added", Description = "New user details added", Example = typeof(UserHttpTrigger))]
+		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Invalid input", Description = "Invalid input")]
+		public async Task<HttpResponseData> AddUser([HttpTrigger(AuthorizationLevel.Function, "POST", Route = "users")] HttpRequestData req, FunctionContext executionContext)
 		{
-			HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
-			
-			_userService.DeleteUser(userId);
+            try
+            {
+				// Parse input
+				string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+				User user = JsonConvert.DeserializeObject<User>(requestBody);
 
-			return Task.FromResult(response);
+				// Generate output
+				HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
+
+				await response.WriteAsJsonAsync(await _userService.AddUser(user));
+
+				return response;
+			}
+            catch (Exception ex)
+            {
+				Logger.LogError($"User was not saved to the database. {ex.Message}");
+				
+				HttpResponseData response = req.CreateResponse(HttpStatusCode.BadRequest);
+				var errorResponse = new {
+					Status = HttpStatusCode.BadRequest,
+					Message = $"User was not saved to the database. {ex.Message}",
+					Data = ""
+				};
+				await response.WriteAsJsonAsync(errorResponse);
+
+				return response;
+            }
 		}
 
 		[Function(nameof(UserHttpTrigger.UpdateUser))]
@@ -108,7 +107,23 @@ namespace ProjectIkwambe.Controllers
 			// Generate output
 			HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
-			await response.WriteAsJsonAsync(_userService.UpdateUser(user));
+			await response.WriteAsJsonAsync(await _userService.UpdateUser(user));
+
+			return response;
+		}
+
+		
+		[Function(nameof(UserHttpTrigger.DeleteUser))]
+		[OpenApiOperation(operationId: "deleteUser", tags: new[] { "Users" }, Summary = "Delete user by ID", Description = "Delete an existing user by ID", Visibility = OpenApiVisibilityType.Important)]
+		[OpenApiParameter(name: "userId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "ID of user to return", Description = "ID of user to return", Visibility = OpenApiVisibilityType.Important)]
+		[OpenApiResponseWithBody(statusCode: HttpStatusCode.Accepted, contentType: "application/json", bodyType: typeof(User), Summary = "successfull operation", Description = "the user has been deleted successfully", Example = typeof(User))]
+		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid user ID supplied", Description = "The user ID is invalid ")]
+		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "user not found", Description = "user not found by the inserted ID,please check again")]
+		public async Task<HttpResponseData> DeleteUser([HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "users/{userId}")] HttpRequestData req, string userId, FunctionContext executionContext)
+		{
+			HttpResponseData response = req.CreateResponse(HttpStatusCode.Accepted);
+			
+			await _userService.DeleteUserAsync(userId);
 
 			return response;
 		}

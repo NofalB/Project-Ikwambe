@@ -46,6 +46,9 @@ namespace Infrastructure.DBContext
                 .HasNoDiscriminator(); // HasNoDiscriminator() removes the discriminator since no other entity type will be stored in this container
 
             modelBuilder.Entity<User>()
+                .HasPartitionKey(u => u.PartitionKey);  // sets partion key
+
+            modelBuilder.Entity<User>()
                 .UseETagConcurrency();
 
             // story

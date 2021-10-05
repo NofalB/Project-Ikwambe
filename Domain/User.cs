@@ -38,9 +38,9 @@ namespace Domain
 
 		public string PartitionKey { get; set; }
 
-		public User(string UserId, string firstName, string lastName, string email, string password,bool subscription)
+		public User(string userId, string firstName, string lastName, string email, string password,bool subscription)
 		{
-			UserId = UserId;
+			UserId = userId;
 			FirstName = firstName;
 			LastName = lastName;
 			Email = email;

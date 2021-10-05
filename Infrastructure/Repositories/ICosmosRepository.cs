@@ -10,11 +10,11 @@ namespace Infrastructure.Repositories
     {
         IQueryable<TEntity> GetAll();
 
-        Task AddAsync(TEntity entity);
+        Task<TEntity> AddAsync(TEntity entity);
 
-        TEntity Update(TEntity entity);
+        Task<TEntity> Update(TEntity entity);
 
-        void Delete(TEntity entity);
+        Task Delete(TEntity entity);
 
     }
 }
