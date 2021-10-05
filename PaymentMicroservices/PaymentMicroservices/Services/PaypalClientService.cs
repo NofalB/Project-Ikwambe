@@ -13,8 +13,6 @@ namespace PaymentMicroservices.Services
 {
     public class PaypalClientService
     {
-        private PropertyInfo[] _PropertyInfos = null;
-
         static String clientId = "AVqSBkkqxw0jOZsOL1meIPnI25Ozcj12Ec8xgZqTrf6R80GftrWaxPDFvC0j4YO2K_Kyze2yNTgwhPRi";
         static String secret = "EBBGNsdoiHdTKNZk1ax86VSNmzxIYG3A1rO2m0C3A2Hoa24Z5hvrQsm2oZmnF0KF2dL3iOkQNtf7tob5";
 
