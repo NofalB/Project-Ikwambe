@@ -13,7 +13,7 @@ using PayPalCheckoutSdk.Orders;
 
 namespace PaymentMicroservices
 {
-    public static class Function1
+    public static class PaypalOrderAPI
     {
         [Function("CreateOrder")]
         public static async Task<HttpResponseData> RunAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData req,
