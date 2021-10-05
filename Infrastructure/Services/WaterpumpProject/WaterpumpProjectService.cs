@@ -37,7 +37,8 @@ namespace Infrastructure.Services
 
         public WaterPumpProject GetWaterPumpProjectById(string projectId)
         {
-            return _waterPumpProjectRepository.GetById(projectId);
+            //return _waterPumpProjectRepository.GetById(projectId);
+            return null;
         }
 
         public IEnumerable<WaterPumpProject> GetAllWaterPumpProjects()
@@ -47,7 +48,8 @@ namespace Infrastructure.Services
 
         public WaterPumpProject UpdateWaterPumpProject(WaterPumpProject waterPumProject)
         {
-            return _waterPumpProjectRepository.Update(waterPumProject);
+            // return _waterPumpProjectRepository.Update(waterPumProject);
+            return null;
         }
     }
 }

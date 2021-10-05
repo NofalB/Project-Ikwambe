@@ -1,5 +1,6 @@
 ﻿using Domain;
 using Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,37 +11,37 @@ namespace Infrastructure.Services
 {
     public class UserService : IUserService
     {
-        private readonly CosmosRepository<User> _userRepository;
+        private readonly ICosmosRepository<User> _userRepository;
 
-        public UserService(CosmosRepository<User> userRepository)
+        public UserService(ICosmosRepository<User> userRepository)
         {
             _userRepository = userRepository;
         }
 
-        public IEnumerable<User> GetAllUsers()
+        public async Task<IEnumerable<User>> GetAllUsers()
         {
-            return _userRepository.GetAll().ToList();
+            return await _userRepository.GetAll().ToListAsync();
         }
 
-        public User GetUserById(string userId)
+        public async Task<User> GetUserById(string userId)
         {
-            return _userRepository.GetById(userId);
+            return await _userRepository.GetAll().FirstOrDefaultAsync(u => u.UserId == userId);
         }
 
-        public async Task AddUser(User user)
+        public async Task<User> AddUser(User user)
         {
-            await _userRepository.AddAsync(user);
+           return await _userRepository.AddAsync(user);
         }
 
-        public User UpdateUser(User user)
+        public async Task<User> UpdateUser(User user)
         {
-            return _userRepository.Update(user);
+            return await _userRepository.Update(user);
         }
 
-        public void DeleteUser(string userId)
+        public async Task DeleteUserAsync(string userId)
         {
-            User user = GetUserById(userId);
-            _userRepository.Delete(user);
+            User user = await GetUserById(userId);
+            await _userRepository.Delete(user);
         }
     }
 }

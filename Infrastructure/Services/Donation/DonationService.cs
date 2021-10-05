@@ -1,5 +1,6 @@
 ﻿using Domain;
 using Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,26 +11,26 @@ namespace Infrastructure.Services
 {
     public class DonationService : IDonationService
     {
-        private readonly CosmosRepository<Donation> _donationRepository;
+        private readonly ICosmosRepository<Donation> _donationRepository;
 
-        public DonationService(CosmosRepository<Donation> donationRepository)
+        public DonationService(ICosmosRepository<Donation> donationRepository)
         {
             _donationRepository = donationRepository;
         }
 
-        public IEnumerable<Donation> GetAllDonations()
+        public async Task<IEnumerable<Donation>> GetAllDonationsAsync()
         {
-            return _donationRepository.GetAll().ToList();
+            return await _donationRepository.GetAll().ToListAsync();
         }
 
-        public Donation GetDonationById(string donationId)
+        public async Task<Donation> GetDonationByIdAsync(string donationId)
         {
-            return _donationRepository.GetById(donationId);
+            return await _donationRepository.GetAll().FirstOrDefaultAsync(d => d.DonationId == donationId);
         }
 
-        public async Task AddDonation(Donation donation)
+        public async Task<Donation> AddDonation(Donation donation)
         {
-            await _donationRepository.AddAsync(donation);
+            return await _donationRepository.AddAsync(donation);
         }
     }
 }

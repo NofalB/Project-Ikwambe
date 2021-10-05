@@ -6,11 +6,11 @@ namespace Infrastructure.Services
 {
     public interface IDonationService
     {
-        IEnumerable<Donation> GetAllDonations();
+        Task<IEnumerable<Donation>> GetAllDonationsAsync();
 
-        Donation GetDonationById(string donationId);
+        Task<Donation> GetDonationByIdAsync(string donationId);
 
-        Task AddDonation(Donation donation);
+        Task<Donation> AddDonation(Donation donation);
 
     }
 }

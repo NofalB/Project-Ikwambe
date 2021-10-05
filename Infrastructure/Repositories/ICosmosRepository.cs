@@ -1,21 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
-    public interface ICosmosRepository<TEntity>
+    public interface ICosmosRepository<TEntity> where TEntity : class, new()
     {
-        IEnumerable<TEntity> GetAll();
+        IQueryable<TEntity> GetAll();
 
-        TEntity GetById(string entityId);
+        Task<TEntity> AddAsync(TEntity entity);
 
-        Task AddAsync(TEntity entity);
+        Task<TEntity> Update(TEntity entity);
 
-        TEntity Update(TEntity entity);
-
-        void Delete(TEntity entity);
+        Task Delete(TEntity entity);
 
     }
 }

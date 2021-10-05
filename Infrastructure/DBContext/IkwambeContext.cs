@@ -5,19 +5,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Device.Location;
 
 namespace Infrastructure.DBContext
 {
     public class IkwambeContext : DbContext // DB Context represents the database
     {
         public DbSet<Donation> Donations { get; set; }
-
         public DbSet<User> Users { get; set; }
 
         public DbSet<Story> Stories { get; set; }
         
-        public DbSet<WaterPumpProject> WaterpumpProject { get; set; }
+        //public DbSet<WaterPumpProject> WaterpumpProject { get; set; }
 
         public DbSet<Coordinates> Coordinates { get; set; }
 
@@ -50,6 +48,9 @@ namespace Infrastructure.DBContext
                 .HasNoDiscriminator(); // HasNoDiscriminator() removes the discriminator since no other entity type will be stored in this container
 
             modelBuilder.Entity<User>()
+                .HasPartitionKey(u => u.PartitionKey);  // sets partion key
+
+            modelBuilder.Entity<User>()
                 .UseETagConcurrency();
 
             // story
@@ -58,11 +59,15 @@ namespace Infrastructure.DBContext
 
             modelBuilder.Entity<Story>()
                 .HasNoDiscriminator();
+
+            modelBuilder.Entity<Story>()
+                .HasPartitionKey(s => s.PartitionKey);  // sets partion key
+
             //need partition key
             modelBuilder.Entity<Story>()
                 .UseETagConcurrency();
 
-            //waterpump
+            /*//waterpump
             modelBuilder.Entity<WaterPumpProject>()
                .ToContainer(nameof(WaterPumpProject));
 
@@ -71,10 +76,7 @@ namespace Infrastructure.DBContext
             
             //need partition key
             modelBuilder.Entity<WaterPumpProject>()
-                .HasKey(w => w.ProjectId); 
-
-            modelBuilder.Entity<WaterPumpProject>()
-                .UseETagConcurrency();
+                .UseETagConcurrency();*/
 
             /*modelBuilder.Entity<WaterPumpProject>()
                 .HasData(Coordinates);*/

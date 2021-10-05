@@ -1,12 +1,14 @@
-﻿using Infrastructure.DBContext;
+﻿using Domain;
+using Infrastructure.DBContext;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
-    public abstract class CosmosRepository<TEntity> : ICosmosRepository<TEntity> where TEntity : class, new()
+    public class CosmosRepository<TEntity> : ICosmosRepository<TEntity> where TEntity : class, new()
     {
 
         protected readonly IkwambeContext _ikambeContext;
@@ -16,11 +18,19 @@ namespace Infrastructure.Repositories
             _ikambeContext = ikambeContext;
         }
 
-        public abstract IEnumerable<TEntity> GetAll();
+        public IQueryable<TEntity> GetAll()
+        {
+            try
+            {
+                return _ikambeContext.Set<TEntity>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Couldn't retrieve entities: {ex.Message}");
+            }
+        }
 
-        public abstract TEntity GetById(string entityId);
-
-        public async Task AddAsync(TEntity entity)
+        public async Task<TEntity> AddAsync(TEntity entity)
         {
             try
             {
@@ -31,6 +41,8 @@ namespace Infrastructure.Repositories
 
                 await _ikambeContext.AddAsync(entity);
                 await _ikambeContext.SaveChangesAsync();
+
+                return entity;
             }
             catch (Exception ex)
             {
@@ -38,7 +50,7 @@ namespace Infrastructure.Repositories
             }
         }
 
-        public TEntity Update(TEntity entity)
+        public async Task<TEntity> Update(TEntity entity)
         {
             try
             {
@@ -48,7 +60,7 @@ namespace Infrastructure.Repositories
                 }
 
                 _ikambeContext.Update(entity);
-                _ikambeContext.SaveChanges();
+                await _ikambeContext.SaveChangesAsync();
 
                 return entity;
             }
@@ -58,7 +70,7 @@ namespace Infrastructure.Repositories
             }
         }
 
-        public void Delete(TEntity entity)
+        public async Task Delete(TEntity entity)
         {
             try
             {
@@ -68,7 +80,7 @@ namespace Infrastructure.Repositories
                 }
 
                 _ikambeContext.Remove(entity);
-                _ikambeContext.SaveChanges();
+                await _ikambeContext.SaveChangesAsync();
             }
             catch (Exception ex)
             {

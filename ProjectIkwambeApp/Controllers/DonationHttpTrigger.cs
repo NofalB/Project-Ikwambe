@@ -42,7 +42,7 @@ namespace ProjectIkwambe.Controllers
 			{
 				HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
-				await response.WriteAsJsonAsync(_donationService.GetAllDonations());
+				await response.WriteAsJsonAsync(await _donationService.GetAllDonationsAsync());
 
 				return response;
 			}
@@ -60,12 +60,10 @@ namespace ProjectIkwambe.Controllers
 			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 			Donation donation = JsonConvert.DeserializeObject<Donation>(requestBody);
 
-			await _donationService.AddDonation(donation);
-
 			// Generate output
-			HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
+			HttpResponseData response = req.CreateResponse(HttpStatusCode.Created);
 
-			await response.WriteAsJsonAsync(donation);
+			await response.WriteAsJsonAsync(await _donationService.AddDonation(donation));
 
 			return response;
 		}

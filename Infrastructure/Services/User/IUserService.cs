@@ -9,14 +9,14 @@ namespace Infrastructure.Services
 {
     public interface IUserService
     {
-        IEnumerable<User> GetAllUsers();
+        Task<IEnumerable<User>> GetAllUsers();
 
-        User GetUserById(string userId);
+        Task<User> GetUserById(string userId);
 
-        Task AddUser(User user);
+        Task<User> AddUser(User user);
 
-        User UpdateUser(User user);
+        Task<User> UpdateUser(User user);
 
-        void DeleteUser(string userId);
+        Task DeleteUserAsync(string userId);
     }
 }
