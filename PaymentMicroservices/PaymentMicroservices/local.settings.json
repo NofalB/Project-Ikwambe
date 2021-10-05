@@ -1,0 +1,8 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+    "CLIENT_ID": "AVqSBkkqxw0jOZsOL1meIPnI25Ozcj12Ec8xgZqTrf6R80GftrWaxPDFvC0j4YO2K_Kyze2yNTgwhPRi",
+    "SECRET": "EBBGNsdoiHdTKNZk1ax86VSNmzxIYG3A1rO2m0C3A2Hoa24Z5hvrQsm2oZmnF0KF2dL3iOkQNtf7tob5"
+  }
+}
