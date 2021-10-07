@@ -41,7 +41,7 @@ namespace Domain
         public string PartitionKey { get; set; }
     }
 
-    public class DummyPetExample : OpenApiExample<Story>
+    public class DummyStoryxample : OpenApiExample<Story>
     {
         public override IOpenApiExample<Story> Build(NamingStrategy NamingStrategy = null)
         {

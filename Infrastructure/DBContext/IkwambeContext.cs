@@ -67,14 +67,35 @@ namespace Infrastructure.DBContext
             modelBuilder.Entity<Story>()
                 .UseETagConcurrency();
 
-            //trial
-            modelBuilder.Entity<WaterPumpProject>()
-                .ToContainer(nameof(WaterPumpProject))
+            //waterpump and coordinates
+            modelBuilder.Entity<WaterpumpProject>()
+                .ToContainer(nameof(WaterpumpProject))
                 .HasKey(w => w.ProjectId);
 
-            modelBuilder.Entity<WaterPumpProject>()
+            modelBuilder.Entity<WaterpumpProject>()
                 .OwnsOne(o => o.Coordinates);
 
+            //trial
+            /* modelBuilder.Entity<Donation>()
+                 .OwnsOne(c => c.UserId, a => {
+                     a.WithOwner().HasForeignKey("UserId");
+                     a.Property<string>("UserId");
+                     a.HasKey("UserId");
+                 });*/
+
+            /*modelBuilder.Entity<Donation>()
+                .OwnsOne(d => d.User, a => {
+                    a.WithOwner().HasForeignKey("User");
+                    a.Property<User>("Id");
+                    a.HasKey("Id");
+                });*/
+
+            /*modelBuilder.Entity<Donation>()
+                .OwnsOne(d => d.User, a => {
+                    a.WithOwner().HasForeignKey("DonationId");
+                    a.Property<int>("Id");
+                    a.HasKey("Id");
+                });*/
         }
     }
 }

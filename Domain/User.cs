@@ -37,6 +37,7 @@ namespace Domain
 		public bool Subscription { get; set; }
 
 		public string PartitionKey { get; set; }
+		
 
 		public User(string userId, string firstName, string lastName, string email, string password,bool subscription)
 		{

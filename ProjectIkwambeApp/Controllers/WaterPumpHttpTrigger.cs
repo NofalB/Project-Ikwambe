@@ -36,7 +36,7 @@ namespace ProjectIkwambe.Controllers
         [Auth]
         [OpenApiOperation(operationId: "getWaterpump", tags: new[] { "Waterpumps" }, Summary = "Find all waterpumps", Description = "return all waterpumps", Visibility = OpenApiVisibilityType.Important)]
         //[OpenApiSecurity("petstore_auth", SecuritySchemeType.Http, In = OpenApiSecurityLocationType.Header, Scheme = OpenApiSecuritySchemeType.Bearer, BearerFormat = "JWT")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WaterPumpProject), Summary = "successful operation", Description = "successful operation", Example = typeof(DummyWaterPumpProjectExamples))]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WaterpumpProject), Summary = "successful operation", Description = "successful operation", Example = typeof(DummyWaterPumpProjectExamples))]
         //[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid ID supplied", Description = "Invalid ID supplied")]
         //[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "waterpumps not found", Description = "waterpumps not found")]
         public async Task<HttpResponseData> GetWaterpumps([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "waterpumps")] HttpRequestData req, FunctionContext executionContext) 
@@ -62,7 +62,7 @@ namespace ProjectIkwambe.Controllers
         [Function(nameof(WaterpumpHttpTrigger.GetWaterpumpById))]
         [OpenApiOperation(operationId: "getWaterpumpById", tags: new[] { "Waterpumps" }, Summary = "Find waterpump by ID", Description = "Returns a single waterpump.", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiParameter(name: "waterPumpId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "ID of waterpump to return", Description = "ID of waterpump to return", Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WaterPumpProject), Summary = "successful operation", Description = "successful operation", Example = typeof(DummyWaterPumpProjectExamples))]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WaterpumpProject), Summary = "successful operation", Description = "successful operation", Example = typeof(DummyWaterPumpProjectExamples))]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid ID supplied", Description = "Invalid ID supplied")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "waterpump details not found", Description = "waterpump details not found")]
         public async Task<HttpResponseData> GetWaterpumpById([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "waterpumps/{waterPumpId}")] HttpRequestData req, string waterPumpId, FunctionContext executionContext)
@@ -77,14 +77,14 @@ namespace ProjectIkwambe.Controllers
         //add water pumps
         [Function(nameof(WaterpumpHttpTrigger.AddWaterpumps))]
         [OpenApiOperation(operationId: "addWaterPumps", tags: new[] { "Waterpumps" }, Summary = "Add a new waterpump to the database", Description = "This add waterpump information to the database.", Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(WaterPumpProject), Required = true, Description = "waterpump object that needs to be added to the database")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WaterPumpProject), Summary = "New waterpump details added", Description = "New waterpump details added to the database", Example = typeof(DummyWaterPumpProjectExample))]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(WaterpumpProject), Required = true, Description = "waterpump object that needs to be added to the database")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WaterpumpProject), Summary = "New waterpump details added", Description = "New waterpump details added to the database", Example = typeof(DummyWaterPumpProjectExample))]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Invalid input", Description = "Invalid input")]
         public async Task<HttpResponseData> AddWaterpumps([HttpTrigger(AuthorizationLevel.Function, "POST", Route = "waterpumps")] HttpRequestData req, FunctionContext executionContext)
         {
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
-            WaterPumpProject waterpump = JsonConvert.DeserializeObject<WaterPumpProject>(requestBody);
+            WaterpumpProject waterpump = JsonConvert.DeserializeObject<WaterpumpProject>(requestBody);
 
             HttpResponseData response = req.CreateResponse(HttpStatusCode.Created);
 
@@ -96,8 +96,8 @@ namespace ProjectIkwambe.Controllers
         //edit waterpump by id
         [Function(nameof(WaterpumpHttpTrigger.UpdateWaterpump))]
         [OpenApiOperation(operationId: "updatWaterPump", tags: new[] { "Waterpumps" }, Summary = "Update an existing waterpump information", Description = "This updates an existing waterpump.", Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(WaterPumpProject), Required = true, Description = "waterpump object that needs to be change in the database")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WaterPumpProject), Summary = "updated the waterpump details", Description = "waterpump details is updated", Example = typeof(WaterPumpProject))]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(WaterpumpProject), Required = true, Description = "waterpump object that needs to be change in the database")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WaterpumpProject), Summary = "updated the waterpump details", Description = "waterpump details is updated", Example = typeof(WaterpumpProject))]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid waterpump ID supplied", Description = "The waterpump ID does not exist or invalid ID ")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "waterpump not found", Description = "waterpump not found")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Validation exception", Description = "Validation exception")]
@@ -106,7 +106,7 @@ namespace ProjectIkwambe.Controllers
             //take the input
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
-            WaterPumpProject waterPumpProject = JsonConvert.DeserializeObject<WaterPumpProject>(requestBody);
+            WaterpumpProject waterPumpProject = JsonConvert.DeserializeObject<WaterpumpProject>(requestBody);
 
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
@@ -119,7 +119,7 @@ namespace ProjectIkwambe.Controllers
         [Function(nameof(WaterpumpHttpTrigger.DeleteWaterpump))]
         [OpenApiOperation(operationId: "deleteWaterpump", tags: new[] { "Waterpumps" }, Summary = "Delete waterpump", Description = "Delete an existing waterpump details from the database", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiParameter(name: "waterPumpId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "The id of the waterpump to be deleted", Description = "Delete the waterpump from the database using the id provided", Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WaterPumpProject), Summary = "Delete the waterpump details", Description = "waterpump details is removed", Example = typeof(WaterPumpProject))]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WaterpumpProject), Summary = "Delete the waterpump details", Description = "waterpump details is removed", Example = typeof(WaterpumpProject))]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid waterpump ID supplied", Description = "The waterpump ID does not exist or invalid ID ")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "waterpump not found", Description = "waterpump not found")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Validation exception", Description = "Validation exception")]
