@@ -35,13 +35,13 @@ namespace PaymentMicroservices
                     request.Headers.Add("prefer", "return=representation");
 
                     request.RequestBody(BuildOrderRequestBody(currencyCode, value));
-                    var response = await PaypalClientService.Client().Execute(request);
-                    var result = response.Result<Order>();
+                    var paypalResponse = await PaypalClientService.Client().Execute(request);
+                    var result = paypalResponse.Result<Order>();
 
-                    var response1 = req.CreateResponse(HttpStatusCode.OK);
-
-                    await response1.WriteStringAsync(JsonConvert.SerializeObject(result));
-                    return response1;
+                    var response = req.CreateResponse(HttpStatusCode.OK);
+                    var responseObj = new { Message = "Here is the link to make the payment:", Link = result.Links[1].Href.ToString() };
+                    await response.WriteAsJsonAsync(responseObj);
+                    return response;
                 }
             }
             catch (Exception e)
@@ -70,15 +70,16 @@ namespace PaymentMicroservices
             {
                 if (!String.IsNullOrEmpty(req.Url.Query))
                 {
-                    string param1 = HttpUtility.ParseQueryString(req.Url.Query).Get("orderId");
-                    OrdersGetRequest request = new OrdersGetRequest(param1);
+                    string orderId = HttpUtility.ParseQueryString(req.Url.Query).Get("orderId");
+                    OrdersGetRequest request = new OrdersGetRequest(orderId);
 
-                    var response = await PaypalClientService.Client().Execute(request);
-                    var result = response.Result<Order>();
+                    var paypalResponse = await PaypalClientService.Client().Execute(request);
+                    var result = paypalResponse.Result<Order>();
 
-                    var response1 = req.CreateResponse(HttpStatusCode.OK);
-                    await response1.WriteStringAsync(JsonConvert.SerializeObject(result));
-                    return response1;
+                    var response = req.CreateResponse(HttpStatusCode.OK);
+                    
+                    await response.WriteAsJsonAsync(result);
+                    return response;
                 }
             }
             catch (Exception e)
@@ -87,7 +88,7 @@ namespace PaymentMicroservices
                 var errResponse = req.CreateResponse(HttpStatusCode.InternalServerError);
                 logger.LogInformation(e.ToString());
 
-                await errResponse.WriteStringAsync("missing query params");
+                await errResponse.WriteStringAsync("missing query params or the order does not exist");
                 return errResponse;
             }
 
