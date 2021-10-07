@@ -67,57 +67,13 @@ namespace Infrastructure.DBContext
             modelBuilder.Entity<Story>()
                 .UseETagConcurrency();
 
-            /*//waterpump
+            //trial
             modelBuilder.Entity<WaterPumpProject>()
-               .ToContainer(nameof(WaterPumpProject));
+                .ToContainer(nameof(WaterPumpProject))
+                .HasKey(w => w.ProjectId);
 
             modelBuilder.Entity<WaterPumpProject>()
-                .HasNoDiscriminator();
-            
-            //need partition key
-            modelBuilder.Entity<WaterPumpProject>()
-                .UseETagConcurrency();*/
-
-            /*modelBuilder.Entity<WaterPumpProject>()
-                .HasData(Coordinates);*/
-
-
-            //coordinates
-            modelBuilder.Entity<Coordinates>
-                (c =>
-                {
-                    //c.HasKey(c => c.CoordinateId);
-                    c.ToContainer("Coordinates");
-                    //c.Property(v => v.LocationName);
-                });
-
-            /*modelBuilder.Entity<WaterPumpProject>()
-                .HasOne(c => c.Coordinates)
-                .WithOne();*/
-
-            /*modelBuilder.Entity<WaterPumpProject>()
-                .HasOne(w => w.Coordinates)
-                .WithOne()
-                .IsRequired();*/
-
-            /*modelBuilder.Entity<WaterPumpProject>()
-                .HasOne(w => w.Coordinates)
-                .WithOne(i => i.ProjectId)
-                .HasForeignKey<Coordinates>(c => c.CoordinateId);*/
-            //.WithOne(p => p.LocationName);
-
-
-
-            /*modelBuilder.Entity<WaterPumpProject>()
-                .HasOne(s => s.Coordinates)
-                .WithOne()
-                //.IsRequired()
-                .HasForeignKey(c => c.Coor)*/
-
-
-            //1 to 1 coordinates and waterpump
-            //modelBuilder.Entity<WaterPumpProject>()
-
+                .OwnsOne(o => o.Coordinates);
 
         }
     }
