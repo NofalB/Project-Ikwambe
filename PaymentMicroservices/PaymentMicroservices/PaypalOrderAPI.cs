@@ -39,7 +39,9 @@ namespace PaymentMicroservices
                     var result = paypalResponse.Result<Order>();
 
                     var response = req.CreateResponse(HttpStatusCode.OK);
-                    var responseObj = new { Message = "Here is the link to make the payment:", Link = result.Links[1].Href.ToString() };
+                    var responseObj = new { Message = "Here is the link to make the payment:", Link = result.Links[1].Href.ToString(),
+                        OrderId= result.Id                        
+                    };
                     await response.WriteAsJsonAsync(responseObj);
                     return response;
                 }
@@ -50,7 +52,7 @@ namespace PaymentMicroservices
                 var errResponse = req.CreateResponse(HttpStatusCode.InternalServerError);
                 logger.LogInformation(e.ToString());
 
-                await errResponse.WriteStringAsync("missing query params");
+                await errResponse.WriteStringAsync(e.ToString());
                 return errResponse;
             }
             
@@ -77,8 +79,12 @@ namespace PaymentMicroservices
                     var result = paypalResponse.Result<Order>();
 
                     var response = req.CreateResponse(HttpStatusCode.OK);
-                    
-                    await response.WriteAsJsonAsync(result);
+                    var responseObj = new { OrderId=result.Id, CheckoutPaymentIntent = result.CheckoutPaymentIntent, CreateTime = result.CreateTime,
+                        ExpirationTime = result.ExpirationTime,Payer=result.Payer,Status=result.Status,
+                        UpdateTime=result.UpdateTime, PurchaseUnits=result.PurchaseUnits
+                    };
+
+                    await response.WriteAsJsonAsync(responseObj);
                     return response;
                 }
             }
@@ -88,7 +94,7 @@ namespace PaymentMicroservices
                 var errResponse = req.CreateResponse(HttpStatusCode.InternalServerError);
                 logger.LogInformation(e.ToString());
 
-                await errResponse.WriteStringAsync("missing query params or the order does not exist");
+                await errResponse.WriteStringAsync(e.ToString());
                 return errResponse;
             }
 
