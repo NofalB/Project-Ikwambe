@@ -18,13 +18,13 @@ namespace PaymentMicroservices.Services
             .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
             .AddEnvironmentVariables()
             .Build();
-        static readonly String clientId = config["Values:CLIENT_ID"];
-        static readonly String secret = config["Values:SECRET"];
+        static readonly string _clientId = config["Values:CLIENT_ID"];
+        static readonly string _secret = config["Values:SECRET"];
 
         public static PayPalHttpClient Client()
         {
             // Creating a sandbox environment
-            PayPalEnvironment environment = new SandboxEnvironment(clientId, secret);
+            PayPalEnvironment environment = new SandboxEnvironment(_clientId, _secret);
 
             // Creating a client for the environment
             PayPalHttpClient client = new PayPalHttpClient(environment);

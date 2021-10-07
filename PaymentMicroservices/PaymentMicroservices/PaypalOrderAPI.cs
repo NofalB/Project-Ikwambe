@@ -19,72 +19,82 @@ namespace PaymentMicroservices
         public static async Task<HttpResponseData> RunAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData req,
             FunctionContext executionContext)
         {
-            Console.WriteLine("Creating Order with minimum payload..");
-            var request = new OrdersCreateRequest();
+            var logger = executionContext.GetLogger("CreateOrder");
+            try
+            {
+                if (!String.IsNullOrEmpty(req.Url.Query))
+                {
+                    string currencyCode = HttpUtility.ParseQueryString(req.Url.Query).Get("currency");
+                    string value = HttpUtility.ParseQueryString(req.Url.Query).Get("value");
 
-            //return=minimal. The server returns a minimal response to optimize communication between the API caller and the server. A minimal response includes the id, status and HATEOAS links.
-            //return= representation.The server returns a complete resource representation, including the current state of the resource.
-            request.Headers.Add("prefer", "return=representation");
-           
-            request.RequestBody(BuildOrderRequestBody());
-            var response = await PaypalClientService.Client().Execute(request);
-            var result = response.Result<Order>();
+                    Console.WriteLine("Creating Order with minimum payload..");
+                    var request = new OrdersCreateRequest();
 
-            //List<String> paymentLinks = new List<string>();
+                    //return=minimal. The server returns a minimal response to optimize communication between the API caller and the server. A minimal response includes the id, status and HATEOAS links.
+                    //return= representation.The server returns a complete resource representation, including the current state of the resource.
+                    request.Headers.Add("prefer", "return=representation");
 
-            //Console.WriteLine("Status: {0}", result.Status);
-            //Console.WriteLine("Order Id: {0}", result.Id);
-            //Console.WriteLine("Intent: {0}", result.CheckoutPaymentIntent);
-            //Console.WriteLine("Links:");
-            //foreach (LinkDescription link in result.Links)
-            //{
-            //    Console.WriteLine("\t{0}: {1}\tCall Type: {2}", link.Rel, link.Href, link.Method);
-            //    //paymentLinks.Add(link.Rel);
-            //    //paymentLinks.Add(link.Href);
-            //    //paymentLinks.Add(link.Method);
+                    request.RequestBody(BuildOrderRequestBody(currencyCode, value));
+                    var response = await PaypalClientService.Client().Execute(request);
+                    var result = response.Result<Order>();
 
-            //}
-            //AmountWithBreakdown amount = result.PurchaseUnits[0].AmountWithBreakdown;
-            //Console.WriteLine("Total Amount: {0} {1}", amount.CurrencyCode, amount.Value);
+                    var response1 = req.CreateResponse(HttpStatusCode.OK);
 
-            var response1 = req.CreateResponse(HttpStatusCode.OK);
+                    await response1.WriteStringAsync(JsonConvert.SerializeObject(result));
+                    return response1;
+                }
+            }
+            catch (Exception e)
+            {
 
-            //returns header and status code of the response
-            //await response1.WriteAsJsonAsync(response);
+                var errResponse = req.CreateResponse(HttpStatusCode.InternalServerError);
+                logger.LogInformation(e.ToString());
+
+                await errResponse.WriteStringAsync("missing query params");
+                return errResponse;
+            }
+            
+            return null;
+            
 
 
-            await response1.WriteStringAsync(JsonConvert.SerializeObject(result));
-            return response1;
+            
         }
 
         [Function("GetOrder")]
         public static async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData req,
              FunctionContext executionContext)
         {
-            string param1 = HttpUtility.ParseQueryString(req.Url.Query).Get("orderId");
-            OrdersGetRequest request = new OrdersGetRequest(param1);
+            var logger = executionContext.GetLogger("CreateOrder");
+            try
+            {
+                if (!String.IsNullOrEmpty(req.Url.Query))
+                {
+                    string param1 = HttpUtility.ParseQueryString(req.Url.Query).Get("orderId");
+                    OrdersGetRequest request = new OrdersGetRequest(param1);
 
-            var response = await PaypalClientService.Client().Execute(request);
-            var result = response.Result<Order>();
-            //Console.WriteLine("Retrieved Order Status");
-            //Console.WriteLine("Status: {0}", result.Status);
-            //Console.WriteLine("Order Id: {0}", result.Id);
-            //Console.WriteLine("Intent: {0}", result.CheckoutPaymentIntent);
-            //Console.WriteLine("Links:");
-            //foreach (LinkDescription link in result.Links)
-            //{
-            //    Console.WriteLine("\t{0}: {1}\tCall Type: {2}", link.Rel, link.Href, link.Method);
-            //}
-            //AmountWithBreakdown amount = result.PurchaseUnits[0].AmountWithBreakdown;
-            //Console.WriteLine("Total Amount: {0} {1}", amount.CurrencyCode, amount.Value);
-            //Console.WriteLine("Response JSON: \n {0}", PaypalClientService.ObjectToJSONString(result));
+                    var response = await PaypalClientService.Client().Execute(request);
+                    var result = response.Result<Order>();
 
-            var response1 = req.CreateResponse(HttpStatusCode.OK);
-            await response1.WriteStringAsync(JsonConvert.SerializeObject(result));
-            return response1;
+                    var response1 = req.CreateResponse(HttpStatusCode.OK);
+                    await response1.WriteStringAsync(JsonConvert.SerializeObject(result));
+                    return response1;
+                }
+            }
+            catch (Exception e)
+            {
+
+                var errResponse = req.CreateResponse(HttpStatusCode.InternalServerError);
+                logger.LogInformation(e.ToString());
+
+                await errResponse.WriteStringAsync("missing query params");
+                return errResponse;
+            }
+
+            return null;
         }
 
-        private static OrderRequest BuildOrderRequestBody()
+        private static OrderRequest BuildOrderRequestBody(string currencyCode,string value)
         {
             OrderRequest orderRequest = new OrderRequest()
             {
@@ -100,8 +110,8 @@ namespace PaymentMicroservices
                     new PurchaseUnitRequest{
                         AmountWithBreakdown = new AmountWithBreakdown
                         {
-                            CurrencyCode = "USD",
-                            Value = "220.00"
+                            CurrencyCode = currencyCode,
+                            Value = value
                         }
 
                     }
