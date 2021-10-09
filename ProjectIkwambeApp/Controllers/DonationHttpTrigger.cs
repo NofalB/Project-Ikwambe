@@ -40,11 +40,13 @@ namespace ProjectIkwambe.Controllers
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid donation ID", Description = "Invalid donation ID was provided")]
 		public async Task<HttpResponseData> GetDonations([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "donations")] HttpRequestData req, FunctionContext executionContext)
 		{
-			HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
+			{
+				HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
-			await response.WriteAsJsonAsync(await _donationService.GetAllDonationsAsync());
+				await response.WriteAsJsonAsync(await _donationService.GetAllDonationsAsync());
 
-			return response;
+				return response;
+			}
 		}
 
 		[Function(nameof(DonationHttpTrigger.MakeDonation))]
@@ -57,12 +59,12 @@ namespace ProjectIkwambe.Controllers
 
 			// Parse input
 			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-			DonationDTO donationdto = JsonConvert.DeserializeObject<DonationDTO>(requestBody);
+			DonationDTO donationDTO = JsonConvert.DeserializeObject<DonationDTO>(requestBody);
 
 			// Generate output
 			HttpResponseData response = req.CreateResponse(HttpStatusCode.Created);
 
-			await response.WriteAsJsonAsync(await _donationService.AddDonation(donationdto));
+			await response.WriteAsJsonAsync(await _donationService.AddDonation(donationDTO));
 
 			return response;
 		}

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Domain;
+using Domain.DTO;
 
 namespace Infrastructure.Services
 {
@@ -13,7 +14,7 @@ namespace Infrastructure.Services
 
         Task<WaterpumpProject> GetWaterPumpProjectById(string projectId);
 
-        Task<WaterpumpProject> AddWaterpumpProject(WaterpumpProject waterPumpProject);
+        Task<WaterpumpProject> AddWaterpumpProject(WaterpumpProjectDTO waterpumpProjectDTO);
 
         Task<WaterpumpProject> UpdateWaterPumpProject(WaterpumpProject waterPumProject);
 

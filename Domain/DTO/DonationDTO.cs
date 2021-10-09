@@ -13,8 +13,7 @@ namespace Domain.DTO
 {
     public class DonationDTO
     {
-        [Column(TypeName = "Id")]
-        public string UserForeignKey { get; set; }
+        public string UserId { get; set; }
 
         [OpenApiProperty(Description = "Gets or sets the project ID.")]
         public string ProjectId { get; set; }
@@ -35,9 +34,9 @@ namespace Domain.DTO
 
         }
 
-        public DonationDTO(string donationId, /*User userId,*/ string projectId, string transactionId, double amount)
+        public DonationDTO(string donationId, string userId, string projectId, string transactionId, double amount)
         {
-            //User = userId;
+            UserId = userId;
             ProjectId = projectId;
             TransactionId = transactionId;
             Amount = amount;
@@ -48,9 +47,9 @@ namespace Domain.DTO
     {
         public override IOpenApiExample<DonationDTO> Build(NamingStrategy NamingStrategy = null)
         {
-            Examples.Add(OpenApiExampleResolver.Resolve("DonationDTO 1", new DonationDTO("421", /*new User(100, "Kratos", "Jumbo", "bruh@gmail.com", "380", true),*/ "4", "24", 4000), NamingStrategy));
-            //Examples.Add(OpenApiExampleResolver.Resolve("Donation 2", new Donation(521, "12", "10", "12", 599), NamingStrategy));
-            //Examples.Add(OpenApiExampleResolver.Resolve("Donation 3", new Donation(631, "3", "30", "7", 200), NamingStrategy));
+            Examples.Add(OpenApiExampleResolver.Resolve("DonationDTO 1", new DonationDTO("421", "1", "4", "24", 4000), NamingStrategy));
+            Examples.Add(OpenApiExampleResolver.Resolve("DonationDTO 2", new DonationDTO("521", "12", "10", "12", 599), NamingStrategy));
+            Examples.Add(OpenApiExampleResolver.Resolve("DonationDTO 3", new DonationDTO("631", "3", "30", "7", 200), NamingStrategy));
 
             return this;
         }
@@ -61,9 +60,9 @@ namespace Domain.DTO
         public override IOpenApiExample<List<DonationDTO>> Build(NamingStrategy NamingStrategy = null)
         {
             Examples.Add(OpenApiExampleResolver.Resolve("DonationDTOs", new List<DonationDTO> {
-                    new DonationDTO("421", /*new User(100, "Kratos", "Jumbo", "bruh@gmail.com", "380", true),*/ "4", "24", 4000),
-                    new DonationDTO("521", /*new User(100, "Kratos", "Jumbo", "bruh@gmail.com", "380", true),*/ "10", "12", 599),
-                    new DonationDTO("631", /*new User(100, "Kratos", "Jumbo", "bruh@gmail.com", "380", true),*/ "30", "7", 200)
+                    new DonationDTO("421", "1", "4", "24", 4000),
+                    new DonationDTO("521", "12", "10", "12", 599),
+                    new DonationDTO("631", "3", "30", "7", 200)
                 }));
 
             return this;

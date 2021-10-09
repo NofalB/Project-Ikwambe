@@ -14,7 +14,7 @@ namespace Domain.DTO
 {
 	public class WaterpumpProjectDTO : Project
 	{
-		[Key]
+		
 		[OpenApiProperty(Description = "The maximum power input needed for the waterpump")]
 		[JsonRequired]
 		public int RatedPower { get; set; }

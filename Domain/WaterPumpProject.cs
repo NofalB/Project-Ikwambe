@@ -27,7 +27,7 @@ namespace Domain
         }
 	}
 
-	public class DummyWaterPumpProjectExample : OpenApiExample<WaterpumpProject>
+	public class DummyWaterpumpProjectExample : OpenApiExample<WaterpumpProject>
 	{
 		public override IOpenApiExample<WaterpumpProject> Build(NamingStrategy NamingStrategy = null)
 		{
@@ -52,7 +52,7 @@ namespace Domain
 	}
 
 
-	public class DummyWaterPumpProjectExamples : OpenApiExample<List<WaterpumpProject>>
+	public class DummyWaterpumpProjectExamples : OpenApiExample<List<WaterpumpProject>>
 	{
 		public override IOpenApiExample<List<WaterpumpProject>> Build(NamingStrategy NamingStrategy = null)
 		{
