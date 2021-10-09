@@ -14,9 +14,6 @@ namespace Domain
 {
     public class Coordinates
     {
-        //need open api parameters.
-        //[Key]
-        //public string CoordinateId { get; set; }
 
         [OpenApiProperty(Description = "get or set the location of the project")]
         public string LocationName { get; set; }
@@ -27,14 +24,12 @@ namespace Domain
         [OpenApiProperty(Description = "get or set the latitude of the location")]
         public double Latitude { get; set; }
 
-        //public virtual Project Project { get; set; }
-
         public Coordinates()
         {
 
         }
 
-        public Coordinates(/*string coordinateId,*/ string locationName, double longitude, double latitude)
+        public Coordinates(string locationName, double longitude, double latitude)
         {
 			//CoordinateId = coordinateId;
 			LocationName = locationName;
@@ -65,8 +60,8 @@ namespace Domain
         public override IOpenApiExample<List<Coordinates>> Build(NamingStrategy NamingStrategy = null)
         {
             Examples.Add(OpenApiExampleResolver.Resolve("coordinates", new List<Coordinates> {
-                    new Coordinates(/*"1",*/ "Ikwambe", -8.000, 36.833330),
-                    new Coordinates(/*"2",*/ "Haarlem", -1.000, 69.833330)
+                    new Coordinates("Ikwambe", -8.000, 36.833330),
+                    new Coordinates("Haarlem", -1.000, 69.833330)
             }));
             return this;
         }

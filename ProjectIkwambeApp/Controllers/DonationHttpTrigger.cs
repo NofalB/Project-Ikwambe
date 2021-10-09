@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Domain.DTO;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Azure.Functions.Worker;
@@ -50,20 +51,20 @@ namespace ProjectIkwambe.Controllers
 
 		[Function(nameof(DonationHttpTrigger.MakeDonation))]
 		[OpenApiOperation(operationId: "donation", tags: new[] { "Donations" }, Summary = "Make a donation", Description = "This will make a donation", Visibility = OpenApiVisibilityType.Important)]
-		[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(Donation), Required = true, Description = "Donation object for donation details")]
-		[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Donation), Summary = "New donation details included", Description = "New donation details included", Example = typeof(DummyDonationExample))]
+		[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(DonationDTO), Required = true, Description = "Donation object for donation details")]
+		[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(DonationDTO), Summary = "New donation details included", Description = "New donation details included", Example = typeof(DummyDonationDTOExample))]
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Invalid input", Description = "Invalid input")]
 		public async Task<HttpResponseData> MakeDonation([HttpTrigger(AuthorizationLevel.Function, "POST", Route = "donations")] HttpRequestData req, FunctionContext executionContext)
 		{
 
 			// Parse input
 			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-			Donation donation = JsonConvert.DeserializeObject<Donation>(requestBody);
+			DonationDTO donationdto = JsonConvert.DeserializeObject<DonationDTO>(requestBody);
 
 			// Generate output
 			HttpResponseData response = req.CreateResponse(HttpStatusCode.Created);
 
-			await response.WriteAsJsonAsync(await _donationService.AddDonation(donation));
+			await response.WriteAsJsonAsync(await _donationService.AddDonation(donationdto));
 
 			return response;
 		}

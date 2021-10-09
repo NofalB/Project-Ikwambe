@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Domain.DTO;
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -12,6 +13,7 @@ namespace Infrastructure.Services
     public class DonationService : IDonationService
     {
         private readonly ICosmosRepository<Donation> _donationRepository;
+        private readonly ICosmosRepository<DonationDTO> _donationDTORepository;
 
         public DonationService(ICosmosRepository<Donation> donationRepository)
         {
@@ -28,9 +30,9 @@ namespace Infrastructure.Services
             return await _donationRepository.GetAll().FirstOrDefaultAsync(d => d.DonationId == donationId);
         }
 
-        public async Task<Donation> AddDonation(Donation donation)
+        public async Task<DonationDTO> AddDonation(DonationDTO donationDTO)
         {
-            return await _donationRepository.AddAsync(donation);
+            return await _donationDTORepository.AddAsync(donationDTO);
         }
     }
 }

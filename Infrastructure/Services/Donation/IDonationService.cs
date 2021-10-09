@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Domain.DTO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -10,7 +11,7 @@ namespace Infrastructure.Services
 
         Task<Donation> GetDonationByIdAsync(string donationId);
 
-        Task<Donation> AddDonation(Donation donation);
+        Task<DonationDTO> AddDonation(DonationDTO donation);
 
     }
 }

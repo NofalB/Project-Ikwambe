@@ -15,9 +15,7 @@ namespace Infrastructure.DBContext
 
         public DbSet<Story> Stories { get; set; }
         
-        //public DbSet<WaterPumpProject> WaterpumpProject { get; set; }
-
-        public DbSet<Coordinates> Coordinates { get; set; }
+        public DbSet<WaterpumpProject> WaterpumpProject { get; set; }
 
         public IkwambeContext(DbContextOptions options) : base(options)
         {
@@ -32,26 +30,26 @@ namespace Infrastructure.DBContext
                 .ToContainer(nameof(Donations)); // sets the container
 
             modelBuilder.Entity<Donation>() // EF Core adds a discriminator value to identify the entity type that a given item represent
-                .HasNoDiscriminator(); // HasNoDiscriminator() removes the discriminator since no other entity type will be stored in this container
+                 .HasNoDiscriminator(); // HasNoDiscriminator() removes the discriminator since no other entity type will be stored in this container
 
-            modelBuilder.Entity<Donation>()
-                .HasPartitionKey(d => d.PartitionKey);  // sets partion key
+             modelBuilder.Entity<Donation>()
+                 .HasPartitionKey(d => d.PartitionKey);  // sets partion key
 
-            modelBuilder.Entity<Donation>()
-                .UseETagConcurrency();
+             modelBuilder.Entity<Donation>()
+                 .UseETagConcurrency();
 
             // users
             modelBuilder.Entity<User>()
                .ToContainer(nameof(Users)); // sets the container
 
-            modelBuilder.Entity<User>() // EF Core adds a discriminator value to identify the entity type that a given item represent
-                .HasNoDiscriminator(); // HasNoDiscriminator() removes the discriminator since no other entity type will be stored in this container
+             modelBuilder.Entity<User>() // EF Core adds a discriminator value to identify the entity type that a given item represent
+                 .HasNoDiscriminator(); // HasNoDiscriminator() removes the discriminator since no other entity type will be stored in this container
 
-            modelBuilder.Entity<User>()
-                .HasPartitionKey(u => u.PartitionKey);  // sets partion key
+             modelBuilder.Entity<User>()
+                 .HasPartitionKey(u => u.PartitionKey);  // sets partion key
 
-            modelBuilder.Entity<User>()
-                .UseETagConcurrency();
+             modelBuilder.Entity<User>()
+                 .UseETagConcurrency();
 
             // story
             modelBuilder.Entity<Story>()
@@ -73,29 +71,10 @@ namespace Infrastructure.DBContext
                 .HasKey(w => w.ProjectId);
 
             modelBuilder.Entity<WaterpumpProject>()
+                .HasPartitionKey(d => d.PartitionKey);
+
+            modelBuilder.Entity<WaterpumpProject>()
                 .OwnsOne(o => o.Coordinates);
-
-            //trial
-            /* modelBuilder.Entity<Donation>()
-                 .OwnsOne(c => c.UserId, a => {
-                     a.WithOwner().HasForeignKey("UserId");
-                     a.Property<string>("UserId");
-                     a.HasKey("UserId");
-                 });*/
-
-            /*modelBuilder.Entity<Donation>()
-                .OwnsOne(d => d.User, a => {
-                    a.WithOwner().HasForeignKey("User");
-                    a.Property<User>("Id");
-                    a.HasKey("Id");
-                });*/
-
-            /*modelBuilder.Entity<Donation>()
-                .OwnsOne(d => d.User, a => {
-                    a.WithOwner().HasForeignKey("DonationId");
-                    a.Property<int>("Id");
-                    a.HasKey("Id");
-                });*/
         }
     }
 }
