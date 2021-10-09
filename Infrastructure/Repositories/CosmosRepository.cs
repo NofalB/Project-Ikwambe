@@ -26,66 +26,45 @@ namespace Infrastructure.Repositories
             }
             catch (Exception ex)
             {
-                throw new Exception($"Couldn't retrieve entities: {ex.Message}");
+                throw new Exception($"Couldn't retrieve entities of type: {typeof(TEntity)}. {ex.Message}");
             }
         }
 
         public async Task<TEntity> AddAsync(TEntity entity)
         {
-            try
+            if (entity == null)
             {
-                if (entity == null)
-                {
-                    throw new ArgumentNullException("Entity must not be null.");
-                }
-
-                await _ikambeContext.AddAsync(entity);
-                await _ikambeContext.SaveChangesAsync();
-
-                return entity;
+                throw new ArgumentNullException("Entity must not be null.");
             }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error inserting a new record of {nameof(entity)}. {ex.Message}");
-            }
+
+            await _ikambeContext.AddAsync(entity);
+            await _ikambeContext.SaveChangesAsync();
+
+            return entity;
         }
 
         public async Task<TEntity> Update(TEntity entity)
         {
-            try
+            if (entity == null)
             {
-                if (entity == null)
-                {
-                    throw new ArgumentNullException("Entity must not be null.");
-                }
-
-                _ikambeContext.Update(entity);
-                await _ikambeContext.SaveChangesAsync();
-
-                return entity;
+                throw new ArgumentNullException("Entity must not be null.");
             }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error updating {nameof(entity)}. {ex.Message}");
-            }
+
+            _ikambeContext.Update(entity);
+            await _ikambeContext.SaveChangesAsync();
+
+            return entity;
         }
 
         public async Task Delete(TEntity entity)
         {
-            try
+            if (entity == null)
             {
-                if (entity == null)
-                {
-                    throw new ArgumentNullException("Entity must not be null.");
-                }
+                throw new ArgumentNullException("Entity must not be null.");
+            }
 
-                _ikambeContext.Remove(entity);
-                await _ikambeContext.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error deleting {nameof(entity)}. {ex.Message}");
-            }
+            _ikambeContext.Remove(entity);
+            await _ikambeContext.SaveChangesAsync();
         }
     }
 }
