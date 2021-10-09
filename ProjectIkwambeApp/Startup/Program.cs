@@ -9,6 +9,7 @@ using Microsoft.Azure.Functions.Worker.Extensions.OpenApi.Functions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ProjectIkwambe.ErrorHandlerMiddleware;
 using ProjectIkwambe.Security;
 
 namespace ProjectIkwambe.Startup {
@@ -18,6 +19,7 @@ namespace ProjectIkwambe.Startup {
 				//.ConfigureFunctionsWorkerDefaults(worker => worker.UseNewtonsoftJson())
 				.ConfigureFunctionsWorkerDefaults((IFunctionsWorkerApplicationBuilder Builder) => {
 					Builder.UseNewtonsoftJson().UseMiddleware<JwtMiddleware>();
+					Builder.UseMiddleware<GlobalErrorHandler>();
 				})
 				.ConfigureServices(Configure)
 				.Build();
