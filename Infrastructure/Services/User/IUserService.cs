@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Domain.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace Infrastructure.Services
 
         Task<User> GetUserById(string userId);
 
-        Task<User> AddUser(User user);
+        Task<User> AddUser(UserDTO userDTO);
 
         Task<User> UpdateUser(User user);
 

@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using Domain;
+using Domain.DTO;
 using Infrastructure.Services;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
@@ -59,19 +60,19 @@ namespace ProjectIkwambe.Controllers
 
 		[Function(nameof(UserHttpTrigger.AddUser))]
 		[OpenApiOperation(operationId: "addUser", tags: new[] { "Users" }, Summary = "Add a new user to the system", Description = "This adds a new user to the system.", Visibility = OpenApiVisibilityType.Important)]
-		[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(User), Required = true, Description = "User object that needs to be added to the system")]
+		[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(UserDTO), Required = true, Description = "User object that needs to be added to the system")]
 		[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(User), Summary = "New user details added", Description = "New user details added", Example = typeof(UserHttpTrigger))]
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Invalid input", Description = "Invalid input")]
 		public async Task<HttpResponseData> AddUser([HttpTrigger(AuthorizationLevel.Function, "POST", Route = "users")] HttpRequestData req, FunctionContext executionContext)
 		{
 			// Parse input
 			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-			User user = JsonConvert.DeserializeObject<User>(requestBody);
+			UserDTO userDTO = JsonConvert.DeserializeObject<UserDTO>(requestBody);
 
 			// Generate output
 			HttpResponseData response = req.CreateResponse(HttpStatusCode.Created);
 
-			await response.WriteAsJsonAsync(await _userService.AddUser(user));
+			await response.WriteAsJsonAsync(await _userService.AddUser(userDTO));
 
 			return response;
 		}

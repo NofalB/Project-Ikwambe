@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Domain.DTO;
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -28,9 +29,21 @@ namespace Infrastructure.Services
             return await _userRepository.GetAll().FirstOrDefaultAsync(u => u.UserId == userId);
         }
 
-        public async Task<User> AddUser(User user)
+        public async Task<User> AddUser(UserDTO userDTO)
         {
-           return await _userRepository.AddAsync(user);
+            string newId = Guid.NewGuid().ToString();
+            User user = new User()
+            {
+                UserId = newId,
+                FirstName = userDTO.FirstName,
+                LastName = userDTO.LastName,
+                Email = userDTO.Email,
+                Password = userDTO.Password,
+                Subscription = false,
+                PartitionKey = newId
+            };
+
+            return await _userRepository.AddAsync(user);
         }
 
         public async Task<User> UpdateUser(User user)

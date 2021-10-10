@@ -29,17 +29,17 @@ namespace Domain.DTO
 		[JsonRequired]
 		public string Password { get; set; }
 
-		[OpenApiProperty(Description = "Gets or sets the subscription status.")]
+		/*[OpenApiProperty(Description = "Gets or sets the subscription status.")]
 		[JsonRequired]
-		public bool Subscription { get; set; }
+		public bool Subscription { get; set; }*/
 
-		public UserDTO(string firstName, string lastName, string email, string password, bool subscription)
+		public UserDTO(string firstName, string lastName, string email, string password/*, bool subscription*/)
 		{
 			FirstName = firstName;
 			LastName = lastName;
 			Email = email;
 			Password = password;
-			Subscription = subscription;
+			//Subscription = subscription;
 		}
 
 		public UserDTO()
@@ -51,9 +51,9 @@ namespace Domain.DTO
 	{
 		public override IOpenApiExample<UserDTO> Build(NamingStrategy NamingStrategy = null)
 		{
-			Examples.Add(OpenApiExampleResolver.Resolve("Hamza", new UserDTO("Kratos", "Jumbo", "bruh@gmail.com", "380", true), NamingStrategy));
-			Examples.Add(OpenApiExampleResolver.Resolve("Bruno", new UserDTO("Bam", "Test", "bruh@gmail.com", "Hello123", true), NamingStrategy));
-			Examples.Add(OpenApiExampleResolver.Resolve("Jumbo", new UserDTO("Jumbo", "Kratos", "bruh@gmail.com", "tEst12345", false), NamingStrategy));
+			Examples.Add(OpenApiExampleResolver.Resolve("Hamza", new UserDTO("Kratos", "Jumbo", "bruh@gmail.com", "380"/*, true*/), NamingStrategy));
+			Examples.Add(OpenApiExampleResolver.Resolve("Bruno", new UserDTO("Bam", "Test", "bruh@gmail.com", "Hello123"/*, true*/), NamingStrategy));
+			Examples.Add(OpenApiExampleResolver.Resolve("Jumbo", new UserDTO("Jumbo", "Kratos", "bruh@gmail.com", "tEst12345"/*, false*/), NamingStrategy));
 
 			return this;
 		}
@@ -64,9 +64,9 @@ namespace Domain.DTO
 		public override IOpenApiExample<List<UserDTO>> Build(NamingStrategy NamingStrategy = null)
 		{
 			Examples.Add(OpenApiExampleResolver.Resolve("Users", new List<UserDTO> {
-				new UserDTO("Kratos", "Jumbo", "bruh@gmail.com", "380",true),
-				new UserDTO("Bam", "Test", "bruh@gmail.com", "Hello123",true),
-				new UserDTO("Jumbo", "Kratos", "bruh@gmail.com", "tEst12345",false),
+				new UserDTO("Kratos", "Jumbo", "bruh@gmail.com", "380"/*,true*/),
+				new UserDTO("Bam", "Test", "bruh@gmail.com", "Hello123"/*,true*/),
+				new UserDTO("Jumbo", "Kratos", "bruh@gmail.com", "tEst12345"/*,false*/),
 			}));
 
 			return this;
