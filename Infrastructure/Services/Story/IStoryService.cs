@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Domain.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace Infrastructure.Services
 
         Task<Story> GetStoryById(string storyId);
 
-        Task<Story> AddStory(Story story);
+        Task<Story> AddStory(StoryDTO storyDTO);
 
         Task<Story> UpdateStory(Story story);
 

@@ -24,7 +24,7 @@ namespace Domain
 
         [OpenApiProperty(Description = "Get or sets the date when the story is published.")]
         [JsonRequired]
-        public DateTime? PublishDate { get; set; }
+        public DateTime PublishDate { get; set; }
         
         [OpenApiProperty(Description = "Get or sets the summary of the story.")]
         [JsonRequired]
@@ -39,6 +39,23 @@ namespace Domain
         public string Author { get; set; }
 
         public string PartitionKey { get; set; }
+        //partition key genre water pump. education.
+
+        public Story()
+        {
+        
+        }
+
+        public Story(string storyId, string imageUrl, DateTime publishDate, string summary, string description, string author, string partitionKey)
+        {
+            StoryId = storyId;
+            ImageURL = imageUrl;
+            PublishDate = publishDate;
+            Summary = summary;
+            Description = description;
+            Author = author;
+            PartitionKey = partitionKey;
+        }
     }
 
     public class DummyStoryxample : OpenApiExample<Story>

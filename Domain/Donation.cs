@@ -17,7 +17,7 @@ namespace Domain
         public string DonationId { get; set; }
 
         [OpenApiProperty(Description = "Gets or sets the user ID.")]
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
 
         [OpenApiProperty(Description = "Gets or sets the project ID.")]
         public string ProjectId { get; set; }
@@ -31,7 +31,7 @@ namespace Domain
         [OpenApiProperty(Description = "Gets or sets the date the donation was made.")]
         public DateTime DonationDate { get; set; }
 
-        public string PartitionKey { get; set; }
+        public string PartitionKey { get; set; }// equals project id
 
         public Donation()
         {

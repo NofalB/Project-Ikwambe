@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Domain.DTO;
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -28,8 +29,18 @@ namespace Infrastructure.Services
             return await _storyRepository.GetAll().FirstOrDefaultAsync(s => s.StoryId == storyId);
         }
 
-        public async Task<Story> AddStory(Story story)
+        public async Task<Story> AddStory(StoryDTO storyDTO)
         {
+            string newId = Guid.NewGuid().ToString();
+            Story story = new Story(
+                newId,
+                storyDTO.ImageURL,
+                storyDTO.PublishDate,
+                storyDTO.Summary,
+                storyDTO.Description,
+                storyDTO.Author,
+                newId);
+
             return await _storyRepository.AddAsync(story);
         }
 

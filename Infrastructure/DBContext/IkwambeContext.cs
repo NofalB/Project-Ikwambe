@@ -61,9 +61,9 @@ namespace Infrastructure.DBContext
             modelBuilder.Entity<Story>()
                 .HasPartitionKey(s => s.PartitionKey);  // sets partion key
 
-            //need partition key
             modelBuilder.Entity<Story>()
                 .UseETagConcurrency();
+
 
             //waterpump and coordinates
             modelBuilder.Entity<WaterpumpProject>()
@@ -71,10 +71,16 @@ namespace Infrastructure.DBContext
                 .HasKey(w => w.ProjectId);
 
             modelBuilder.Entity<WaterpumpProject>()
+                .HasNoDiscriminator();
+            
+            modelBuilder.Entity<WaterpumpProject>()
                 .HasPartitionKey(d => d.PartitionKey);
 
             modelBuilder.Entity<WaterpumpProject>()
                 .OwnsOne(o => o.Coordinates);
+
+            modelBuilder.Entity<WaterpumpProject>()
+                .UseETagConcurrency();
         }
     }
 }

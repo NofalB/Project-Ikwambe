@@ -14,6 +14,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Infrastructure.Services;
+using Domain.DTO;
 
 namespace ProjectIkwambe.Controllers
 {
@@ -61,18 +62,18 @@ namespace ProjectIkwambe.Controllers
         //post story
         [Function(nameof(StoryHttpTrigger.AddStory))]
         [OpenApiOperation(operationId: "addStory", tags: new[] { "Stories" }, Summary = "Add a new story to the database", Description = "This method add story information to the database.", Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(Story), Required = true, Description = "story object that needs to be added to the database")]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(StoryDTO), Required = true, Description = "story object that needs to be added to the database")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Story), Summary = "New story details added", Description = "New story details added to the database", Example = typeof(DummyStoryExamples))]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Invalid input", Description = "Invalid input")]
         public async Task<HttpResponseData> AddStory([HttpTrigger(AuthorizationLevel.Function, "POST", Route = "stories")] HttpRequestData req, FunctionContext executionContext)
         {
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
-            Story story = JsonConvert.DeserializeObject<Story>(requestBody);
+            StoryDTO storyDTO = JsonConvert.DeserializeObject<StoryDTO>(requestBody);
 
             HttpResponseData response = req.CreateResponse(HttpStatusCode.Created);
 
-            await response.WriteAsJsonAsync(await _storyService.AddStory(story));
+            await response.WriteAsJsonAsync(await _storyService.AddStory(storyDTO));
 
             return response;
         }

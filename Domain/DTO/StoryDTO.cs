@@ -19,7 +19,7 @@ namespace Domain.DTO
 
         [OpenApiProperty(Description = "Get or sets the date when the story is published.")]
         [JsonRequired]
-        public DateTime? PublishDate { get; set; }
+        public DateTime PublishDate { get; set; }
 
         [OpenApiProperty(Description = "Get or sets the summary of the story.")]
         [JsonRequired]

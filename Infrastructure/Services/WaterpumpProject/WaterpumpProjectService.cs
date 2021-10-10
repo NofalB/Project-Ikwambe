@@ -32,13 +32,14 @@ namespace Infrastructure.Services
 
         public async Task<WaterpumpProject> AddWaterpumpProject(WaterpumpProjectDTO waterpumpProjectDTO)
         {
-            //Guid.NewGuid().ToString();
+            string newId = Guid.NewGuid().ToString();
             WaterpumpProject wp = new WaterpumpProject()
             {
-                ProjectId = Guid.NewGuid().ToString(),
+                ProjectId = newId,
+                NameOfProject = waterpumpProjectDTO.NameOfProject,
                 RatedPower = waterpumpProjectDTO.RatedPower,
                 FlowRate = waterpumpProjectDTO.FlowRate,
-                PartitionKey = waterpumpProjectDTO.PartitionKey,
+                PartitionKey = newId,
                 Coordinates = waterpumpProjectDTO.Coordinates,
                 CurrentDonation = waterpumpProjectDTO.CurrentDonation,
                 TargetGoal = waterpumpProjectDTO.TargetGoal,

@@ -27,8 +27,6 @@ namespace Domain.DTO
         [OpenApiProperty(Description = "Gets or sets the date the donation was made.")]
         public DateTime DonationDate { get; set; }
 
-        public string PartitionKey { get; set; }
-
         public DonationDTO()
         {
 
