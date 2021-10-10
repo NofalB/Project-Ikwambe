@@ -119,17 +119,16 @@ namespace ProjectIkwambe.Controllers
         //delete waterpump by id
         [Function(nameof(WaterpumpHttpTrigger.DeleteWaterpump))]
         [OpenApiOperation(operationId: "deleteWaterpump", tags: new[] { "Waterpumps" }, Summary = "Delete waterpump", Description = "Delete an existing waterpump details from the database", Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiParameter(name: "waterPumpId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "The id of the waterpump to be deleted", Description = "Delete the waterpump from the database using the id provided", Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WaterpumpProject), Summary = "Delete the waterpump details", Description = "waterpump details is removed", Example = typeof(WaterpumpProject))]
+        [OpenApiParameter(name: "waterpumpId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "The id of the waterpump to be deleted", Description = "Delete the waterpump from the database using the id provided", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.Accepted, contentType: "application/json", bodyType: typeof(WaterpumpProject), Summary = "Delete the waterpump details", Description = "waterpump details is removed", Example = typeof(WaterpumpProject))]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid waterpump ID supplied", Description = "The waterpump ID does not exist or invalid ID ")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "waterpump not found", Description = "waterpump not found")]
-        [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Validation exception", Description = "Validation exception")]
-        public async Task<HttpResponseData> DeleteWaterpump([HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "waterpumps")] HttpRequestData req, string waterPumpId, FunctionContext executionContext)
+        //[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Validation exception", Description = "Validation exception")]
+        public async Task<HttpResponseData> DeleteWaterpump([HttpTrigger(AuthorizationLevel.Anonymous, "DELETE", Route = "waterpumps/{waterpumpId}")] HttpRequestData req, string waterPumpId, FunctionContext executionContext)
         {
             HttpResponseData response = req.CreateResponse(HttpStatusCode.Accepted);
-
-            
-            await _waterpumpProjectService.DeleteWaterPumpProject(waterPumpId);
+            Console.WriteLine(waterPumpId.ToString());
+            await _waterpumpProjectService.DeleteWaterpumpProjectAsync(waterPumpId);
 
             return response;
         }
