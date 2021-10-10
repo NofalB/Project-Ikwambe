@@ -13,7 +13,6 @@ namespace Infrastructure.Services
     public class DonationService : IDonationService
     {
         private readonly ICosmosRepository<Donation> _donationRepository;
-        private readonly ICosmosRepository<DonationDTO> _donationDTORepository;
 
         public DonationService(ICosmosRepository<Donation> donationRepository)
         {
@@ -30,9 +29,21 @@ namespace Infrastructure.Services
             return await _donationRepository.GetAll().FirstOrDefaultAsync(d => d.DonationId == donationId);
         }
 
-        public async Task<DonationDTO> AddDonation(DonationDTO donationDTO)
+        public async Task<Donation> AddDonation(DonationDTO donationDTO)
         {
-            return await _donationDTORepository.AddAsync(donationDTO);
+            string newId = Guid.NewGuid().ToString();
+            Donation donation = new Donation()
+            {
+                DonationId = newId,
+                UserId = donationDTO.UserId,
+                ProjectId = donationDTO.ProjectId,
+                TransactionId = donationDTO.TransactionId,
+                Amount = donationDTO.Amount,
+                DonationDate = donationDTO.DonationDate,
+                PartitionKey = donationDTO.ProjectId
+            };
+
+            return await _donationRepository.AddAsync(donation);
         }
     }
 }

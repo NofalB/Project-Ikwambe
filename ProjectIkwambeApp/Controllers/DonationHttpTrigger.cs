@@ -59,6 +59,7 @@ namespace ProjectIkwambe.Controllers
 
 			// Parse input
 			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+			
 			DonationDTO donationDTO = JsonConvert.DeserializeObject<DonationDTO>(requestBody);
 
 			// Generate output

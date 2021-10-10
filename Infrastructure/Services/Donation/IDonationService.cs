@@ -11,7 +11,7 @@ namespace Infrastructure.Services
 
         Task<Donation> GetDonationByIdAsync(string donationId);
 
-        Task<DonationDTO> AddDonation(DonationDTO donation);
+        Task<Donation> AddDonation(DonationDTO donation);
 
     }
 }

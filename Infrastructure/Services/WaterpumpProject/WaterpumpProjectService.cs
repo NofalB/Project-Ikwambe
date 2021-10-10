@@ -13,7 +13,6 @@ namespace Infrastructure.Services
     public class WaterpumpProjectService : IWaterpumpProjectService
     {
         private readonly ICosmosRepository<WaterpumpProject> _waterpumpProjectRepository;
-        private readonly ICosmosRepository<WaterpumpProjectDTO> _waterpumpProjectDTORepository;
 
         public WaterpumpProjectService(ICosmosRepository<WaterpumpProject> waterpumpProjectRepository)
         {
