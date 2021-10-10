@@ -40,7 +40,7 @@ namespace ProjectIkwambe.ErrorHandlerMiddleware
 
             var responseData = new
             {
-                Status = exception switch
+                Status = exception.GetBaseException() switch
                 {
                     NotFoundException => HttpStatusCode.NotFound,
                     BadRequestException => HttpStatusCode.BadRequest,
@@ -52,9 +52,9 @@ namespace ProjectIkwambe.ErrorHandlerMiddleware
                 Message = exception.Message
             };
 
-            response.StatusCode = responseData.Status;
-
             await response.WriteAsJsonAsync(responseData);
+            
+            response.StatusCode = responseData.Status;
 
             context.InvokeResult(response);
         }
