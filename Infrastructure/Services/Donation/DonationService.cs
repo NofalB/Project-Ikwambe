@@ -26,21 +26,21 @@ namespace Infrastructure.Services
 
         public async Task<Donation> GetDonationByIdAsync(string donationId)
         {
-            return await _donationRepository.GetAll().FirstOrDefaultAsync(d => d.DonationId == donationId);
+            Guid id = Guid.Parse(donationId);
+            return await _donationRepository.GetAll().FirstOrDefaultAsync(d => d.DonationId == id);
         }
 
         public async Task<Donation> AddDonation(DonationDTO donationDTO)
         {
-            string newId = Guid.NewGuid().ToString();
             Donation donation = new Donation()
             {
-                DonationId = newId,
+                DonationId = Guid.NewGuid(),
                 UserId = donationDTO.UserId,
                 ProjectId = donationDTO.ProjectId,
                 TransactionId = donationDTO.TransactionId,
                 Amount = donationDTO.Amount,
                 DonationDate = donationDTO.DonationDate,
-                PartitionKey = donationDTO.ProjectId
+                PartitionKey = donationDTO.ProjectId.ToString()
             };
 
             return await _donationRepository.AddAsync(donation);

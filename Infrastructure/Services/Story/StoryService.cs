@@ -24,9 +24,10 @@ namespace Infrastructure.Services
             return await _storyRepository.GetAll().ToListAsync();
         }
 
-        public async Task<Story> GetStoryById(Guid storyId)
+        public async Task<Story> GetStoryById(string storyId)
         {
-            return await _storyRepository.GetAll().FirstOrDefaultAsync(s => s.StoryId == storyId);
+            Guid id = Guid.Parse(storyId);
+            return await _storyRepository.GetAll().FirstOrDefaultAsync(s => s.StoryId == id);
         }
         private async Task<Story> GetStoryByTitle(string title)
         {
@@ -59,7 +60,7 @@ namespace Infrastructure.Services
             return await _storyRepository.Update(story);
         }
 
-        public async Task DeleteStory(Guid storyId)
+        public async Task DeleteStory(string storyId)
         {
             Story story = await GetStoryById(storyId);
             await _storyRepository.Delete(story);

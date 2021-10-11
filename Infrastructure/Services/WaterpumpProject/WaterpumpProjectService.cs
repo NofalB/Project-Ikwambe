@@ -24,18 +24,16 @@ namespace Infrastructure.Services
             return await _waterpumpProjectRepository.GetAll().ToListAsync();
         }
 
-        public async Task<WaterpumpProject> GetWaterPumpProjectById(Guid projectId)
+        public async Task<WaterpumpProject> GetWaterPumpProjectById(string projectId)
         {
-            return await _waterpumpProjectRepository.GetAll().FirstOrDefaultAsync(w => w.ProjectId == projectId);
+            Guid id = Guid.Parse(projectId);
+            return await _waterpumpProjectRepository.GetAll().FirstOrDefaultAsync(w => w.ProjectId == id);
         }
-
- 
 
         private async Task<WaterpumpProject> GetWaterpumpProjectByName(string projectName)
         {
             WaterpumpProject p = await _waterpumpProjectRepository.GetAll().FirstOrDefaultAsync(w => w.NameOfProject == projectName);
             return p;
-            
         }
 
         public async Task<WaterpumpProject> AddWaterpumpProject(WaterpumpProjectDTO waterpumpProjectDTO)
@@ -52,7 +50,8 @@ namespace Infrastructure.Services
                     CurrentDonation = waterpumpProjectDTO.CurrentDonation,
                     TargetGoal = waterpumpProjectDTO.TargetGoal,
                     StartDate = waterpumpProjectDTO.StartDate,
-                    EndDate = waterpumpProjectDTO.EndDate
+                    EndDate = waterpumpProjectDTO.EndDate,
+                    ProjectType = waterpumpProjectDTO.ProjectType
                 };
                 return await _waterpumpProjectRepository.AddAsync(wp);
             }
@@ -60,7 +59,6 @@ namespace Infrastructure.Services
             {
                 throw new ("Project already exist");
             }
-            
         }
 
         public async Task<WaterpumpProject> UpdateWaterPumpProject(WaterpumpProject waterpumProject)
@@ -68,7 +66,7 @@ namespace Infrastructure.Services
             return await _waterpumpProjectRepository.Update(waterpumProject);
         }
 
-        public async Task DeleteWaterpumpProjectAsync(Guid projectId)
+        public async Task DeleteWaterpumpProjectAsync(string projectId)
         {
             WaterpumpProject waterPumpProject = await GetWaterPumpProjectById(projectId);
             await _waterpumpProjectRepository.Delete(waterPumpProject);

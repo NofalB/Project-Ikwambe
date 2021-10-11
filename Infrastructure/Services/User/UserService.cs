@@ -24,9 +24,10 @@ namespace Infrastructure.Services
             return await _userRepository.GetAll().ToListAsync();
         }
 
-        public async Task<User> GetUserById(Guid userId)
+        public async Task<User> GetUserById(string userId)
         {
-            return await _userRepository.GetAll().FirstOrDefaultAsync(u => u.UserId == userId);
+            Guid id = Guid.Parse(userId);
+            return await _userRepository.GetAll().FirstOrDefaultAsync(u => u.UserId == id);
         }
 
         private async Task<User> GetUserByEmail(string email)
@@ -59,7 +60,7 @@ namespace Infrastructure.Services
             return await _userRepository.Update(user);
         }
 
-        public async Task DeleteUserAsync(Guid userId)
+        public async Task DeleteUserAsync(string userId)
         {
             User user = await GetUserById(userId);
             await _userRepository.Delete(user);

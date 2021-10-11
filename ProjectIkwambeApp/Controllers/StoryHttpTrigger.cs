@@ -53,8 +53,7 @@ namespace ProjectIkwambe.Controllers
         public async Task<HttpResponseData> GetStoryById([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "stories/{storyId}")] HttpRequestData req, string storyId, FunctionContext executionContext)
         {
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
-            Guid id = Guid.Parse(storyId);
-            await response.WriteAsJsonAsync(await _storyService.GetStoryById(id));
+            await response.WriteAsJsonAsync(await _storyService.GetStoryById(storyId));
 
             return response;
         }
@@ -94,9 +93,7 @@ namespace ProjectIkwambe.Controllers
 
             // Generate output
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
-
             await response.WriteAsJsonAsync(await _storyService.UpdateStory(story));
-
             return response;
         }
 
@@ -111,9 +108,7 @@ namespace ProjectIkwambe.Controllers
         public async Task<HttpResponseData> DeleteStory([HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "stories/{storyId}")] HttpRequestData req, string storyId, FunctionContext executionContext)
         {
             HttpResponseData response = req.CreateResponse(HttpStatusCode.Accepted);
-            Guid id = Guid.Parse(storyId);
-            await _storyService.DeleteStory(id);
-            
+            await _storyService.DeleteStory(storyId);
             return response;
         }
 

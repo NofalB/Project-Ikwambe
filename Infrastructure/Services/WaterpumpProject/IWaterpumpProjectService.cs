@@ -12,13 +12,12 @@ namespace Infrastructure.Services
     {
         Task<IEnumerable<WaterpumpProject>> GetAllWaterPumpProjects();
 
-        Task<WaterpumpProject> GetWaterPumpProjectById(Guid projectId);
+        Task<WaterpumpProject> GetWaterPumpProjectById(string projectId);
 
         Task<WaterpumpProject> AddWaterpumpProject(WaterpumpProjectDTO waterpumpProjectDTO);
 
         Task<WaterpumpProject> UpdateWaterPumpProject(WaterpumpProject waterPumProject);
 
-
-        Task DeleteWaterpumpProjectAsync(Guid projectId);
+        Task DeleteWaterpumpProjectAsync(string projectId);
     }
 }

@@ -46,12 +46,14 @@ namespace Domain.DTO
 		[JsonRequired]
 		public int FlowRate { get; set; }
 
+		public ProjectType ProjectType { get; set; }
+
 		public WaterpumpProjectDTO()
 		{
 
 		}
 
-		public WaterpumpProjectDTO(string nameOfProject, Coordinates coordinates, double currentDonation, double targetGoal, DateTime startDate, DateTime endDate, int ratedPower, int flowRate)
+		public WaterpumpProjectDTO(string nameOfProject, Coordinates coordinates, double currentDonation, double targetGoal, DateTime startDate, DateTime endDate, int ratedPower, int flowRate, ProjectType projectType)
 		{
 			NameOfProject = nameOfProject;
 			Coordinates = coordinates;
@@ -61,6 +63,7 @@ namespace Domain.DTO
 			EndDate = endDate;
 			RatedPower = ratedPower;
 			FlowRate = flowRate;
+			ProjectType = projectType;
 		}
 
 	}
@@ -77,7 +80,8 @@ namespace Domain.DTO
 				DateTime.Now, 
 				DateTime.Now, 
 				650, 
-				200),
+				200,
+				ProjectType.Infrastructrure),
 				NamingStrategy));
 			
 			return this;
@@ -89,9 +93,9 @@ namespace Domain.DTO
 		public override IOpenApiExample<List<WaterpumpProjectDTO>> Build(NamingStrategy NamingStrategy = null)
 		{
 			Examples.Add(OpenApiExampleResolver.Resolve("Waterpumps", new List<WaterpumpProjectDTO> {
-				new WaterpumpProjectDTO("waterPumpIkwambe", new Coordinates("ikwambe", -8.000, 36.833330), 0, 25000, DateTime.Now, DateTime.Now, 20, 20),
-				new WaterpumpProjectDTO("waterPumpAlmere", new Coordinates("ikwambe", -8.000, 36.833330), 123, 40000, DateTime.Now, DateTime.Now, 100, 50),
-				new WaterpumpProjectDTO("waterPumpAmsterdam", new Coordinates( "ikwambe", -8.000, 36.833330), 456, 66000, DateTime.Now, DateTime.Now, 50, 200)
+				new WaterpumpProjectDTO("waterPumpIkwambe", new Coordinates("ikwambe", -8.000, 36.833330), 0, 25000, DateTime.Now, DateTime.Now, 20, 20, ProjectType.Infrastructrure),
+				new WaterpumpProjectDTO("waterPumpAlmere", new Coordinates("ikwambe", -8.000, 36.833330), 123, 40000, DateTime.Now, DateTime.Now, 100, 50, ProjectType.Infrastructrure),
+				new WaterpumpProjectDTO("waterPumpAmsterdam", new Coordinates( "ikwambe", -8.000, 36.833330), 456, 66000, DateTime.Now, DateTime.Now, 50, 200, ProjectType.Infrastructrure)
 			}));
 
 			return this;

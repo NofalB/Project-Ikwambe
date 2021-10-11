@@ -66,13 +66,11 @@ namespace ProjectIkwambe.Controllers
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WaterpumpProject), Summary = "successful operation", Description = "successful operation", Example = typeof(DummyWaterpumpProjectExamples))]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid ID supplied", Description = "Invalid ID supplied")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "waterpump details not found", Description = "waterpump details not found")]
-        public async Task<HttpResponseData> GetWaterpumpById([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "waterpumps/{waterPumpId}")] HttpRequestData req, string waterPumpId, FunctionContext executionContext)
+        public async Task<HttpResponseData> GetWaterpumpById([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "waterpumps/{waterPumpId}")] HttpRequestData req, string waterpumpId, FunctionContext executionContext)
         {
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
-            Guid id = Guid.Parse(waterPumpId);
-
-            await response.WriteAsJsonAsync(await _waterpumpProjectService.GetWaterPumpProjectById(id));
+            await response.WriteAsJsonAsync(await _waterpumpProjectService.GetWaterPumpProjectById(waterpumpId));
 
             return response;
         }
@@ -101,7 +99,6 @@ namespace ProjectIkwambe.Controllers
               //  return response;
 
             //}
-
         }
 
         //edit waterpump by id
@@ -134,13 +131,11 @@ namespace ProjectIkwambe.Controllers
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid waterpump ID supplied", Description = "The waterpump ID does not exist or invalid ID ")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "waterpump not found", Description = "waterpump not found")]
         //[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Validation exception", Description = "Validation exception")]
-        public async Task<HttpResponseData> DeleteWaterpump([HttpTrigger(AuthorizationLevel.Anonymous, "DELETE", Route = "waterpumps/{waterpumpId}")] HttpRequestData req, string waterPumpId, FunctionContext executionContext)
+        public async Task<HttpResponseData> DeleteWaterpump([HttpTrigger(AuthorizationLevel.Anonymous, "DELETE", Route = "waterpumps/{waterpumpId}")] HttpRequestData req, string waterpumpId, FunctionContext executionContext)
         {
             HttpResponseData response = req.CreateResponse(HttpStatusCode.Accepted);
-            Console.WriteLine(waterPumpId.ToString());
 
-            Guid id = Guid.Parse(waterPumpId);
-            await _waterpumpProjectService.DeleteWaterpumpProjectAsync(id);
+            await _waterpumpProjectService.DeleteWaterpumpProjectAsync(waterpumpId);
 
             return response;
         }

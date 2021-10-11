@@ -13,13 +13,13 @@ namespace Domain.DTO
 {
     public class DonationDTO
     {
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
 
         [OpenApiProperty(Description = "Gets or sets the project ID.")]
-        public string ProjectId { get; set; }
+        public Guid ProjectId { get; set; }
 
         [OpenApiProperty(Description = "Gets or sets the transaction ID.")]
-        public string TransactionId { get; set; }
+        public Guid TransactionId { get; set; }
 
         [OpenApiProperty(Description = "Gets or sets the amount.")]
         public double Amount { get; set; }
@@ -32,7 +32,7 @@ namespace Domain.DTO
 
         }
 
-        public DonationDTO(string donationId, string userId, string projectId, string transactionId, double amount)
+        public DonationDTO(Guid userId, Guid projectId, Guid transactionId, double amount)
         {
             UserId = userId;
             ProjectId = projectId;
@@ -45,9 +45,9 @@ namespace Domain.DTO
     {
         public override IOpenApiExample<DonationDTO> Build(NamingStrategy NamingStrategy = null)
         {
-            Examples.Add(OpenApiExampleResolver.Resolve("DonationDTO 1", new DonationDTO("421", "1", "4", "24", 4000), NamingStrategy));
-            Examples.Add(OpenApiExampleResolver.Resolve("DonationDTO 2", new DonationDTO("521", "12", "10", "12", 599), NamingStrategy));
-            Examples.Add(OpenApiExampleResolver.Resolve("DonationDTO 3", new DonationDTO("631", "3", "30", "7", 200), NamingStrategy));
+            Examples.Add(OpenApiExampleResolver.Resolve("DonationDTO 1", new DonationDTO(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), 4000), NamingStrategy));
+            Examples.Add(OpenApiExampleResolver.Resolve("DonationDTO 2", new DonationDTO(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), 599), NamingStrategy));
+            Examples.Add(OpenApiExampleResolver.Resolve("DonationDTO 3", new DonationDTO(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), 200), NamingStrategy));
 
             return this;
         }
@@ -58,9 +58,9 @@ namespace Domain.DTO
         public override IOpenApiExample<List<DonationDTO>> Build(NamingStrategy NamingStrategy = null)
         {
             Examples.Add(OpenApiExampleResolver.Resolve("DonationDTOs", new List<DonationDTO> {
-                    new DonationDTO("421", "1", "4", "24", 4000),
-                    new DonationDTO("521", "12", "10", "12", 599),
-                    new DonationDTO("631", "3", "30", "7", 200)
+                    new DonationDTO(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), 4000),
+                    new DonationDTO(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), 599),
+                    new DonationDTO(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), 200)
                 }));
 
             return this;

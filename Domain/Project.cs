@@ -39,6 +39,8 @@ namespace Domain
 		[JsonRequired]
 		public DateTime? EndDate { get; set; }
 
+		public ProjectType ProjectType { get; set; }
+
 		//potential partition key is a new property about type of project.
 		public string PartitionKey { get; set; }//partition key is project type
 	}

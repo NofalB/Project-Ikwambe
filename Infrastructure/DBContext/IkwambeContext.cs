@@ -67,7 +67,7 @@ namespace Infrastructure.DBContext
 
             //waterpump and coordinates
             modelBuilder.Entity<WaterpumpProject>()
-                .ToContainer(nameof(WaterpumpProject))
+                .ToContainer(nameof(Project))
                 .HasKey(w => w.ProjectId);
 
             modelBuilder.Entity<WaterpumpProject>()

@@ -12,12 +12,12 @@ namespace Infrastructure.Services
     {
         Task<IEnumerable<User>> GetAllUsers();
 
-        Task<User> GetUserById(Guid userId);
+        Task<User> GetUserById(string userId);
 
         Task<User> AddUser(UserDTO userDTO);
 
         Task<User> UpdateUser(User user);
 
-        Task DeleteUserAsync(Guid userId);
+        Task DeleteUserAsync(string userId);
     }
 }

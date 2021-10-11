@@ -52,9 +52,7 @@ namespace ProjectIkwambe.Controllers
 		{
 			// Generate output
 			HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
-
-			Guid id = Guid.Parse(userId);
-			await response.WriteAsJsonAsync(await _userService.GetUserById(id));
+			await response.WriteAsJsonAsync(await _userService.GetUserById(userId));
 
 			return response;
 		}
@@ -107,8 +105,7 @@ namespace ProjectIkwambe.Controllers
 		public async Task<HttpResponseData> DeleteUser([HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "users/{userId}")] HttpRequestData req, string userId, FunctionContext executionContext)
 		{
 			HttpResponseData response = req.CreateResponse(HttpStatusCode.Accepted);
-			Guid id = Guid.Parse(userId);
-			await _userService.DeleteUserAsync(id);
+			await _userService.DeleteUserAsync(userId);
 
 			return response;
 		}
