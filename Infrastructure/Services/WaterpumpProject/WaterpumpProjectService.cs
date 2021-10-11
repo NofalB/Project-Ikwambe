@@ -36,9 +36,10 @@ namespace Infrastructure.Services
             return p;
         }
 
-        public async Task<WaterpumpProject> GetWaterPumpByProjectType(ProjectType projectType)
+        public async Task<WaterpumpProject> GetWaterPumpByProjectType(string projectType)
         {
-            return await _waterpumpProjectRepository.GetAll().FirstOrDefaultAsync(p=>p.ProjectType == projectType);
+            ProjectType pt = (ProjectType)Enum.Parse(typeof(ProjectType), projectType);
+            return await _waterpumpProjectRepository.GetAll().FirstOrDefaultAsync(p => p.ProjectType == pt);
         }
 
         public async Task<WaterpumpProject> AddWaterpumpProject(WaterpumpProjectDTO waterpumpProjectDTO)

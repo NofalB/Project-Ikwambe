@@ -21,6 +21,8 @@ namespace Infrastructure.Services
         Task DeleteWaterpumpProjectAsync(string projectId);
 
         //query
-        Task<WaterpumpProject> GetWaterPumpByProjectType(ProjectType projectType);
+        Task<WaterpumpProject> GetWaterPumpByProjectType(string projectType);
+
+        Task<WaterpumpProject> GetWaterpumpProjectByName(string projectName);
     }
 }

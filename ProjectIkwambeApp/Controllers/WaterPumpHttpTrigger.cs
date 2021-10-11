@@ -18,6 +18,8 @@ using ProjectIkwambe.Attributes;
 using ProjectIkwambe.Utils;
 using System.Security.Claims;
 using Domain.DTO;
+using Microsoft.Extensions.Primitives;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace ProjectIkwambe.Controllers
 {
@@ -62,7 +64,7 @@ namespace ProjectIkwambe.Controllers
         //get water pump information by ID
         [Function(nameof(WaterpumpHttpTrigger.GetWaterpumpById))]
         [OpenApiOperation(operationId: "getWaterpumpById", tags: new[] { "Waterpumps" }, Summary = "Find waterpump by ID", Description = "Returns a single waterpump.", Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiParameter(name: "waterPumpId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "ID of waterpump to return", Description = "ID of waterpump to return", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiParameter(name: "waterPumpId", In = ParameterLocation.Path, Required = false, Type = typeof(string), Summary = "ID of waterpump to return", Description = "ID of waterpump to return", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WaterpumpProject), Summary = "successful operation", Description = "successful operation", Example = typeof(DummyWaterpumpProjectExamples))]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid ID supplied", Description = "Invalid ID supplied")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "waterpump details not found", Description = "waterpump details not found")]
@@ -133,19 +135,36 @@ namespace ProjectIkwambe.Controllers
 
         
         [Function(nameof(WaterpumpHttpTrigger.GetWaterpumpByQuery))]
-        [Auth]
         [OpenApiOperation(operationId: "GetWaterpumpByQuery", tags: new[] { "Waterpumps" }, Summary = "query all waterpumps", Description = "return query waterpumps", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiParameter(name: "projecttype", In = ParameterLocation.Query, Required = false, Type = typeof(List<ProjectType>), Summary = "project type value", Description = "Project type values that need to be considered for filter", Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiParameter(name: "projectName", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "The name of the waterpump", Description = "the waterpump from the database using the name provided", Visibility = OpenApiVisibilityType.Important)]
+        //[OpenApiParameter(name: "projectName", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "The name of the waterpump", Description = "the waterpump from the database using the name provided", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WaterpumpProject), Summary = "successful operation", Description = "successful operation", Example = typeof(DummyWaterpumpProjectExamples))]
-        public async Task<HttpResponseData> GetWaterpumpByQuery([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "waterpumps/query")] HttpRequestData req, ProjectType projectType, FunctionContext executionContext)
+        public async Task<HttpResponseData> GetWaterpumpByQuery([HttpTrigger(AuthorizationLevel.Anonymous, "GET")] HttpRequestData req, FunctionContext executionContext)
         {
+            Dictionary<string, StringValues> queryParams = QueryHelpers.ParseQuery(req.Url.Query);
+            //Dictionary<string, StringValues> queryParams1 = QueryHelpers.ParseQuery(req.Url.Query);
+
+            string projectType = queryParams["projecttype"];
+
+            //string projectName = queryParams["projectName"];
+
+            //Logger.LogInformation("this is shown at projectName: " + projectName);
+            Logger.LogInformation("this is shown at projecttype: " + projectType);
+
 
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
+           
+            await response.WriteAsJsonAsync(await _waterpumpProjectService.GetWaterPumpByProjectType(projectType));
 
-            List<WaterpumpProject> wp = new List<WaterpumpProject>();
-
-            //wp.Add(await response.WriteAsJsonAsync(await _waterpumpProjectService.GetWaterPumpByProjectType(projectType)));
+            // List<WaterpumpProject> wp = new List<WaterpumpProject>();
+            /*if(projectName != "" && projectType == "") 
+            {
+                await response.WriteAsJsonAsync(await _waterpumpProjectService.GetWaterpumpProjectByName(projectName));
+            }
+            else if(projectType !="" && projectName == "")
+            {
+                await response.WriteAsJsonAsync(await _waterpumpProjectService.GetWaterPumpByProjectType(projectType));
+            }*/
 
             return response;
         }
