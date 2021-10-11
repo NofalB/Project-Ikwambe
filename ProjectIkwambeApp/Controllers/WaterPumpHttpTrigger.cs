@@ -70,7 +70,9 @@ namespace ProjectIkwambe.Controllers
         {
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
-            await response.WriteAsJsonAsync(await _waterpumpProjectService.GetWaterPumpProjectById(waterPumpId));
+            Guid id = Guid.Parse(waterPumpId);
+
+            await response.WriteAsJsonAsync(await _waterpumpProjectService.GetWaterPumpProjectById(id));
 
             return response;
         }
@@ -87,11 +89,19 @@ namespace ProjectIkwambe.Controllers
 
             WaterpumpProjectDTO waterpumpDTO = JsonConvert.DeserializeObject<WaterpumpProjectDTO>(requestBody);
 
-            HttpResponseData response = req.CreateResponse(HttpStatusCode.Created);
+            //if (_waterpumpProjectService.GetWaterpumpProjectByName(waterpumpDTO.NameOfProject) == null) 
+            //{
+                HttpResponseData response = req.CreateResponse(HttpStatusCode.Created);
+                await response.WriteAsJsonAsync(await _waterpumpProjectService.AddWaterpumpProject(waterpumpDTO));
+                return response;
+            //}
+            //else
+            //{
+             //   response = req.CreateResponse(HttpStatusCode.NotAcceptable);
+              //  return response;
 
-            await response.WriteAsJsonAsync(await _waterpumpProjectService.AddWaterpumpProject(waterpumpDTO));
+            //}
 
-            return response;
         }
 
         //edit waterpump by id
@@ -128,7 +138,9 @@ namespace ProjectIkwambe.Controllers
         {
             HttpResponseData response = req.CreateResponse(HttpStatusCode.Accepted);
             Console.WriteLine(waterPumpId.ToString());
-            await _waterpumpProjectService.DeleteWaterpumpProjectAsync(waterPumpId);
+
+            Guid id = Guid.Parse(waterPumpId);
+            await _waterpumpProjectService.DeleteWaterpumpProjectAsync(id);
 
             return response;
         }

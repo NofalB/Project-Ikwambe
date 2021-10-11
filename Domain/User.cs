@@ -36,8 +36,7 @@ namespace Domain
 		[JsonRequired]
 		public bool Subscription { get; set; }
 
-		//potential partition key is the subcription or city??
-		public string PartitionKey { get; set; }
+		public string PartitionKey { get; set; }//Subcription.
 		
 
 		public User(string userId, string firstName, string lastName, string email, string password,bool subscription)

@@ -13,13 +13,11 @@ namespace Domain
 	public abstract class Project
 	{
 		[OpenApiProperty(Description = "Get or sets  of the ID")]
-		public string ProjectId { get; set; }
+		public Guid ProjectId { get; set; }
 
 		[OpenApiProperty(Description = "The name of the project")]
 		[JsonRequired]
 		public string NameOfProject { get; set; }
-
-		//potential partition key is a new property about type of project.
 
 		[OpenApiProperty(Description = "Get or sets the Coordination of the project")]
 		[JsonRequired]
@@ -40,5 +38,8 @@ namespace Domain
 		[OpenApiProperty(Description = "Get or sets the date when the project will end.")]
 		[JsonRequired]
 		public DateTime? EndDate { get; set; }
+
+		//potential partition key is a new property about type of project.
+		public string PartitionKey { get; set; }//partition key is project type
 	}
 }

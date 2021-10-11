@@ -18,12 +18,10 @@ namespace Domain
 		[JsonRequired]
 		public int FlowRate { get; set; }
 
-		public string PartitionKey { get; set; }
-
 
 		public WaterpumpProject()
         {
-
+			PartitionKey = ProjectId.ToString();
         }
 	}
 
@@ -33,7 +31,7 @@ namespace Domain
 		{
 			Examples.Add(OpenApiExampleResolver.Resolve("waterPumpIkwambe", new WaterpumpProject()
 			{
-				ProjectId = "1",
+				ProjectId = Guid.NewGuid(),
 				NameOfProject = "waterPumpIkwambe",
 				/*Location = "Village of Ikwambe",
 				Coordination = new System.Device.Location.GeoCoordinate(-8.000, 36.833330),*/
@@ -57,11 +55,11 @@ namespace Domain
 		public override IOpenApiExample<List<WaterpumpProject>> Build(NamingStrategy NamingStrategy = null)
 		{
 			Examples.Add(OpenApiExampleResolver.Resolve("waterPumps", new List<WaterpumpProject> {
-				new WaterpumpProject() { ProjectId = "1", NameOfProject = "waterPump Ikwambe",
+				new WaterpumpProject() { ProjectId = Guid.NewGuid(), NameOfProject = "waterPump Ikwambe",
 				Coordinates = new Coordinates(/*"1",*/ "ikwambe", -8.000, 36.833330), /*Location = "Village of Ikwambe", Coordination = new System.Device.Location.GeoCoordinate(-8.000, 36.833330),*/ CurrentDonation = 0, TargetGoal = 25000, StartDate = DateTime.Now, EndDate = DateTime.Now , RatedPower = 20, FlowRate = 20},
-				new WaterpumpProject() { ProjectId = "2", NameOfProject = "waterPumpAlmere",
+				new WaterpumpProject() { ProjectId = Guid.NewGuid(), NameOfProject = "waterPumpAlmere",
 				Coordinates = new Coordinates(/*"1",*/ "ikwambe", -8.000, 36.833330), /*Location = "Almere", Coordination = new System.Device.Location.GeoCoordinate(-8.000, 36.833330),*/ CurrentDonation = 123, TargetGoal = 40000, StartDate = DateTime.Now, EndDate = DateTime.Now, RatedPower = 100, FlowRate = 50},
-				new WaterpumpProject() { ProjectId = "3", NameOfProject = "waterPumpAmsterdam",
+				new WaterpumpProject() { ProjectId = Guid.NewGuid(), NameOfProject = "waterPumpAmsterdam",
 				Coordinates = new Coordinates(/*"1",*/ "ikwambe", -8.000, 36.833330), /*Location = "Amsterdam", Coordination = new System.Device.Location.GeoCoordinate(-8.000, 36.833330),*/ CurrentDonation = 456, TargetGoal = 66000, StartDate = DateTime.Now, EndDate = DateTime.Now, RatedPower = 50, FlowRate = 200}
 			}));
 

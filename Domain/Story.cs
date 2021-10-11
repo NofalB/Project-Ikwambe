@@ -37,8 +37,8 @@ namespace Domain
         [OpenApiProperty(Description = "Get or sets the author of the story.")]
         [JsonRequired]
         public string Author { get; set; }
-
-        public string PartitionKey { get; set; }
+        
+        public string PartitionKey { get; set; }//we wait with front end/ author?
         //partition key genre water pump. education.
 
         public Story()

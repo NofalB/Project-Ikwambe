@@ -24,31 +24,30 @@ namespace Infrastructure.Services
             return await _waterpumpProjectRepository.GetAll().ToListAsync();
         }
 
-        public async Task<WaterpumpProject> GetWaterPumpProjectById(string projectId)
+        public async Task<WaterpumpProject> GetWaterPumpProjectById(Guid projectId)
         {
             return await _waterpumpProjectRepository.GetAll().FirstOrDefaultAsync(w => w.ProjectId == projectId);
         }
 
-        public async Task <WaterpumpProject> GetWaterpumpByProjectName(string nameOfProject)
+ 
+
+        private async Task<WaterpumpProject> GetWaterpumpProjectByName(string projectName)
         {
-            //return await _waterpumpProjectRepository.GetAll().SingleOrDefault(s => s.NameOfProject == nameOfProject);
-            return await _waterpumpProjectRepository.GetAll().FirstOrDefaultAsync(s => s.NameOfProject == nameOfProject);
+            WaterpumpProject p = await _waterpumpProjectRepository.GetAll().FirstOrDefaultAsync(w => w.NameOfProject == projectName);
+            return p;
+            
         }
 
         public async Task<WaterpumpProject> AddWaterpumpProject(WaterpumpProjectDTO waterpumpProjectDTO)
-        {
-            string newId = Guid.NewGuid().ToString();
-            
-           // Console.WriteLine(GetWaterpumpByProjectName(waterpumpProjectDTO.NameOfProject).ToString());
-           // if(GetWaterpumpByProjectName(waterpumpProjectDTO.NameOfProject) != null)
-           // {
+        {            
+            if(await GetWaterpumpProjectByName(waterpumpProjectDTO.NameOfProject) == null)
+            {
                 WaterpumpProject wp = new WaterpumpProject()
                 {
-                    ProjectId = newId,
+                    ProjectId = Guid.NewGuid(),
                     NameOfProject = waterpumpProjectDTO.NameOfProject,
                     RatedPower = waterpumpProjectDTO.RatedPower,
                     FlowRate = waterpumpProjectDTO.FlowRate,
-                    PartitionKey = newId,
                     Coordinates = waterpumpProjectDTO.Coordinates,
                     CurrentDonation = waterpumpProjectDTO.CurrentDonation,
                     TargetGoal = waterpumpProjectDTO.TargetGoal,
@@ -56,11 +55,12 @@ namespace Infrastructure.Services
                     EndDate = waterpumpProjectDTO.EndDate
                 };
                 return await _waterpumpProjectRepository.AddAsync(wp);
-           // }
-            /*else
+            }
+            else
             {
-               throw new Exception("project already exist");
-            }*/
+                throw new ("Project already exist");
+            }
+            
         }
 
         public async Task<WaterpumpProject> UpdateWaterPumpProject(WaterpumpProject waterpumProject)
@@ -68,7 +68,7 @@ namespace Infrastructure.Services
             return await _waterpumpProjectRepository.Update(waterpumProject);
         }
 
-        public async Task DeleteWaterpumpProjectAsync(string projectId)
+        public async Task DeleteWaterpumpProjectAsync(Guid projectId)
         {
             WaterpumpProject waterPumpProject = await GetWaterPumpProjectById(projectId);
             await _waterpumpProjectRepository.Delete(waterPumpProject);
