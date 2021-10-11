@@ -73,7 +73,10 @@ namespace Domain
         public Payer payer { get; set; }
         public List<PurchaseUnit> purchase_units { get; set; }
         public string status { get; set; }
+        public string PartitionKey { get; set; }
+
     }
+
 
     public class CreateTransaction
     {

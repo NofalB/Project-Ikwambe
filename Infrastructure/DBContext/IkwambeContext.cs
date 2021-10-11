@@ -16,6 +16,8 @@ namespace Infrastructure.DBContext
         public DbSet<Story> Stories { get; set; }
         
         public DbSet<WaterpumpProject> WaterpumpProject { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
+
 
         public IkwambeContext(DbContextOptions options) : base(options)
         {
@@ -80,6 +82,29 @@ namespace Infrastructure.DBContext
                 .OwnsOne(o => o.Coordinates);
 
             modelBuilder.Entity<WaterpumpProject>()
+                .UseETagConcurrency();
+
+            //transaction and its classes
+            modelBuilder.Entity<Transaction>()
+                .ToContainer(nameof(Transaction))
+                .HasKey(w => w.TransactionId);
+
+            modelBuilder.Entity<Transaction>()
+                .HasNoDiscriminator();
+
+            modelBuilder.Entity<Transaction>()
+                .HasPartitionKey(d => d.PartitionKey);
+
+            modelBuilder.Entity<Transaction>()
+                .OwnsMany(l => l.links);
+
+            modelBuilder.Entity<Transaction>()
+                .OwnsMany(p => p.purchase_units);
+
+            modelBuilder.Entity<Transaction>()
+                .OwnsOne(e => e.payer);
+
+            modelBuilder.Entity<Transaction>()
                 .UseETagConcurrency();
         }
     }
