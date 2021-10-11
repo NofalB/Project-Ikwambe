@@ -1,7 +1,6 @@
 ﻿using Domain;
 using Domain.DTO;
 using Infrastructure.Services;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;

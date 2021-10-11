@@ -20,14 +20,14 @@ namespace Infrastructure.Repositories
 
         public IQueryable<TEntity> GetAll()
         {
-            try
+            var result = _ikambeContext.Set<TEntity>();
+
+            if (result == null)
             {
-                return _ikambeContext.Set<TEntity>();
+                throw new Exception($"Couldn't retrieve entities of type: {typeof(TEntity)}.");
             }
-            catch (Exception ex)
-            {
-                throw new Exception($"Couldn't retrieve entities of type: {typeof(TEntity)}. {ex.Message}");
-            }
+
+            return result;
         }
 
         public async Task<TEntity> AddAsync(TEntity entity)
