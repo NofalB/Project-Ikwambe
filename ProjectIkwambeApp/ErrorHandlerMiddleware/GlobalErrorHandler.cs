@@ -27,7 +27,7 @@ namespace ProjectIkwambe.ErrorHandlerMiddleware
             }
             catch (Exception ex)
             {
-                Logger.LogError($"Error found in endpoint {context.FunctionDefinition.Name}: {ex.Message}");
+                Logger.LogError($"Error found in endpoint {context.FunctionDefinition.Name}: {ex}");
                 await HandleExceptionAsync(context, ex);
             }
         }

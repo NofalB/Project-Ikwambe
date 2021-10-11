@@ -1,9 +1,15 @@
-﻿using Domain;
+﻿using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using Azure.Storage.Blobs.Specialized;
+using Azure.Storage.Sas;
+using Domain;
 using Domain.DTO;
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,11 +18,20 @@ namespace Infrastructure.Services
 {
     public class StoryService : IStoryService
     {
+
+        private BlobServiceClient blobServiceClient;
+        private BlobContainerClient containerClient;
+        private readonly BlobCredentialOptions _blobCredentialOptions;
+
         private readonly ICosmosRepository<Story> _storyRepository;
 
-        public StoryService(ICosmosRepository<Story> storyRepository)
+        public StoryService(ICosmosRepository<Story> storyRepository, IOptions<BlobCredentialOptions> options)
         {
             _storyRepository = storyRepository;
+            _blobCredentialOptions = options.Value;
+
+            blobServiceClient = new BlobServiceClient(_blobCredentialOptions.ConnectionString);
+            containerClient = blobServiceClient.GetBlobContainerClient(_blobCredentialOptions.ContainerName);
         }
 
         public async Task<IEnumerable<Story>> GetAllStories()
@@ -64,6 +79,56 @@ namespace Infrastructure.Services
         {
             Story story = await GetStoryById(storyId);
             await _storyRepository.Delete(story);
+        }
+
+
+        public async Task UploadImage(string storyId, Stream fileStream, string fileName)
+        {
+            // Get a reference to a blob
+            BlobClient blobClient = containerClient.GetBlobClient(fileName);
+
+            // Upload the file
+            await blobClient.UploadAsync(fileStream, new BlobHttpHeaders { ContentType = "image/png" });
+
+            var imageUrl = GetServiceSasUriForBlob(blobClient);
+
+            var story = await GetStoryById(storyId);
+            story.ImageURL = imageUrl;
+
+            await UpdateStory(story);
+        }
+
+        private string GetServiceSasUriForBlob(BlobClient blobClient, string storedPolicyName = null)
+        {
+            string imageUrl = "";
+
+            // Check whether this BlobClient object has been authorized with Shared Key.
+            if (blobClient.CanGenerateSasUri)
+            {
+                // Create a SAS token that's valid for one hour.
+                BlobSasBuilder sasBuilder = new BlobSasBuilder()
+                {
+                    BlobContainerName = blobClient.GetParentBlobContainerClient().Name,
+                    BlobName = blobClient.Name,
+                    Resource = "b"
+                };
+
+                if (storedPolicyName == null)
+                {
+                    sasBuilder.ExpiresOn = DateTimeOffset.UtcNow.AddHours(1);
+                    sasBuilder.SetPermissions(BlobSasPermissions.Read |
+                        BlobSasPermissions.Write);
+                }
+                else
+                {
+                    sasBuilder.Identifier = storedPolicyName;
+                }
+
+                Uri sasUri = blobClient.GenerateSasUri(sasBuilder);
+                imageUrl = sasUri.AbsoluteUri;
+            }
+
+            return imageUrl;
         }
     }
 }

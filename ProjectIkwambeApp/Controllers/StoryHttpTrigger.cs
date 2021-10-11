@@ -14,6 +14,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Infrastructure.Services;
+using HttpMultipartParser;
 using Domain.DTO;
 
 namespace ProjectIkwambe.Controllers
@@ -71,7 +72,6 @@ namespace ProjectIkwambe.Controllers
             StoryDTO storyDTO = JsonConvert.DeserializeObject<StoryDTO>(requestBody);
 
             HttpResponseData response = req.CreateResponse(HttpStatusCode.Created);
-
             await response.WriteAsJsonAsync(await _storyService.AddStory(storyDTO));
 
             return response;
@@ -109,6 +109,26 @@ namespace ProjectIkwambe.Controllers
         {
             HttpResponseData response = req.CreateResponse(HttpStatusCode.Accepted);
             await _storyService.DeleteStory(storyId);
+            return response;
+        }
+
+        [Function(nameof(StoryHttpTrigger.UploadStoryImage))]
+        [OpenApiOperation(operationId: "uploadStoryImage", tags: new[] { "Stories" }, Summary = "Add a new story to the database", Description = "This method add story information to the database.", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(StoryDTO), Required = true, Description = "story object that needs to be added to the database")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Story), Summary = "New story details added", Description = "New story details added to the database", Example = typeof(DummyStoryExamples))]
+        [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Invalid input", Description = "Invalid input")]
+        public async Task<HttpResponseData> UploadStoryImage([HttpTrigger(AuthorizationLevel.Function, "POST", Route = "upload/{storyId}")] HttpRequestData req, string storyId, FunctionContext executionContext)
+        {
+            // get form-body        
+            var parsedFormBody = MultipartFormDataParser.ParseAsync(req.Body);
+            var file = parsedFormBody.Result.Files[0];
+
+            HttpResponseData response = req.CreateResponse(HttpStatusCode.Created);
+
+            await _storyService.UploadImage(storyId, file.Data, file.Name);
+
+            await response.WriteStringAsync("Uploaded image file");
+
             return response;
         }
 

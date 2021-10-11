@@ -7,6 +7,7 @@ using Microsoft.Azure.Functions.Worker.Extensions.OpenApi;
 using Microsoft.Azure.Functions.Worker.Extensions.OpenApi.Extensions;
 using Microsoft.Azure.Functions.Worker.Extensions.OpenApi.Functions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ProjectIkwambe.ErrorHandlerMiddleware;
@@ -52,7 +53,13 @@ namespace ProjectIkwambe.Startup {
             Services.AddScoped<IUserService, UserService>();
             Services.AddScoped<IStoryService, StoryService>();
             Services.AddScoped<IWaterpumpProjectService, WaterpumpProjectService>();
-        }
+
+			Services.AddOptions<BlobCredentialOptions>()
+			   .Configure<IConfiguration>((settings, configuration) =>
+			   {
+				   configuration.GetSection(nameof(BlobCredentialOptions)).Bind(settings);
+			   });
+		}
 	}
 }
 
