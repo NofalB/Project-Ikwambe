@@ -24,26 +24,34 @@ namespace Infrastructure.Services
             return await _userRepository.GetAll().ToListAsync();
         }
 
-        public async Task<User> GetUserById(string userId)
+        public async Task<User> GetUserById(Guid userId)
         {
             return await _userRepository.GetAll().FirstOrDefaultAsync(u => u.UserId == userId);
         }
 
+        private async Task<User> GetUserByEmail(string email)
+        {
+            return await _userRepository.GetAll().FirstOrDefaultAsync(u => u.Email == email);
+        }
         public async Task<User> AddUser(UserDTO userDTO)
         {
-            string newId = Guid.NewGuid().ToString();
-            User user = new User()
+            if(await GetUserByEmail(userDTO.Email) == null)
             {
-                UserId = newId,
-                FirstName = userDTO.FirstName,
-                LastName = userDTO.LastName,
-                Email = userDTO.Email,
-                Password = userDTO.Password,
-                Subscription = false,
-                PartitionKey = newId
-            };
+                User user = new User(
+                Guid.NewGuid(),
+                userDTO.FirstName,
+                userDTO.LastName,
+                userDTO.Email,
+                userDTO.Password,
+                false
+                );
 
-            return await _userRepository.AddAsync(user);
+                return await _userRepository.AddAsync(user);
+            }
+            else
+            {
+                throw new Exception("The user email already exist");
+            }
         }
 
         public async Task<User> UpdateUser(User user)
@@ -51,7 +59,7 @@ namespace Infrastructure.Services
             return await _userRepository.Update(user);
         }
 
-        public async Task DeleteUserAsync(string userId)
+        public async Task DeleteUserAsync(Guid userId)
         {
             User user = await GetUserById(userId);
             await _userRepository.Delete(user);

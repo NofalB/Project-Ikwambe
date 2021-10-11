@@ -14,7 +14,7 @@ namespace Domain
 	public class User
 	{
 		[OpenApiProperty(Description = "Gets or sets the user ID.")]
-		public string UserId { get; set; }
+		public Guid UserId { get; set; }
 
 		[OpenApiProperty(Description = "Gets or sets the first name.")]
 		[JsonRequired]
@@ -39,7 +39,7 @@ namespace Domain
 		public string PartitionKey { get; set; }//Subcription.
 		
 
-		public User(string userId, string firstName, string lastName, string email, string password,bool subscription)
+		public User(Guid userId, string firstName, string lastName, string email, string password,bool subscription)
 		{
 			UserId = userId;
 			FirstName = firstName;
@@ -47,6 +47,7 @@ namespace Domain
 			Email = email;
 			Password = password;
 			Subscription = subscription;
+			PartitionKey = lastName;
 		}
 
         public User()
@@ -59,9 +60,9 @@ namespace Domain
 	{
 		public override IOpenApiExample<User> Build(NamingStrategy NamingStrategy = null)
 		{
-			Examples.Add(OpenApiExampleResolver.Resolve("Hamza", new User("100", "Kratos", "Jumbo", "bruh@gmail.com", "380", true), NamingStrategy));
-			Examples.Add(OpenApiExampleResolver.Resolve("Bruno", new User("101", "Bam", "Test", "bruh@gmail.com", "Hello123", true), NamingStrategy));
-			Examples.Add(OpenApiExampleResolver.Resolve("Jumbo", new User("102", "Jumbo", "Kratos", "bruh@gmail.com", "tEst12345", false), NamingStrategy));
+			Examples.Add(OpenApiExampleResolver.Resolve("Hamza", new User(Guid.NewGuid(), "Kratos", "Jumbo", "bruh@gmail.com", "380", true), NamingStrategy));
+			Examples.Add(OpenApiExampleResolver.Resolve("Bruno", new User(Guid.NewGuid(), "Bam", "Test", "bruh@gmail.com", "Hello123", true), NamingStrategy));
+			Examples.Add(OpenApiExampleResolver.Resolve("Jumbo", new User(Guid.NewGuid(), "Jumbo", "Kratos", "bruh@gmail.com", "tEst12345", false), NamingStrategy));
 
 			return this;
 		}
@@ -72,9 +73,9 @@ namespace Domain
 		public override IOpenApiExample<List<User>> Build(NamingStrategy NamingStrategy = null)
 		{
 			Examples.Add(OpenApiExampleResolver.Resolve("Users", new List<User> {
-				new User("100", "Kratos", "Jumbo", "bruh@gmail.com", "380",true),
-				new User("101", "Bam", "Test", "bruh@gmail.com", "Hello123",true),
-				new User("102", "Jumbo", "Kratos", "bruh@gmail.com", "tEst12345",false),
+				new User(Guid.NewGuid(), "Kratos", "Jumbo", "bruh@gmail.com", "380",true),
+				new User(Guid.NewGuid(), "Bam", "Test", "bruh@gmail.com", "Hello123",true),
+				new User(Guid.NewGuid(), "Jumbo", "Kratos", "bruh@gmail.com", "tEst12345",false),
 			}));
 
 			return this;
