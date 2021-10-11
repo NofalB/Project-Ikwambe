@@ -12,12 +12,12 @@ namespace Infrastructure.Services
     {
         Task<IEnumerable<Story>> GetAllStories();
 
-        Task<Story> GetStoryById(string storyId);
+        Task<Story> GetStoryById(Guid storyId);
 
         Task<Story> AddStory(StoryDTO storyDTO);
 
         Task<Story> UpdateStory(Story story);
 
-        Task DeleteStory(string storyId);
+        Task DeleteStory(Guid storyId);
     }
 }

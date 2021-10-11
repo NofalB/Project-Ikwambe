@@ -24,24 +24,34 @@ namespace Infrastructure.Services
             return await _storyRepository.GetAll().ToListAsync();
         }
 
-        public async Task<Story> GetStoryById(string storyId)
+        public async Task<Story> GetStoryById(Guid storyId)
         {
             return await _storyRepository.GetAll().FirstOrDefaultAsync(s => s.StoryId == storyId);
+        }
+        private async Task<Story> GetStoryByTitle(string title)
+        {
+            return await _storyRepository.GetAll().FirstOrDefaultAsync(s => s.Title == title);
         }
 
         public async Task<Story> AddStory(StoryDTO storyDTO)
         {
-            string newId = Guid.NewGuid().ToString();
-            Story story = new Story(
-                newId,
+            if(await GetStoryByTitle(storyDTO.Title) == null)
+            {
+                Story story = new Story(
+                Guid.NewGuid(),
+                storyDTO.Title,
                 storyDTO.ImageURL,
                 storyDTO.PublishDate,
                 storyDTO.Summary,
                 storyDTO.Description,
-                storyDTO.Author,
-                newId);
+                storyDTO.Author);
 
-            return await _storyRepository.AddAsync(story);
+                return await _storyRepository.AddAsync(story);
+            }
+            else
+            {
+                throw new Exception("The story already exist");
+            }
         }
 
         public async Task<Story> UpdateStory(Story story)
@@ -49,7 +59,7 @@ namespace Infrastructure.Services
             return await _storyRepository.Update(story);
         }
 
-        public async Task DeleteStory(string storyId)
+        public async Task DeleteStory(Guid storyId)
         {
             Story story = await GetStoryById(storyId);
             await _storyRepository.Delete(story);

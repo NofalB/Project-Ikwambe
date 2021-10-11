@@ -13,6 +13,8 @@ namespace Domain.DTO
 {
     public class StoryDTO
     {
+        public string Title { get; set; }
+        
         [OpenApiProperty(Description = "get or sets the image URL")]
         [JsonRequired]
         public string ImageURL { get; set; }
@@ -37,8 +39,8 @@ namespace Domain.DTO
     {
         public override IOpenApiExample<StoryDTO> Build(NamingStrategy NamingStrategy = null)
         {
-            Examples.Add(OpenApiExampleResolver.Resolve("story1", new StoryDTO() { ImageURL = "owf4fzify7by.jpg", PublishDate = DateTime.Now, Summary = "this is the story", Description = "this should be a long description", Author = "stephen" }, NamingStrategy));
-            Examples.Add(OpenApiExampleResolver.Resolve("story2", new StoryDTO() { ImageURL = "randomImage.jpg", PublishDate = DateTime.Now, Summary = "this is the second story", Description = "this should be a long second description", Author = "stephen" }, NamingStrategy));
+            Examples.Add(OpenApiExampleResolver.Resolve("story1", new StoryDTO() { Title = "story of story1", ImageURL = "owf4fzify7by.jpg", PublishDate = DateTime.Now, Summary = "this is the story", Description = "this should be a long description", Author = "stephen" }, NamingStrategy));
+            Examples.Add(OpenApiExampleResolver.Resolve("story2", new StoryDTO() { Title = "story of story2",  ImageURL = "randomImage.jpg", PublishDate = DateTime.Now, Summary = "this is the second story", Description = "this should be a long second description", Author = "stephen" }, NamingStrategy));
 
             return this;
         }
@@ -50,8 +52,8 @@ namespace Domain.DTO
         {
             Examples.Add(OpenApiExampleResolver.Resolve("stories", new List<StoryDTO>()
                 {
-                   new StoryDTO() { ImageURL = "owf4fzify7by.jpg", PublishDate = DateTime.Now, Summary = "this is the story", Description = "this should be a long description", Author ="stephen" },
-                   new StoryDTO() { ImageURL = "randomImage.jpg", PublishDate = DateTime.Now, Summary = "this is the second story", Description = "this should be a long second description", Author ="stephen"}
+                   new StoryDTO() { Title = "story of story1", ImageURL = "owf4fzify7by.jpg", PublishDate = DateTime.Now, Summary = "this is the story", Description = "this should be a long description", Author ="stephen" },
+                   new StoryDTO() { Title = "story of story2", ImageURL = "randomImage.jpg", PublishDate = DateTime.Now, Summary = "this is the second story", Description = "this should be a long second description", Author ="stephen"}
                 }));
 
             return this;
