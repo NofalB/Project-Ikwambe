@@ -20,7 +20,7 @@ namespace Domain
 
 		public WaterpumpProject()
         {
-			PartitionKey = ProjectType.ToString();
+
         }
 	}
 

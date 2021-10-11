@@ -47,7 +47,7 @@ namespace Domain
 			Email = email;
 			Password = password;
 			Subscription = subscription;
-			PartitionKey = lastName;
+			PartitionKey = subscription.ToString();
 		}
 
         public User()

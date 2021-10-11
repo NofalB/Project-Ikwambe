@@ -87,18 +87,9 @@ namespace ProjectIkwambe.Controllers
 
             WaterpumpProjectDTO waterpumpDTO = JsonConvert.DeserializeObject<WaterpumpProjectDTO>(requestBody);
 
-            //if (_waterpumpProjectService.GetWaterpumpProjectByName(waterpumpDTO.NameOfProject) == null) 
-            //{
-                HttpResponseData response = req.CreateResponse(HttpStatusCode.Created);
-                await response.WriteAsJsonAsync(await _waterpumpProjectService.AddWaterpumpProject(waterpumpDTO));
-                return response;
-            //}
-            //else
-            //{
-             //   response = req.CreateResponse(HttpStatusCode.NotAcceptable);
-              //  return response;
-
-            //}
+            HttpResponseData response = req.CreateResponse(HttpStatusCode.Created);
+            await response.WriteAsJsonAsync(await _waterpumpProjectService.AddWaterpumpProject(waterpumpDTO));
+            return response;
         }
 
         //edit waterpump by id
@@ -136,6 +127,25 @@ namespace ProjectIkwambe.Controllers
             HttpResponseData response = req.CreateResponse(HttpStatusCode.Accepted);
 
             await _waterpumpProjectService.DeleteWaterpumpProjectAsync(waterpumpId);
+
+            return response;
+        }
+
+        
+        [Function(nameof(WaterpumpHttpTrigger.GetWaterpumpByQuery))]
+        [Auth]
+        [OpenApiOperation(operationId: "GetWaterpumpByQuery", tags: new[] { "Waterpumps" }, Summary = "query all waterpumps", Description = "return query waterpumps", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiParameter(name: "projecttype", In = ParameterLocation.Query, Required = false, Type = typeof(List<ProjectType>), Summary = "project type value", Description = "Project type values that need to be considered for filter", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiParameter(name: "projectName", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "The name of the waterpump", Description = "the waterpump from the database using the name provided", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WaterpumpProject), Summary = "successful operation", Description = "successful operation", Example = typeof(DummyWaterpumpProjectExamples))]
+        public async Task<HttpResponseData> GetWaterpumpByQuery([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "waterpumps/query")] HttpRequestData req, ProjectType projectType, FunctionContext executionContext)
+        {
+
+            HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
+
+            List<WaterpumpProject> wp = new List<WaterpumpProject>();
+
+            //wp.Add(await response.WriteAsJsonAsync(await _waterpumpProjectService.GetWaterPumpByProjectType(projectType)));
 
             return response;
         }

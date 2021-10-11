@@ -34,6 +34,17 @@ namespace Infrastructure.Services
             return await _storyRepository.GetAll().FirstOrDefaultAsync(s => s.Title == title);
         }
 
+        private async Task<Story> GetStoryByAuthor(string Author)
+        {
+            return await _storyRepository.GetAll().FirstOrDefaultAsync(s => s.Author == Author);
+        }
+
+        private async Task<Story> GetStoryByDate(DateTime dateTime)
+        {
+            return await _storyRepository.GetAll().FirstOrDefaultAsync(s => s.PublishDate == dateTime);
+        }
+
+
         public async Task<Story> AddStory(StoryDTO storyDTO)
         {
             if(await GetStoryByTitle(storyDTO.Title) == null)

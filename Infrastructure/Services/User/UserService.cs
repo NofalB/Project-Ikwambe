@@ -34,6 +34,22 @@ namespace Infrastructure.Services
         {
             return await _userRepository.GetAll().FirstOrDefaultAsync(u => u.Email == email);
         }
+
+        private async Task<User> GetUserByFirstName(string firstName)
+        {
+            return await _userRepository.GetAll().FirstOrDefaultAsync(u => u.FirstName == firstName);
+        }
+
+        private async Task<User> GetUserByLastName(string lastName)
+        {
+            return await _userRepository.GetAll().FirstOrDefaultAsync(u => u.LastName == lastName);
+        }
+
+        private async Task<User> GetListOfUserSubscription(bool subscribe)
+        {
+            return await _userRepository.GetAll().FirstOrDefaultAsync(u => u.Subscription == subscribe);
+        }
+
         public async Task<User> AddUser(UserDTO userDTO)
         {
             if(await GetUserByEmail(userDTO.Email) == null)

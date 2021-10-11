@@ -30,10 +30,15 @@ namespace Infrastructure.Services
             return await _waterpumpProjectRepository.GetAll().FirstOrDefaultAsync(w => w.ProjectId == id);
         }
 
-        private async Task<WaterpumpProject> GetWaterpumpProjectByName(string projectName)
+        public  async Task<WaterpumpProject> GetWaterpumpProjectByName(string projectName)
         {
             WaterpumpProject p = await _waterpumpProjectRepository.GetAll().FirstOrDefaultAsync(w => w.NameOfProject == projectName);
             return p;
+        }
+
+        public async Task<WaterpumpProject> GetWaterPumpByProjectType(ProjectType projectType)
+        {
+            return await _waterpumpProjectRepository.GetAll().FirstOrDefaultAsync(p=>p.ProjectType == projectType);
         }
 
         public async Task<WaterpumpProject> AddWaterpumpProject(WaterpumpProjectDTO waterpumpProjectDTO)
@@ -51,7 +56,8 @@ namespace Infrastructure.Services
                     TargetGoal = waterpumpProjectDTO.TargetGoal,
                     StartDate = waterpumpProjectDTO.StartDate,
                     EndDate = waterpumpProjectDTO.EndDate,
-                    ProjectType = waterpumpProjectDTO.ProjectType
+                    ProjectType = waterpumpProjectDTO.ProjectType,
+                    PartitionKey = waterpumpProjectDTO.ProjectType.ToString()
                 };
                 return await _waterpumpProjectRepository.AddAsync(wp);
             }
