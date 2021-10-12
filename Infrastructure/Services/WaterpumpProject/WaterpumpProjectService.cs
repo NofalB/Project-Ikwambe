@@ -66,28 +66,6 @@ namespace Infrastructure.Services
                 waterpumpProjects = waterpumpProjects.Where(p => p.NameOfProject == projectName);
             }
             return waterpumpProjects;
-
-
-
-           /* if (projectType != null && projectName == null)
-            {
-                ProjectType pt = (ProjectType)Enum.Parse(typeof(ProjectType), projectType);
-
-                return _waterpumpProjectRepository.GetAll().Where(p => p.ProjectType == pt);
-            }
-            else if (projectType == null && projectName != null)
-            {
-                return _waterpumpProjectRepository.GetAll().Where(p => p.NameOfProject == projectName);
-            }
-            *//*if (projectName != null)
-            {
-                return _waterpumpProjectRepository.GetAll().Where(p => p.NameOfProject == projectName);
-            }*//*
-            else
-            {
-                return _waterpumpProjectRepository.GetAll();
-                throw new Exception("get all loop");
-            }*/
         }
 
         public async Task<WaterpumpProject> AddWaterpumpProject(WaterpumpProjectDTO waterpumpProjectDTO)
