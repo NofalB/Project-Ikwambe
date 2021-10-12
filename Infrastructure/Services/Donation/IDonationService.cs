@@ -15,6 +15,6 @@ namespace Infrastructure.Services
         Task<Donation> AddDonation(DonationDTO donation);
 
         //query
-        IQueryable<Donation> GetDonationByQueryOrGetAll(string userId, string projectId);
+        IQueryable<Donation> GetDonationByQueryOrGetAll(string userId, string projectId, string date);
     }
 }

@@ -30,24 +30,27 @@ namespace Infrastructure.Services
             return await _donationRepository.GetAll().FirstOrDefaultAsync(d => d.DonationId == id);
         }
 
-        public IQueryable<Donation> GetDonationByQueryOrGetAll(string userId, string projectId)
+        public IQueryable<Donation> GetDonationByQueryOrGetAll(string userId, string projectId, string date)
         {
-            if(userId != null && projectId != null)
+            IQueryable<Donation> donation = _donationRepository.GetAll();
+            
+            if (userId != null) 
             {
-                return _donationRepository.GetAll().Where(d => d.ProjectId == Guid.Parse(projectId)).Where(u => u.UserId == Guid.Parse(userId));
+                donation = donation.Where(d => d.UserId == Guid.Parse(userId));
             }
-            else if(userId == null && projectId != null)
+            if(projectId != null)
             {
-                return _donationRepository.GetAll().Where(d => d.ProjectId == Guid.Parse(projectId));
+                donation = donation.Where(d => d.ProjectId == Guid.Parse(projectId));
             }
-            else if(userId != null && projectId == null)
+            if(date != null)
             {
-                return _donationRepository.GetAll().Where(d => d.UserId == Guid.Parse(userId));
+                DateTime time = DateTime.Parse(date);
+                date += "T23:59:59";
+                DateTime time_end = DateTime.Parse(date);
+                donation = donation.Where(d => d.DonationDate > time && d.DonationDate < time_end);
             }
-            else
-            {
-                return _donationRepository.GetAll();
-            }
+
+            return donation;
         }
 
         public async Task<Donation> AddDonation(DonationDTO donationDTO)

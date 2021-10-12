@@ -9,16 +9,16 @@ using Newtonsoft.Json.Converters;
 
 namespace Domain
 {
-    //[JsonConverter(typeof(StringEnumConverter))]
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum ProjectType
     {
-        //[EnumMember(Value = "Health_service")]
+        [EnumMember(Value = "Health_service")]
         Health_service,
 
-        //[EnumMember(Value = "Education")]
+        [EnumMember(Value = "Education")]
         Education,
 
-        //[EnumMember(Value = "Infrastructure")]
+        [EnumMember(Value = "Infrastructure")]
         Infrastructure 
     }
 }

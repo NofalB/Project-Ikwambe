@@ -35,17 +35,21 @@ namespace ProjectIkwambe.Controllers
 		[OpenApiOperation(tags: new[] { "Donations" }, Summary = "Get all donations", Description = "This will retrieve all donations", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiParameter(name: "userId", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "ID of user to return donations", Description = "Retrieves donations with this user ID", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiParameter(name: "projectId", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "ID of project to return donations", Description = "Retrieves donations with this project ID", Visibility = OpenApiVisibilityType.Important)]
+		[OpenApiParameter(name: "date", In = ParameterLocation.Query, Required = false, Type = typeof(DateTime), Summary = " date", Description = "date", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Donation), Summary = "Successfully fetched donations", Description = "Donations successfully retrieved", Example = typeof(DummyDonationsExamples))]
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid donation ID", Description = "Invalid donation ID was provided")]
 		public async Task<HttpResponseData> GetDonations([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "donations")] HttpRequestData req, FunctionContext executionContext)
 		{
             string projectId = HttpUtility.ParseQueryString(req.Url.Query).Get("projectId");
             string userId = HttpUtility.ParseQueryString(req.Url.Query).Get("userId");
+            string date = HttpUtility.ParseQueryString(req.Url.Query).Get("date");
 
+			//Logger.LogInformation("the date is:" + date);
+			
 			HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
-
+			
 			//await response.WriteAsJsonAsync(await _donationService.GetAllDonationsAsync());
-			await response.WriteAsJsonAsync(_donationService.GetDonationByQueryOrGetAll(userId, projectId));
+			await response.WriteAsJsonAsync(_donationService.GetDonationByQueryOrGetAll(userId, projectId, date));
 
 			return response;
 		

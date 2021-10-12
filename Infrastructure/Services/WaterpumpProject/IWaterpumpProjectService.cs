@@ -27,7 +27,7 @@ namespace Infrastructure.Services
 
         IQueryable<WaterpumpProject> GetWaterPumpByProjectType1(string projectType);
 
-        IQueryable<WaterpumpProject> GetWaterPumpProjectByQuery(/*string projectType,*/ string projectName);
+        IQueryable<WaterpumpProject> GetWaterPumpProjectByQuery(string projectType, string projectName);
         //IEnumerable<WaterpumpProject> GetWaterPumpProjectByQuery(string projectType, string projectName);
     }
 }

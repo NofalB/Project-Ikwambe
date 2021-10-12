@@ -20,6 +20,6 @@ namespace Infrastructure.Services
 
         Task DeleteStory(string storyId);
 
-        IQueryable<Story> GetStoryByQuery(string author);
+        IQueryable<Story> GetStoryByQuery(string author, string date);
     }
 }

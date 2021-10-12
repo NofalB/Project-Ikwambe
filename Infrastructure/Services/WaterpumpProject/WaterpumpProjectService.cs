@@ -50,27 +50,44 @@ namespace Infrastructure.Services
             return _waterpumpProjectRepository.GetAll().Where(p => p.ProjectType == pt);
         }
 
-        public IQueryable<WaterpumpProject> GetWaterPumpProjectByQuery(/*string projectType,*/ string projectName)
+        public IQueryable<WaterpumpProject> GetWaterPumpProjectByQuery(string projectType, string projectName)
         {
-            /*if (projectType != null || projectName == " ")
+            IQueryable<WaterpumpProject> waterpumpProjects = _waterpumpProjectRepository.GetAll();
+
+
+            if(projectType != null)
+            {
+                ProjectType pt = (ProjectType)Enum.Parse(typeof(ProjectType), projectType);
+
+                waterpumpProjects = waterpumpProjects.Where(p => p.ProjectType == pt);
+            }
+            if(projectName !=null)
+            {
+                waterpumpProjects = waterpumpProjects.Where(p => p.NameOfProject == projectName);
+            }
+            return waterpumpProjects;
+
+
+
+           /* if (projectType != null && projectName == null)
             {
                 ProjectType pt = (ProjectType)Enum.Parse(typeof(ProjectType), projectType);
 
                 return _waterpumpProjectRepository.GetAll().Where(p => p.ProjectType == pt);
             }
-            else if (projectType == null || projectName != "")
-            {
-                return _waterpumpProjectRepository.GetAll().Where(p => p.NameOfProject == projectName);
-            }*/
-            if (projectName != null)
+            else if (projectType == null && projectName != null)
             {
                 return _waterpumpProjectRepository.GetAll().Where(p => p.NameOfProject == projectName);
             }
+            *//*if (projectName != null)
+            {
+                return _waterpumpProjectRepository.GetAll().Where(p => p.NameOfProject == projectName);
+            }*//*
             else
             {
                 return _waterpumpProjectRepository.GetAll();
                 throw new Exception("get all loop");
-            }
+            }*/
         }
 
         public async Task<WaterpumpProject> AddWaterpumpProject(WaterpumpProjectDTO waterpumpProjectDTO)

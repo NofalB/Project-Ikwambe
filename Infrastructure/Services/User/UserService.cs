@@ -53,26 +53,23 @@ namespace Infrastructure.Services
 
         public IQueryable<User> GetUserByQueryOrGetAll(string firstname, string lastname, string subcribe)
         {
-            if (firstname != null && lastname != null && subcribe != null)
+
+            IQueryable<User> user = _userRepository.GetAll();
+
+            if (firstname != null)
             {
-                return _userRepository.GetAll().Where(f => f.FirstName == firstname).Where(l => l.LastName == lastname).Where(s => s.Subscription == bool.Parse(subcribe));
+                user = user.Where(f => f.FirstName == firstname);
             }
-            else if (firstname != null && lastname == null && subcribe == null) 
+            if (lastname != null)
             {
-                return GetUserByFirstName(firstname);
+                user = user.Where(l => l.LastName == lastname);
             }
-            else if (firstname == null && lastname != null && subcribe == null)
+            if (subcribe != null)
             {
-                return GetUserByLastName(lastname);
+                user = user.Where(s => s.Subscription == bool.Parse(subcribe));
             }
-            else if (firstname == null && lastname == null && subcribe != null)
-            {
-                return GetListOfUserSubscription(subcribe);
-            }
-            else
-            {
-                return _userRepository.GetAll();
-            }
+
+            return user;
         }
 
         public async Task<User> AddUser(UserDTO userDTO)
