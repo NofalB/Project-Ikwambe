@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +14,8 @@ namespace Domain
         public string href { get; set; }
         public string method { get; set; }
         public string rel { get; set; }
+        public string LinkId { get; set; }
+
     }
 
     public class Address
@@ -21,10 +25,12 @@ namespace Domain
         public string admin_area_1 { get; set; }
         public string admin_area_2 { get; set; }
         public string postal_code { get; set; }
+        public string AddressId { get; set; }
     }
 
     public class Name
     {
+        public string NameId { get; set; }
         public string given_name { get; set; }
         public string surname { get; set; }
         public string full_name { get; set; }
@@ -36,28 +42,34 @@ namespace Domain
         public string email_address { get; set; }
         public Name name { get; set; }
         public string payer_id { get; set; }
+        public string PayerId { get; set; }
+
     }
 
     public class Amount
     {
         public string currency_code { get; set; }
         public string value { get; set; }
+        public string AmountId { get; set; }
     }
 
     public class Payee
     {
+        public string PayeeId { get; set; }
         public string email_address { get; set; }
         public string merchant_id { get; set; }
     }
 
     public class Shipping
     {
+        public string ShippingId { get; set; }
         public Address address { get; set; }
         public Name name { get; set; }
     }
 
     public class PurchaseUnit
     {
+        public string PurchaseUnitId { get; set; }
         public Amount Amount { get; set; }
         public Payee payee { get; set; }
         public string reference_id { get; set; }
@@ -67,6 +79,7 @@ namespace Domain
     public class Transaction
     {
         public DateTime create_time { get; set; }
+        public string id { get; set; }
         public string TransactionId { get; set; }
         public string intent { get; set; }
         public List<Link> links { get; set; }
@@ -75,7 +88,13 @@ namespace Domain
         public string status { get; set; }
         public string PartitionKey { get; set; }
 
+        public Transaction()
+        {
+            TransactionId = id;
+        }
+
     }
+
 
 
     public class CreateTransaction

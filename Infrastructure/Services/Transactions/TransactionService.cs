@@ -20,6 +20,18 @@ namespace Infrastructure.Services.Transactions
         }
         public async Task<Transaction> AddTransaction(Transaction transaction)
         {
+            transaction.links.ForEach(x => x.LinkId = Guid.NewGuid().ToString());
+            transaction.payer.PayerId= Guid.NewGuid().ToString();
+            transaction.purchase_units.ForEach(x => x.PurchaseUnitId = Guid.NewGuid().ToString());
+            transaction.purchase_units.ForEach(x => x.Amount.AmountId = Guid.NewGuid().ToString());
+            transaction.purchase_units.ForEach(x => x.payee.PayeeId = Guid.NewGuid().ToString());
+            transaction.purchase_units.ForEach(x => x.shipping.ShippingId = Guid.NewGuid().ToString());
+            transaction.purchase_units.ForEach(x => x.shipping.name.NameId = Guid.NewGuid().ToString());
+            transaction.payer.name.NameId= Guid.NewGuid().ToString();
+            transaction.purchase_units.ForEach(x => x.shipping.address.AddressId = Guid.NewGuid().ToString());
+            transaction.payer.address.AddressId = Guid.NewGuid().ToString();
+            transaction.payer.name.NameId = Guid.NewGuid().ToString();
+
             return await _transactionRepository.AddAsync(transaction);
         }
 

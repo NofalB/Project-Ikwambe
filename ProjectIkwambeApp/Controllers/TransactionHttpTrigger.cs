@@ -63,9 +63,12 @@ namespace ProjectIkwambe.Controllers
 
             //currently doing it here to check the service and db for transactions
             //later needs to be done with vue only when it has been authorized
-            var TransactionResult = await httpClient.GetAsync("https://paypalmicroserviceikwambe.azurewebsites.net/api/getorder?orderId="+ TransactionDataObj.TransactionId);
+            //var TransactionResult = await httpClient.GetAsync("https://paypalmicroserviceikwambe.azurewebsites.net/api/getorder?orderId="+ TransactionDataObj.TransactionId);
+            var TransactionResult = await httpClient.GetAsync("https://paypalmicroserviceikwambe.azurewebsites.net/api/getorder?orderId=2PY04402262190020");
             var TransactionResultResponseObj = await TransactionResult.Content.ReadAsStringAsync();
             var TransactionResultObj = JsonConvert.DeserializeObject<Transaction>(TransactionResultResponseObj);
+            TransactionResultObj.TransactionId = TransactionResultObj.id;
+            TransactionResultObj.PartitionKey = TransactionResultObj.id;
 
             await _transactionService.AddTransaction(TransactionResultObj);
 
