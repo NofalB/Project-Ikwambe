@@ -35,19 +35,44 @@ namespace Infrastructure.Services
             return await _userRepository.GetAll().FirstOrDefaultAsync(u => u.Email == email);
         }
 
-        private async Task<User> GetUserByFirstName(string firstName)
+        private IQueryable<User> GetUserByFirstName(string firstName)
         {
-            return await _userRepository.GetAll().FirstOrDefaultAsync(u => u.FirstName == firstName);
+            return _userRepository.GetAll().Where(u => u.FirstName == firstName);
         }
 
-        private async Task<User> GetUserByLastName(string lastName)
+        private IQueryable<User> GetUserByLastName(string lastName)
         {
-            return await _userRepository.GetAll().FirstOrDefaultAsync(u => u.LastName == lastName);
+            return _userRepository.GetAll().Where(u => u.LastName == lastName);
         }
 
-        private async Task<User> GetListOfUserSubscription(bool subscribe)
+        private IQueryable<User> GetListOfUserSubscription(string subscribe)
         {
-            return await _userRepository.GetAll().FirstOrDefaultAsync(u => u.Subscription == subscribe);
+            bool isSubscribe = bool.Parse(subscribe);
+            return _userRepository.GetAll().Where(u => u.Subscription == isSubscribe);
+        }
+
+        public IQueryable<User> GetUserByQueryOrGetAll(string firstname, string lastname, string subcribe)
+        {
+            if (firstname != null && lastname != null && subcribe != null)
+            {
+                return _userRepository.GetAll().Where(f => f.FirstName == firstname).Where(l => l.LastName == lastname).Where(s => s.Subscription == bool.Parse(subcribe));
+            }
+            else if (firstname != null && lastname == null && subcribe == null) 
+            {
+                return GetUserByFirstName(firstname);
+            }
+            else if (firstname == null && lastname != null && subcribe == null)
+            {
+                return GetUserByLastName(lastname);
+            }
+            else if (firstname == null && lastname == null && subcribe != null)
+            {
+                return GetListOfUserSubscription(subcribe);
+            }
+            else
+            {
+                return _userRepository.GetAll();
+            }
         }
 
         public async Task<User> AddUser(UserDTO userDTO)

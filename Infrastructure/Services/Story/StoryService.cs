@@ -34,14 +34,26 @@ namespace Infrastructure.Services
             return await _storyRepository.GetAll().FirstOrDefaultAsync(s => s.Title == title);
         }
 
-        private async Task<Story> GetStoryByAuthor(string Author)
+        private IQueryable<Story> GetStoryByAuthor(string Author)
         {
-            return await _storyRepository.GetAll().FirstOrDefaultAsync(s => s.Author == Author);
+            return _storyRepository.GetAll().Where(s => s.Author == Author);
         }
 
         private async Task<Story> GetStoryByDate(DateTime dateTime)
         {
             return await _storyRepository.GetAll().FirstOrDefaultAsync(s => s.PublishDate == dateTime);
+        }
+
+        public IQueryable<Story> GetStoryByQuery(string author)
+        {
+            if (author == null)
+            {
+                return _storyRepository.GetAll();
+            }
+            else
+            {
+                return GetStoryByAuthor(author);
+            }
         }
 
 

@@ -39,7 +39,38 @@ namespace Infrastructure.Services
         public async Task<WaterpumpProject> GetWaterPumpByProjectType(string projectType)
         {
             ProjectType pt = (ProjectType)Enum.Parse(typeof(ProjectType), projectType);
+
             return await _waterpumpProjectRepository.GetAll().FirstOrDefaultAsync(p => p.ProjectType == pt);
+        }
+
+        public IQueryable<WaterpumpProject>GetWaterPumpByProjectType1(string projectType)
+        {
+            ProjectType pt = (ProjectType)Enum.Parse(typeof(ProjectType), projectType);
+
+            return _waterpumpProjectRepository.GetAll().Where(p => p.ProjectType == pt);
+        }
+
+        public IQueryable<WaterpumpProject> GetWaterPumpProjectByQuery(/*string projectType,*/ string projectName)
+        {
+            /*if (projectType != null || projectName == " ")
+            {
+                ProjectType pt = (ProjectType)Enum.Parse(typeof(ProjectType), projectType);
+
+                return _waterpumpProjectRepository.GetAll().Where(p => p.ProjectType == pt);
+            }
+            else if (projectType == null || projectName != "")
+            {
+                return _waterpumpProjectRepository.GetAll().Where(p => p.NameOfProject == projectName);
+            }*/
+            if (projectName != null)
+            {
+                return _waterpumpProjectRepository.GetAll().Where(p => p.NameOfProject == projectName);
+            }
+            else
+            {
+                return _waterpumpProjectRepository.GetAll();
+                throw new Exception("get all loop");
+            }
         }
 
         public async Task<WaterpumpProject> AddWaterpumpProject(WaterpumpProjectDTO waterpumpProjectDTO)

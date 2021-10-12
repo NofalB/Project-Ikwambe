@@ -16,6 +16,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace ProjectIkwambe.Controllers
 {
@@ -38,13 +39,16 @@ namespace ProjectIkwambe.Controllers
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid donation ID", Description = "Invalid donation ID was provided")]
 		public async Task<HttpResponseData> GetDonations([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "donations")] HttpRequestData req, FunctionContext executionContext)
 		{
-			{
-				HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
+            string projectId = HttpUtility.ParseQueryString(req.Url.Query).Get("projectId");
+            string userId = HttpUtility.ParseQueryString(req.Url.Query).Get("userId");
 
-				await response.WriteAsJsonAsync(await _donationService.GetAllDonationsAsync());
+			HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
-				return response;
-			}
+			//await response.WriteAsJsonAsync(await _donationService.GetAllDonationsAsync());
+			await response.WriteAsJsonAsync(_donationService.GetDonationByQueryOrGetAll(userId, projectId));
+
+			return response;
+		
 		}
 
 		//get byId

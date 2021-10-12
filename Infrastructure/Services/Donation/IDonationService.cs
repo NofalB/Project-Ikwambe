@@ -1,6 +1,7 @@
 ﻿using Domain;
 using Domain.DTO;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Services
@@ -13,5 +14,7 @@ namespace Infrastructure.Services
 
         Task<Donation> AddDonation(DonationDTO donation);
 
+        //query
+        IQueryable<Donation> GetDonationByQueryOrGetAll(string userId, string projectId);
     }
 }

@@ -20,6 +20,7 @@ using System.Security.Claims;
 using Domain.DTO;
 using Microsoft.Extensions.Primitives;
 using Microsoft.AspNetCore.WebUtilities;
+using System.Web;
 
 namespace ProjectIkwambe.Controllers
 {
@@ -136,26 +137,30 @@ namespace ProjectIkwambe.Controllers
         
         [Function(nameof(WaterpumpHttpTrigger.GetWaterpumpByQuery))]
         [OpenApiOperation(operationId: "GetWaterpumpByQuery", tags: new[] { "Waterpumps" }, Summary = "query all waterpumps", Description = "return query waterpumps", Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiParameter(name: "projecttype", In = ParameterLocation.Query, Required = false, Type = typeof(List<ProjectType>), Summary = "project type value", Description = "Project type values that need to be considered for filter", Visibility = OpenApiVisibilityType.Important)]
-        //[OpenApiParameter(name: "projectName", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "The name of the waterpump", Description = "the waterpump from the database using the name provided", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WaterpumpProject), Summary = "successful operation", Description = "successful operation", Example = typeof(DummyWaterpumpProjectExamples))]
+        //[OpenApiParameter(name: "projecttype", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "project type value", Description = "Project type values that need to be considered for filter", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiParameter(name: "projectName", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "The name of the waterpump", Description = "the waterpump from the database using the name provided", Visibility = OpenApiVisibilityType.Important)]
         public async Task<HttpResponseData> GetWaterpumpByQuery([HttpTrigger(AuthorizationLevel.Anonymous, "GET")] HttpRequestData req, FunctionContext executionContext)
         {
-            Dictionary<string, StringValues> queryParams = QueryHelpers.ParseQuery(req.Url.Query);
-            //Dictionary<string, StringValues> queryParams1 = QueryHelpers.ParseQuery(req.Url.Query);
+            string projectName = HttpUtility.ParseQueryString(req.Url.Query).Get("projectName");
+            //string projectType = HttpUtility.ParseQueryString(req.Url.Query).Get("projecttype");
 
-            string projectType = queryParams["projecttype"];
+            //ProjectType projectType = (ProjectType)Enum.Parse(typeof(ProjectType), HttpUtility.ParseQueryString(req.Url.Query).Get("projecttype"));
 
-            //string projectName = queryParams["projectName"];
-
-            //Logger.LogInformation("this is shown at projectName: " + projectName);
-            Logger.LogInformation("this is shown at projecttype: " + projectType);
-
+            //Logger.LogInformation("this is shown at projecttype: " + projectType);
+            //Logger.LogInformation("this is shown at projectname: " + projectName);
 
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
-           
-            await response.WriteAsJsonAsync(await _waterpumpProjectService.GetWaterPumpByProjectType(projectType));
 
+            //await response.WriteAsJsonAsync(_waterpumpProjectService.GetWaterPumpByProjectType1(projectType));
+            await response.WriteAsJsonAsync(_waterpumpProjectService.GetWaterPumpProjectByQuery(/*projectType,*/ projectName));
+
+            //Dictionary<string, StringValues> queryParams = QueryHelpers.ParseQuery(req.Url.Query);
+            //string projectType = queryParams["projecttype"];
+
+            //Dictionary<string, StringValues> queryParams1 = QueryHelpers.ParseQuery(req.Url.Query);
+            //string projectName = queryParams["projectName"];
+            //Logger.LogInformation("this is shown at projectName: " + projectName);
             // List<WaterpumpProject> wp = new List<WaterpumpProject>();
             /*if(projectName != "" && projectType == "") 
             {
