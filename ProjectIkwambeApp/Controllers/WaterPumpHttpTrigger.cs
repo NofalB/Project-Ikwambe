@@ -37,7 +37,6 @@ namespace ProjectIkwambe.Controllers
 
         //get all the waterpumps
         [Function(nameof(WaterpumpHttpTrigger.GetWaterpumps))]
-        [Auth]
         [OpenApiOperation(operationId: "getWaterpump", tags: new[] { "Waterpumps" }, Summary = "Find all waterpumps", Description = "return all waterpumps", Visibility = OpenApiVisibilityType.Important)]
         //[OpenApiSecurity("petstore_auth", SecuritySchemeType.Http, In = OpenApiSecurityLocationType.Header, Scheme = OpenApiSecuritySchemeType.Bearer, BearerFormat = "JWT")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WaterpumpProject), Summary = "successful operation", Description = "successful operation", Example = typeof(DummyWaterpumpProjectExamples))]
@@ -47,7 +46,6 @@ namespace ProjectIkwambe.Controllers
         [OpenApiParameter(name: "projectName", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "The name of the waterpump", Description = "the waterpump from the database using the name provided", Visibility = OpenApiVisibilityType.Important)]
         public async Task<HttpResponseData> GetWaterpumps([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "waterpumps")] HttpRequestData req, FunctionContext executionContext) 
         {
-
             string projectName = HttpUtility.ParseQueryString(req.Url.Query).Get("projectName");
             string projectType = HttpUtility.ParseQueryString(req.Url.Query).Get("projecttype");
 
@@ -56,15 +54,6 @@ namespace ProjectIkwambe.Controllers
             await response.WriteAsJsonAsync(_waterpumpProjectService.GetWaterPumpProjectByQuery(projectType, projectName));
            
             return response;
-
-            /*return await RoleChecker.ExecuteForUser(req, executionContext, async (ClaimsPrincipal Admin) => {
-
-                HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
-
-                await response.WriteAsJsonAsync(_waterpumpProjectService.GetAllWaterPumpProjects());
-
-                return response;
-            });*/
         }
 
         //get water pump information by ID
@@ -85,19 +74,24 @@ namespace ProjectIkwambe.Controllers
 
         //add water pumps
         [Function(nameof(WaterpumpHttpTrigger.AddWaterpumps))]
+        [Auth]
         [OpenApiOperation(operationId: "addWaterPumps", tags: new[] { "Waterpumps" }, Summary = "Add a new waterpump to the database", Description = "This add waterpump information to the database.", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(WaterpumpProjectDTO), Required = true, Description = "waterpump object that needs to be added to the database")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WaterpumpProjectDTO), Summary = "New waterpump details added", Description = "New waterpump details added to the database", Example = typeof(DummyWaterpumpProjectExample))]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Invalid input", Description = "Invalid input")]
-        public async Task<HttpResponseData> AddWaterpumps([HttpTrigger(AuthorizationLevel.Function, "POST", Route = "waterpumps")] HttpRequestData req, FunctionContext executionContext)
+        public async Task<HttpResponseData> AddWaterpumps([HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "waterpumps")] HttpRequestData req, FunctionContext executionContext)
         {
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            return await RoleChecker.ExecuteForUser(req, executionContext, async (ClaimsPrincipal User) => {
 
-            WaterpumpProjectDTO waterpumpDTO = JsonConvert.DeserializeObject<WaterpumpProjectDTO>(requestBody);
+                string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
-            HttpResponseData response = req.CreateResponse(HttpStatusCode.Created);
-            await response.WriteAsJsonAsync(await _waterpumpProjectService.AddWaterpumpProject(waterpumpDTO));
-            return response;
+                WaterpumpProjectDTO waterpumpDTO = JsonConvert.DeserializeObject<WaterpumpProjectDTO>(requestBody);
+
+                HttpResponseData response = req.CreateResponse(HttpStatusCode.Created);
+                await response.WriteAsJsonAsync(await _waterpumpProjectService.AddWaterpumpProject(waterpumpDTO));
+                return response;
+            
+            });
         }
 
         //edit waterpump by id

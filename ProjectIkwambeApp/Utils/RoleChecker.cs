@@ -1,18 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProjectIkwambe.Utils
 {
@@ -59,9 +51,8 @@ namespace ProjectIkwambe.Utils
 			try
 			{
 				ClaimsPrincipal User = ExecutionContext.GetUser();
-				//ClaimsPrincipal Admin = ExecutionContext.GetAdmin();
 
-				if (!User.IsInRole("User")/* || !Admin.IsInRole("Admin")*/)
+				if (!User.IsInRole("User"))
 				{
 					HttpResponseData Response = Request.CreateResponse(HttpStatusCode.Forbidden);
 
@@ -79,8 +70,35 @@ namespace ProjectIkwambe.Utils
 			}
 			catch (Exception e)
 			{
-				//Logger.LogError(e.Message);
+				HttpResponseData Response = Request.CreateResponse(HttpStatusCode.Unauthorized);
+				return Response;
+			}
+		}
 
+		internal static async Task<HttpResponseData> ExecuteForAdmin(HttpRequestData Request, FunctionContext ExecutionContext, Func<ClaimsPrincipal, Task<HttpResponseData>> Delegate)
+		{
+			try
+			{
+				ClaimsPrincipal User = ExecutionContext.GetAdmin();
+
+				if (!User.IsInRole("Admin"))
+				{
+					HttpResponseData Response = Request.CreateResponse(HttpStatusCode.Forbidden);
+
+					return Response;
+				}
+				try
+				{
+					return await Delegate(User).ConfigureAwait(false);
+				}
+				catch (Exception e)
+				{
+					HttpResponseData Response = Request.CreateResponse(HttpStatusCode.BadRequest);
+					return Response;
+				}
+			}
+			catch (Exception e)
+			{
 				HttpResponseData Response = Request.CreateResponse(HttpStatusCode.Unauthorized);
 				return Response;
 			}
