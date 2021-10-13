@@ -16,8 +16,6 @@ namespace Infrastructure.DBContext
         public DbSet<Story> Stories { get; set; }
         
         public DbSet<WaterpumpProject> WaterpumpProject { get; set; }
-        public DbSet<Transaction> Transactions { get; set; }
-
 
         public IkwambeContext(DbContextOptions options) : base(options)
         {
@@ -29,42 +27,26 @@ namespace Infrastructure.DBContext
             modelBuilder.HasDefaultContainer("IkambeContainer"); // sets the default container
 
             modelBuilder.Entity<Donation>()
-                .ToContainer(nameof(Donations)); // sets the container
-
-            modelBuilder.Entity<Donation>() // EF Core adds a discriminator value to identify the entity type that a given item represent
-                 .HasNoDiscriminator(); // HasNoDiscriminator() removes the discriminator since no other entity type will be stored in this container
-
-             modelBuilder.Entity<Donation>()
-                 .HasPartitionKey(d => d.PartitionKey);  // sets partion key
-
-             modelBuilder.Entity<Donation>()
-                 .UseETagConcurrency();
+                .ToContainer(nameof(Donations))
+                                        
+                 // EF Core adds a discriminator value to identify the entity type that a given item represent
+                .HasNoDiscriminator() // HasNoDiscriminator() removes the discriminator since no other entity type will be stored in this container
+                .HasPartitionKey(d => d.PartitionKey)
+                .UseETagConcurrency();
 
             // users
             modelBuilder.Entity<User>()
-               .ToContainer(nameof(Users)); // sets the container
-
-             modelBuilder.Entity<User>() // EF Core adds a discriminator value to identify the entity type that a given item represent
-                 .HasNoDiscriminator(); // HasNoDiscriminator() removes the discriminator since no other entity type will be stored in this container
-
-             modelBuilder.Entity<User>()
-                 .HasPartitionKey(u => u.PartitionKey);  // sets partion key
-
-             modelBuilder.Entity<User>()
-                 .UseETagConcurrency();
+               .ToContainer(nameof(Users))
+               .HasNoDiscriminator()
+               .HasPartitionKey(u => u.PartitionKey)
+               .UseETagConcurrency();
 
             // story
             modelBuilder.Entity<Story>()
-               .ToContainer(nameof(Story));
-
-            modelBuilder.Entity<Story>()
-                .HasNoDiscriminator();
-
-            modelBuilder.Entity<Story>()
-                .HasPartitionKey(s => s.PartitionKey);  // sets partion key
-
-            modelBuilder.Entity<Story>()
-                .UseETagConcurrency();
+               .ToContainer(nameof(Story))
+               .HasNoDiscriminator()
+               .HasPartitionKey(s => s.PartitionKey)
+               .UseETagConcurrency();
 
 
             //waterpump and coordinates
@@ -73,49 +55,10 @@ namespace Infrastructure.DBContext
                 .HasKey(w => w.ProjectId);
 
             modelBuilder.Entity<WaterpumpProject>()
-                .HasNoDiscriminator();
-            
-            modelBuilder.Entity<WaterpumpProject>()
-                .HasPartitionKey(d => d.PartitionKey);
-
-            modelBuilder.Entity<WaterpumpProject>()
+                .HasNoDiscriminator()
+                .HasPartitionKey(d => d.PartitionKey)
+                .UseETagConcurrency()
                 .OwnsOne(o => o.Coordinates);
-
-            modelBuilder.Entity<WaterpumpProject>()
-                .UseETagConcurrency();
-
-            //transaction and its classes
-            modelBuilder.Entity<Transaction>()
-                .ToContainer(nameof(Transaction))
-                .HasKey(t => t.TransactionId);
-
-            modelBuilder.Entity<Transaction>()
-                .HasPartitionKey(t => t.PartitionKey);
-
-            modelBuilder.Entity<Transaction>()
-                .OwnsMany(t => t.Links);
-
-            modelBuilder.Entity<Transaction>()
-                .OwnsMany(t => t.PurchaseUnits);
-
-            modelBuilder.Entity<Transaction>()
-                .OwnsOne(t => t.Payer);
-
-            modelBuilder.Entity<Transaction>()
-                .UseETagConcurrency();
-
-            modelBuilder.Entity<Payments>()
-                .OwnsMany(p => p.Captures);
-
-            modelBuilder.Entity<Amount>()
-                .Property(a => a.AmountId).ValueGeneratedOnAdd();
-
-            modelBuilder.Entity<Name>()
-                .Property(n => n.NameId).ValueGeneratedOnAdd();
-
-            modelBuilder.Entity<Payee>()
-                .Property(p => p.PayeeId).ValueGeneratedOnAdd();
-
         }
     }
 }

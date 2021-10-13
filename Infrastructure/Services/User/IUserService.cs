@@ -19,5 +19,7 @@ namespace Infrastructure.Services
         Task<User> UpdateUser(User user);
 
         Task DeleteUserAsync(string userId);
+
+        IQueryable<User> GetUserByQueryOrGetAll(string firstname, string lastname, string subcribe);
     }
 }

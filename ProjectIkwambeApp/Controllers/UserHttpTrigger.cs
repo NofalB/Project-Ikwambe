@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
+using System.Web;
 using Domain;
 using Domain.DTO;
 using Infrastructure.Services;
@@ -29,15 +30,23 @@ namespace ProjectIkwambe.Controllers
 
 		[Function(nameof(UserHttpTrigger.GetUsers))]
 		[OpenApiOperation(operationId: "getUsers", tags: new[] { "Users" }, Summary = "Get all users", Description = "Returns a list of users.", Visibility = OpenApiVisibilityType.Important)]
+		[OpenApiParameter(name: "firstName", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "The firstname of the user", Description = "The firstname data from the database using the firstname provided", Visibility = OpenApiVisibilityType.Important)]
+		[OpenApiParameter(name: "lasttName", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "The lastname of the user", Description = "The lastname data from the database using the lastname provided", Visibility = OpenApiVisibilityType.Important)]
+		[OpenApiParameter(name: "subscription", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "The subcription of the user", Description = "return a list of user with their subscription", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(User), Summary = "successful operation", Description = "successful operation", Example = typeof(DummyUserExamples))]
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Check connection", Description = "Check connection")]
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "User not found", Description = "User not found")]
 		public async Task<HttpResponseData> GetUsers([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "users")] HttpRequestData req, FunctionContext executionContext)
 		{
+			string firstName = HttpUtility.ParseQueryString(req.Url.Query).Get("firstName");
+			string lastName = HttpUtility.ParseQueryString(req.Url.Query).Get("lasttName");
+			string subcription = HttpUtility.ParseQueryString(req.Url.Query).Get("subscription");
+
 			// Generate output
 			HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
-			await response.WriteAsJsonAsync(await _userService.GetAllUsers());
+			//await response.WriteAsJsonAsync(await _userService.GetAllUsers());
+			await response.WriteAsJsonAsync(_userService.GetUserByQueryOrGetAll(firstName, lastName, subcription));
 
 			return response;
 		}

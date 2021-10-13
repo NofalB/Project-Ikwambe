@@ -8,26 +8,14 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
-    public class CosmosRepository<TEntity> : ICosmosRepository<TEntity> where TEntity : class, new()
+    public class CosmosWriteRepository<TEntity> : ICosmosWriteRepository<TEntity> where TEntity : class, new()
     {
 
         protected readonly IkwambeContext _ikambeContext;
 
-        public CosmosRepository(IkwambeContext ikambeContext)
+        public CosmosWriteRepository(IkwambeContext ikambeContext)
         {
             _ikambeContext = ikambeContext;
-        }
-
-        public IQueryable<TEntity> GetAll()
-        {
-            var result = _ikambeContext.Set<TEntity>();
-
-            if (result == null)
-            {
-                throw new Exception($"Couldn't retrieve entities of type: {typeof(TEntity)}.");
-            }
-
-            return result;
         }
 
         public async Task<TEntity> AddAsync(TEntity entity)
