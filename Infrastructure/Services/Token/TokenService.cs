@@ -70,7 +70,7 @@ namespace Infrastructure.Services
                // if(userExist.Role == Role.Admin)
                // {
                     JwtSecurityToken AdminToken = await CreateToken(new Claim[] {
-                    new Claim(ClaimTypes.Role, userExist.Role.ToString()),
+                    //new Claim(ClaimTypes.Role, userExist.Role.ToString()),
                     new Claim(ClaimTypes.Role, userExist.Role.ToString()),
                     new Claim(ClaimTypes.NameIdentifier, userExist.UserId.ToString()),
                     new Claim(ClaimTypes.Email, userExist.Email),

@@ -79,9 +79,9 @@ namespace ProjectIkwambe.Utils
 		{
 			try
 			{
-				ClaimsPrincipal User = ExecutionContext.GetAdmin();
+				ClaimsPrincipal Admin = ExecutionContext.GetAdmin();
 
-				if (!User.IsInRole("Admin"))
+				if (!Admin.IsInRole("Admin"))
 				{
 					HttpResponseData Response = Request.CreateResponse(HttpStatusCode.Forbidden);
 
@@ -89,7 +89,7 @@ namespace ProjectIkwambe.Utils
 				}
 				try
 				{
-					return await Delegate(User).ConfigureAwait(false);
+					return await Delegate(Admin).ConfigureAwait(false);
 				}
 				catch (Exception e)
 				{

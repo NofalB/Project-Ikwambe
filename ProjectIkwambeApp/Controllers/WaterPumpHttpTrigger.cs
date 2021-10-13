@@ -81,7 +81,7 @@ namespace ProjectIkwambe.Controllers
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Invalid input", Description = "Invalid input")]
         public async Task<HttpResponseData> AddWaterpumps([HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "waterpumps")] HttpRequestData req, FunctionContext executionContext)
         {
-            return await RoleChecker.ExecuteForUser(req, executionContext, async (ClaimsPrincipal User) => {
+            return await RoleChecker.ExecuteForAdmin(req, executionContext, async (ClaimsPrincipal Admin) => {
 
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
