@@ -53,13 +53,12 @@ namespace ProjectIkwambe.Controllers
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid transaction ID", Description = "Invalid transaction ID was provided")]
         public async Task<HttpResponseData> GetTransactionsById([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "dbtransactions/{transactionId}")] HttpRequestData req, FunctionContext executionContext)
         {
-            {
-                string transactionId = HttpUtility.ParseQueryString(req.Url.Query).Get("transactionId");
+            string transactionId = HttpUtility.ParseQueryString(req.Url.Query).Get("transactionId");
 
-                HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
-                await response.WriteAsJsonAsync(await _transactionService.GetTransactionById(transactionId));
-                return response;
-            }
+            HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
+            await response.WriteAsJsonAsync(await _transactionService.GetTransactionById(transactionId));
+            return response;
+            
         }
 
         [Function(nameof(TransactionHttpTrigger.GetTransactionsPayPal))]

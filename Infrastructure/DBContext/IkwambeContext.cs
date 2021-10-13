@@ -59,6 +59,34 @@ namespace Infrastructure.DBContext
                 .HasPartitionKey(d => d.PartitionKey)
                 .UseETagConcurrency()
                 .OwnsOne(o => o.Coordinates);
+
+            //transaction and its classes
+            modelBuilder.Entity<Transaction>()
+                .ToContainer(nameof(Transaction))
+                .HasKey(t => t.TransactionId);
+
+            modelBuilder.Entity<Transaction>()
+                .HasPartitionKey(t => t.PartitionKey)
+                .UseETagConcurrency()
+                .OwnsMany(t => t.Links);
+
+            modelBuilder.Entity<Transaction>()
+                .OwnsMany(t => t.PurchaseUnits);
+
+            modelBuilder.Entity<Transaction>()
+                .OwnsOne(t => t.Payer);
+
+            modelBuilder.Entity<Payments>()
+                .OwnsMany(p => p.Captures);
+
+            modelBuilder.Entity<Amount>()
+                .Property(a => a.AmountId).ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<Name>()
+                .Property(n => n.NameId).ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<Payee>()
+                .Property(p => p.PayeeId).ValueGeneratedOnAdd();
         }
     }
 }
