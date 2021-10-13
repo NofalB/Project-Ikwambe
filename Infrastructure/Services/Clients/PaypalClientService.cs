@@ -28,11 +28,11 @@ namespace Infrastructure.Services.Transactions
             return TransactionDataObj;
         }
 
-        public async Task<CreateTransaction> GetCheckoutUrl(string currencyCode, string value)
+        public async Task<CheckoutUrl> GetCheckoutUrl(string currencyCode, string value)
         {
             var TransactionData = await _client.GetAsync(_client.BaseAddress+"createorder?currency=" + currencyCode + "&value=" + value);
             var TransactionDataResponseObj = await TransactionData.Content.ReadAsStringAsync();
-            var TransactionDataObj = JsonConvert.DeserializeObject<CreateTransaction>(TransactionDataResponseObj);
+            var TransactionDataObj = JsonConvert.DeserializeObject<CheckoutUrl>(TransactionDataResponseObj);
 
             return TransactionDataObj;
         }

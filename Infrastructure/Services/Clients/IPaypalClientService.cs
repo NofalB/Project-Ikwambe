@@ -9,7 +9,7 @@ namespace Infrastructure.Services.Clients
 {
     public interface IPaypalClientService
     {
-        Task<CreateTransaction> GetCheckoutUrl(string currencyCode, string value);
+        Task<CheckoutUrl> GetCheckoutUrl(string currencyCode, string value);
         Task<Transaction> GetTransaction(string orderId);
         Task<Transaction> CaptureTransaction(string orderId);
     }

@@ -182,11 +182,18 @@ namespace Domain
     }
 
 
-    public class CreateTransaction
+    public class CheckoutUrl
     {
+        [JsonProperty("message")]
         public string Message { get; set; }
+
+        [JsonProperty("link")]
         public string Link { get; set; }
+
+        [JsonProperty("orderId")]
         public string TransactionId { get; set; }
+
+        [JsonProperty("status")]
         public string Status { get; set; }
     }
 

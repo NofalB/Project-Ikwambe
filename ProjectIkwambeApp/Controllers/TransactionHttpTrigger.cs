@@ -54,11 +54,10 @@ namespace ProjectIkwambe.Controllers
         public async Task<HttpResponseData> GetTransactionsById([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "dbtransactions/{transactionId}")] HttpRequestData req, FunctionContext executionContext)
         {
             {
-                HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
                 string transactionId = HttpUtility.ParseQueryString(req.Url.Query).Get("transactionId");
 
+                HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
                 await response.WriteAsJsonAsync(await _transactionService.GetTransactionById(transactionId));
-
                 return response;
             }
         }
@@ -69,24 +68,18 @@ namespace ProjectIkwambe.Controllers
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Transaction), Summary = "Successfully fetched transactions", Description = "transactions successfully retrieved")]
         public async Task<HttpResponseData> GetTransactionsPayPal([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "transactions/{transactionId}")] HttpRequestData req, FunctionContext executionContext)
         {
-            {
-                string transactionId = HttpUtility.ParseQueryString(req.Url.Query).Get("transactionId");
+            string transactionId = HttpUtility.ParseQueryString(req.Url.Query).Get("transactionId");
+            var transaction = await _paypalClientService.GetTransaction(transactionId);
 
-                var transaction = await _paypalClientService.GetTransaction(transactionId);
-
-
-                // Generate output
-                HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
-
-                await response.WriteAsJsonAsync(transaction);
-
-                return response;
-            }
+            // Generate output
+            HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
+            await response.WriteAsJsonAsync(transaction);
+            return response;
         }
 
         [Function(nameof(TransactionHttpTrigger.CreateTransactions))]
 		[OpenApiOperation(operationId: "transaction", tags: new[] { "PaypalTransactions" }, Summary = "Create a transaction URL", Description = "This will create a transaction link", Visibility = OpenApiVisibilityType.Important)]
-		[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CreateTransaction), Summary = "New transaction details", Description = "New transaction details")]
+		[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CheckoutUrl), Summary = "New transaction details", Description = "New transaction details")]
 		[OpenApiParameter(name: "currency", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "The currency required for the transaction creation", Description = "Creates the transaction with specified currency type", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiParameter(name: "value", In = ParameterLocation.Query, Required = true, Type = typeof(int), Summary = "The value/amount required for the transaction creation", Description = "Creates the transaction with specified value amount", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Invalid input", Description = "Invalid input")]
@@ -99,12 +92,9 @@ namespace ProjectIkwambe.Controllers
 
                 var checkoutUrl =await _paypalClientService.GetCheckoutUrl(currencyCode, value);
 
-                
                 // Generate output
                 HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
-
                 await response.WriteAsJsonAsync(checkoutUrl);
-
                 return response;
             }
             return null;
