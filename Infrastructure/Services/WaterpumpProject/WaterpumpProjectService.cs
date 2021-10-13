@@ -12,27 +12,30 @@ namespace Infrastructure.Services
 {
     public class WaterpumpProjectService : IWaterpumpProjectService
     {
-        private readonly ICosmosRepository<WaterpumpProject> _waterpumpProjectRepository;
+        private readonly ICosmosReadRepository<WaterpumpProject> _waterpumpProjectReadRepository;
+        private readonly ICosmosWriteRepository<WaterpumpProject> _waterpumpProjectWriteRepository;
 
-        public WaterpumpProjectService(ICosmosRepository<WaterpumpProject> waterpumpProjectRepository)
+        public WaterpumpProjectService(ICosmosReadRepository<WaterpumpProject> waterpumpProjectReadRepository,
+            ICosmosWriteRepository<WaterpumpProject> waterpumpProjectWriteRepository)
         {
-            _waterpumpProjectRepository = waterpumpProjectRepository;
+            _waterpumpProjectReadRepository = waterpumpProjectReadRepository;
+            _waterpumpProjectWriteRepository = waterpumpProjectWriteRepository;
         }
 
         public async Task<IEnumerable<WaterpumpProject>> GetAllWaterPumpProjects()
         {
-            return await _waterpumpProjectRepository.GetAll().ToListAsync();
+            return await _waterpumpProjectReadRepository.GetAll().ToListAsync();
         }
 
         public async Task<WaterpumpProject> GetWaterPumpProjectById(string projectId)
         {
             Guid id = Guid.Parse(projectId);
-            return await _waterpumpProjectRepository.GetAll().FirstOrDefaultAsync(w => w.ProjectId == id);
+            return await _waterpumpProjectReadRepository.GetAll().FirstOrDefaultAsync(w => w.ProjectId == id);
         }
 
         public  async Task<WaterpumpProject> GetWaterpumpProjectByName(string projectName)
         {
-            WaterpumpProject p = await _waterpumpProjectRepository.GetAll().FirstOrDefaultAsync(w => w.NameOfProject == projectName);
+            WaterpumpProject p = await _waterpumpProjectReadRepository.GetAll().FirstOrDefaultAsync(w => w.NameOfProject == projectName);
             return p;
         }
 
@@ -40,19 +43,19 @@ namespace Infrastructure.Services
         {
             ProjectType pt = (ProjectType)Enum.Parse(typeof(ProjectType), projectType);
 
-            return await _waterpumpProjectRepository.GetAll().FirstOrDefaultAsync(p => p.ProjectType == pt);
+            return await _waterpumpProjectReadRepository.GetAll().FirstOrDefaultAsync(p => p.ProjectType == pt);
         }
 
         public IQueryable<WaterpumpProject>GetWaterPumpByProjectType1(string projectType)
         {
             ProjectType pt = (ProjectType)Enum.Parse(typeof(ProjectType), projectType);
 
-            return _waterpumpProjectRepository.GetAll().Where(p => p.ProjectType == pt);
+            return _waterpumpProjectReadRepository.GetAll().Where(p => p.ProjectType == pt);
         }
 
         public IQueryable<WaterpumpProject> GetWaterPumpProjectByQuery(string projectType, string projectName)
         {
-            IQueryable<WaterpumpProject> waterpumpProjects = _waterpumpProjectRepository.GetAll();
+            IQueryable<WaterpumpProject> waterpumpProjects = _waterpumpProjectReadRepository.GetAll();
 
 
             if(projectType != null)
@@ -86,7 +89,7 @@ namespace Infrastructure.Services
                     ProjectType = waterpumpProjectDTO.ProjectType,
                     PartitionKey = waterpumpProjectDTO.ProjectType.ToString()
                 };
-                return await _waterpumpProjectRepository.AddAsync(wp);
+                return await _waterpumpProjectWriteRepository.AddAsync(wp);
             }
             else
             {
@@ -96,13 +99,13 @@ namespace Infrastructure.Services
 
         public async Task<WaterpumpProject> UpdateWaterPumpProject(WaterpumpProject waterpumProject)
         {
-            return await _waterpumpProjectRepository.Update(waterpumProject);
+            return await _waterpumpProjectWriteRepository.Update(waterpumProject);
         }
 
         public async Task DeleteWaterpumpProjectAsync(string projectId)
         {
             WaterpumpProject waterPumpProject = await GetWaterPumpProjectById(projectId);
-            await _waterpumpProjectRepository.Delete(waterPumpProject);
+            await _waterpumpProjectWriteRepository.Delete(waterPumpProject);
         }
     }
 }

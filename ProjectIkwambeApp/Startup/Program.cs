@@ -45,7 +45,8 @@ namespace ProjectIkwambe.Startup {
             });
 
 			// Repositories
-			Services.AddTransient(typeof(ICosmosRepository<>), typeof(CosmosRepository<>));
+			Services.AddTransient(typeof(ICosmosReadRepository<>), typeof(CosmosReadRepository<>));
+			Services.AddTransient(typeof(ICosmosWriteRepository<>), typeof(CosmosWriteRepository<>));
 
 
             // Services

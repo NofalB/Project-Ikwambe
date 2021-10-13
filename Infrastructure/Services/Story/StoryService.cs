@@ -23,11 +23,14 @@ namespace Infrastructure.Services
         private BlobContainerClient containerClient;
         private readonly BlobCredentialOptions _blobCredentialOptions;
 
-        private readonly ICosmosRepository<Story> _storyRepository;
+        private readonly ICosmosReadRepository<Story> _storyReadRepository;
+        private readonly ICosmosWriteRepository<Story> _storyWriteRepository;
 
-        public StoryService(ICosmosRepository<Story> storyRepository, IOptions<BlobCredentialOptions> options)
+        public StoryService(ICosmosReadRepository<Story> storyReadRepository,
+            ICosmosWriteRepository<Story> storyWriteRepository, IOptions<BlobCredentialOptions> options)
         {
-            _storyRepository = storyRepository;
+            _storyReadRepository = storyReadRepository;
+            _storyWriteRepository = storyWriteRepository;
             _blobCredentialOptions = options.Value;
 
             blobServiceClient = new BlobServiceClient(_blobCredentialOptions.ConnectionString);
@@ -36,32 +39,32 @@ namespace Infrastructure.Services
 
         public async Task<IEnumerable<Story>> GetAllStories()
         {
-            return await _storyRepository.GetAll().ToListAsync();
+            return await _storyReadRepository.GetAll().ToListAsync();
         }
 
         public async Task<Story> GetStoryById(string storyId)
         {
             Guid id = Guid.Parse(storyId);
-            return await _storyRepository.GetAll().FirstOrDefaultAsync(s => s.StoryId == id);
+            return await _storyReadRepository.GetAll().FirstOrDefaultAsync(s => s.StoryId == id);
         }
         private async Task<Story> GetStoryByTitle(string title)
         {
-            return await _storyRepository.GetAll().FirstOrDefaultAsync(s => s.Title == title);
+            return await _storyReadRepository.GetAll().FirstOrDefaultAsync(s => s.Title == title);
         }
 
         private IQueryable<Story> GetStoryByAuthor(string Author)
         {
-            return _storyRepository.GetAll().Where(s => s.Author == Author);
+            return _storyReadRepository.GetAll().Where(s => s.Author == Author);
         }
 
         private async Task<Story> GetStoryByDate(DateTime dateTime)
         {
-            return await _storyRepository.GetAll().FirstOrDefaultAsync(s => s.PublishDate == dateTime);
+            return await _storyReadRepository.GetAll().FirstOrDefaultAsync(s => s.PublishDate == dateTime);
         }
 
         public IQueryable<Story> GetStoryByQuery(string author, string publishDate)
         {
-            IQueryable<Story> story = _storyRepository.GetAll();
+            IQueryable<Story> story = _storyReadRepository.GetAll();
 
             if(author!=null)
             {
@@ -92,7 +95,7 @@ namespace Infrastructure.Services
                 storyDTO.Description,
                 storyDTO.Author);
 
-                return await _storyRepository.AddAsync(story);
+                return await _storyWriteRepository.AddAsync(story);
             }
             else
             {
@@ -102,13 +105,13 @@ namespace Infrastructure.Services
 
         public async Task<Story> UpdateStory(Story story)
         {
-            return await _storyRepository.Update(story);
+            return await _storyWriteRepository.Update(story);
         }
 
         public async Task DeleteStory(string storyId)
         {
             Story story = await GetStoryById(storyId);
-            await _storyRepository.Delete(story);
+            await _storyWriteRepository.Delete(story);
         }
 
 

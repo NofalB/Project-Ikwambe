@@ -36,16 +36,15 @@ namespace ProjectIkwambe.Controllers
         [Function(nameof(StoryHttpTrigger.GetStories))]
         [OpenApiOperation(operationId: "getStories", tags: new[] { "Stories" }, Summary = "Get all stories", Description = "return all stories", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiParameter(name: "author", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "find story by author", Description = "the stroies from the database using the author provided", Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiParameter(name: "dateTime", In = ParameterLocation.Query, Required = false, Type = typeof(DateTime), Summary = "find story by date", Description = "the date from the database using the author provided", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiParameter(name: "publishDate", In = ParameterLocation.Query, Required = false, Type = typeof(DateTime), Summary = "find story by date", Description = "the date from the database using the author provided", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Story), Summary = "successful operation", Description = "successful operation", Example = typeof(DummyStoryExamples))]
         public async Task<HttpResponseData> GetStories([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "stories")] HttpRequestData req, FunctionContext executionContext)
         {
             string author = HttpUtility.ParseQueryString(req.Url.Query).Get("author");
-            string date = HttpUtility.ParseQueryString(req.Url.Query).Get("dateTime");
+            string publishDate = HttpUtility.ParseQueryString(req.Url.Query).Get("publishDate");
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
-            //await response.WriteAsJsonAsync(await _storyService.GetAllStories());
-            await response.WriteAsJsonAsync(_storyService.GetStoryByQuery(author, date));
+            await response.WriteAsJsonAsync(_storyService.GetStoryByQuery(author, publishDate));
 
             return response;
         }
