@@ -50,12 +50,12 @@ namespace Infrastructure.Services
         private IQueryable<User> GetListOfUserSubscription(string subscribe)
         {
             bool isSubscribe = bool.Parse(subscribe);
-            return _userRepository.GetAll().Where(u => u.Subscription == isSubscribe);
-        }*/
+            return _userReadRepository.GetAll().Where(u => u.Subscription == isSubscribe);
+        }
 
         public User UserCheck(string email, string password)
         {
-            User user = _userRepository.GetAll().FirstOrDefault(u => u.Email == email);
+            User user = _userReadRepository.GetAll().FirstOrDefault(u => u.Email == email);
             if(user== null)
             {
                 throw new Exception("The email you have provided does not exist");

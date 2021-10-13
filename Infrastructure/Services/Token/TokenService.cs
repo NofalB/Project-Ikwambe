@@ -67,32 +67,16 @@ namespace Infrastructure.Services
 
             if(userExist != null)
             {
-               // if(userExist.Role == Role.Admin)
-               // {
-                    JwtSecurityToken AdminToken = await CreateToken(new Claim[] {
-                    //new Claim(ClaimTypes.Role, userExist.Role.ToString()),
-                    new Claim(ClaimTypes.Role, userExist.Role.ToString()),
-                    new Claim(ClaimTypes.NameIdentifier, userExist.UserId.ToString()),
-                    new Claim(ClaimTypes.Email, userExist.Email),
-                    new Claim(ClaimTypes.Name, userExist.FirstName),
-                    new Claim(ClaimTypes.Surname, userExist.LastName),
-                    });
+                JwtSecurityToken Token = await CreateToken(new Claim[] {
+                //new Claim(ClaimTypes.Role, userExist.Role.ToString()),
+                new Claim(ClaimTypes.Role, userExist.Role.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, userExist.UserId.ToString()),
+                new Claim(ClaimTypes.Email, userExist.Email),
+                new Claim(ClaimTypes.Name, userExist.FirstName),
+                new Claim(ClaimTypes.Surname, userExist.LastName),
+                });
 
-                    return new LoginResult(AdminToken);
-                /*}
-                else if (userExist.Role == Role.User)
-                {
-                    JwtSecurityToken userToken = await CreateToken(new Claim[] {
-                    new Claim(ClaimTypes.Role, "User"),
-                    //new Claim(ClaimTypes.Role, userExist.Role.ToString()),
-                    new Claim(ClaimTypes.NameIdentifier, userExist.UserId.ToString()),
-                    new Claim(ClaimTypes.Email, userExist.Email),
-                    new Claim(ClaimTypes.Name, userExist.FirstName),
-                    new Claim(ClaimTypes.Surname, userExist.LastName),
-                    });
-
-                    return new LoginResult(userToken);
-                }*/
+                return new LoginResult(Token);
             }
 
             throw new Exception("user does not exist");
