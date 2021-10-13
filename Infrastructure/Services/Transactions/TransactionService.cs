@@ -22,11 +22,12 @@ namespace Infrastructure.Services.Transactions
         {
             
             //Paypal payer name field returns null for full name and instead fills the given name and surname from purchase units, this fixes that
-            transaction.Payer.Name.FullName = transaction.Payer.Name.GivenName + transaction.Payer.Name.Surname;
+            transaction.Payer.Name.FullName = transaction.Payer.Name.GivenName;
             transaction.PurchaseUnits.ForEach(x => x.Shipping.ShippingId = Guid.NewGuid().ToString());
             //couldnt set they [key] attribute so have to set my own
-            transaction.Payer.Address.AddressId = transaction.Payer.Address.CountryCode;
-            transaction.PurchaseUnits.ForEach(x => x.Shipping.Address.AddressId = transaction.PurchaseUnits[0].Shipping.Address.PostalCode);
+            transaction.Payer.Address.AddressId = Guid.NewGuid().ToString();
+            transaction.PurchaseUnits.ForEach(x => x.Shipping.Address.AddressId = Guid.NewGuid().ToString());
+            transaction.PurchaseUnits.ForEach(p => p.Payments.PaymentsId = Guid.NewGuid().ToString());
 
             return await _transactionRepository.AddAsync(transaction);
         }

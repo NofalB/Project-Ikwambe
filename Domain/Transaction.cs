@@ -53,9 +53,11 @@ namespace Domain
         [JsonProperty("surname")]
         public string Surname { get; set; }
 
-        [Key]
         [JsonProperty("full_name")]
         public string FullName { get; set; }
+
+        public string NameId { get; set; }
+
     }
 
     public class Payer
@@ -75,12 +77,14 @@ namespace Domain
 
     public class Amount
     {
-        [Key]
         [JsonProperty("currency_code")]
         public string CurrencyCode { get; set; }
 
         [JsonProperty("value")]
         public string Value { get; set; }
+
+        public string AmountId { get; set; }
+
     }
 
     public class Payee
@@ -88,9 +92,11 @@ namespace Domain
         [JsonProperty("email_address")]
         public string EmailAddress { get; set; }
 
-        [Key]
         [JsonProperty("merchant_id")]
         public string MerchantId { get; set; }
+
+        public string PayeeId { get; set; }
+
     }
 
     public class Shipping
@@ -104,6 +110,33 @@ namespace Domain
         public string ShippingId { get; set; }
     }
 
+    public class Payments
+    {
+        public string PaymentsId { get; set; }
+
+        [JsonProperty("captures")]
+        public List<Capture> Captures { get; set; }
+    }
+
+    public class Capture
+    {
+
+        [JsonProperty("create_time")]
+        public DateTime CreateTime { get; set; }
+
+        [JsonProperty("final_capture")]
+        public bool FinalCapture { get; set; }
+
+        [JsonProperty("id")]
+        public string CaptureId { get; set; }
+
+        [JsonProperty("status")]
+        public string Status { get; set; }
+
+        [JsonProperty("update_time")]
+        public DateTime UpdateTime { get; set; }
+    }
+
     public class PurchaseUnit
     {
         [JsonProperty("amount")]
@@ -111,6 +144,9 @@ namespace Domain
 
         [JsonProperty("payee")]
         public Payee Payee { get; set; }
+
+        [JsonProperty("payments")]
+        public Payments Payments { get; set; }
 
         [JsonProperty("reference_id")]
         public string ReferenceId { get; set; }
