@@ -77,27 +77,24 @@ namespace ProjectIkwambe.Controllers
             return response;
         }
 
-        [Function(nameof(TransactionHttpTrigger.CreateTransactions))]
+        [Function(nameof(TransactionHttpTrigger.CreateCheckoutUrl))]
 		[OpenApiOperation(operationId: "transaction", tags: new[] { "PaypalTransactions" }, Summary = "Create a transaction URL", Description = "This will create a transaction link", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(CheckoutUrl), Summary = "New transaction details", Description = "New transaction details")]
 		[OpenApiParameter(name: "currency", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "The currency required for the transaction creation", Description = "Creates the transaction with specified currency type", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiParameter(name: "value", In = ParameterLocation.Query, Required = true, Type = typeof(int), Summary = "The value/amount required for the transaction creation", Description = "Creates the transaction with specified value amount", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Invalid input", Description = "Invalid input")]
-		public async Task<HttpResponseData> CreateTransactions([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "transactionsurl")] HttpRequestData req, FunctionContext executionContext)
+		public async Task<HttpResponseData> CreateCheckoutUrl([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "transactionsurl")] HttpRequestData req, FunctionContext executionContext)
 		{
-            if (!String.IsNullOrEmpty(req.Url.Query))
-            {
-                string currencyCode = HttpUtility.ParseQueryString(req.Url.Query).Get("currency");
-                string value = HttpUtility.ParseQueryString(req.Url.Query).Get("value");
+            string currencyCode = HttpUtility.ParseQueryString(req.Url.Query).Get("currency");
+            string value = HttpUtility.ParseQueryString(req.Url.Query).Get("value");
 
-                var checkoutUrl =await _paypalClientService.GetCheckoutUrl(currencyCode, value);
+            var checkoutUrl =await _paypalClientService.GetCheckoutUrl(currencyCode, value);
 
-                // Generate output
-                HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
-                await response.WriteAsJsonAsync(checkoutUrl);
-                return response;
-            }
-            return null;
+            // Generate output
+            HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
+            await response.WriteAsJsonAsync(checkoutUrl);
+            return response;
+         
         }
     }
 }
