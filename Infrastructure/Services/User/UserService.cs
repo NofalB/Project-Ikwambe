@@ -12,37 +12,39 @@ namespace Infrastructure.Services
 {
     public class UserService : IUserService
     {
-        private readonly ICosmosRepository<User> _userRepository;
+        private readonly ICosmosReadRepository<User> _userReadRepository;
+        private readonly ICosmosWriteRepository<User> _userWriteRepository;
 
-        public UserService(ICosmosRepository<User> userRepository)
+        public UserService(ICosmosReadRepository<User> userReadRepository, ICosmosWriteRepository<User> userWriteRepository)
         {
-            _userRepository = userRepository;
+            _userReadRepository = userReadRepository;
+            _userWriteRepository = userWriteRepository;
         }
 
         public async Task<IEnumerable<User>> GetAllUsers()
         {
-            return await _userRepository.GetAll().ToListAsync();
+            return await _userReadRepository.GetAll().ToListAsync();
         }
 
         public async Task<User> GetUserById(string userId)
         {
             Guid id = Guid.Parse(userId);
-            return await _userRepository.GetAll().FirstOrDefaultAsync(u => u.UserId == id);
+            return await _userReadRepository.GetAll().FirstOrDefaultAsync(u => u.UserId == id);
         }
 
         private async Task<User> GetUserByEmail(string email)
         {
-            return await _userRepository.GetAll().FirstOrDefaultAsync(u => u.Email == email);
+            return await _userReadRepository.GetAll().FirstOrDefaultAsync(u => u.Email == email);
         }
 
-/*        private IQueryable<User> GetUserByFirstName(string firstName)
+        private IQueryable<User> GetUserByFirstName(string firstName)
         {
-            return _userRepository.GetAll().Where(u => u.FirstName == firstName);
+            return _userReadRepository.GetAll().Where(u => u.FirstName == firstName);
         }
 
         private IQueryable<User> GetUserByLastName(string lastName)
         {
-            return _userRepository.GetAll().Where(u => u.LastName == lastName);
+            return _userReadRepository.GetAll().Where(u => u.LastName == lastName);
         }
 
         private IQueryable<User> GetListOfUserSubscription(string subscribe)
@@ -74,7 +76,7 @@ namespace Infrastructure.Services
         public IQueryable<User> GetUserByQueryOrGetAll(string firstname, string lastname, string subcribe)
         {
 
-            IQueryable<User> user = _userRepository.GetAll();
+            IQueryable<User> user = _userReadRepository.GetAll();
 
             if (firstname != null)
             {
@@ -105,7 +107,7 @@ namespace Infrastructure.Services
                 false
                 );
 
-                return await _userRepository.AddAsync(user);
+                return await _userWriteRepository.AddAsync(user);
             }
             else
             {
@@ -115,13 +117,13 @@ namespace Infrastructure.Services
 
         public async Task<User> UpdateUser(User user)
         {
-            return await _userRepository.Update(user);
+            return await _userWriteRepository.Update(user);
         }
 
         public async Task DeleteUserAsync(string userId)
         {
             User user = await GetUserById(userId);
-            await _userRepository.Delete(user);
+            await _userWriteRepository.Delete(user);
         }
     }
 }

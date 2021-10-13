@@ -1,9 +1,15 @@
-﻿using Domain;
+﻿using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using Azure.Storage.Blobs.Specialized;
+using Azure.Storage.Sas;
+using Domain;
 using Domain.DTO;
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,41 +18,53 @@ namespace Infrastructure.Services
 {
     public class StoryService : IStoryService
     {
-        private readonly ICosmosRepository<Story> _storyRepository;
 
-        public StoryService(ICosmosRepository<Story> storyRepository)
+        private BlobServiceClient blobServiceClient;
+        private BlobContainerClient containerClient;
+        private readonly BlobCredentialOptions _blobCredentialOptions;
+
+        private readonly ICosmosReadRepository<Story> _storyReadRepository;
+        private readonly ICosmosWriteRepository<Story> _storyWriteRepository;
+
+        public StoryService(ICosmosReadRepository<Story> storyReadRepository,
+            ICosmosWriteRepository<Story> storyWriteRepository, IOptions<BlobCredentialOptions> options)
         {
-            _storyRepository = storyRepository;
+            _storyReadRepository = storyReadRepository;
+            _storyWriteRepository = storyWriteRepository;
+            _blobCredentialOptions = options.Value;
+
+            blobServiceClient = new BlobServiceClient(_blobCredentialOptions.ConnectionString);
+            containerClient = blobServiceClient.GetBlobContainerClient(_blobCredentialOptions.ContainerName);
         }
 
         public async Task<IEnumerable<Story>> GetAllStories()
         {
-            return await _storyRepository.GetAll().ToListAsync();
+            return await _storyReadRepository.GetAll().ToListAsync();
         }
 
         public async Task<Story> GetStoryById(string storyId)
         {
             Guid id = Guid.Parse(storyId);
-            return await _storyRepository.GetAll().FirstOrDefaultAsync(s => s.StoryId == id);
+            return await _storyReadRepository.GetAll().FirstOrDefaultAsync(s => s.StoryId == id);
         }
         private async Task<Story> GetStoryByTitle(string title)
         {
-            return await _storyRepository.GetAll().FirstOrDefaultAsync(s => s.Title == title);
+            return await _storyReadRepository.GetAll().FirstOrDefaultAsync(s => s.Title == title);
         }
 
         private IQueryable<Story> GetStoryByAuthor(string Author)
         {
-            return _storyRepository.GetAll().Where(s => s.Author == Author);
+            return _storyReadRepository.GetAll().Where(s => s.Author == Author);
         }
 
         private async Task<Story> GetStoryByDate(DateTime dateTime)
         {
-            return await _storyRepository.GetAll().FirstOrDefaultAsync(s => s.PublishDate == dateTime);
+            return await _storyReadRepository.GetAll().FirstOrDefaultAsync(s => s.PublishDate == dateTime);
         }
 
         public IQueryable<Story> GetStoryByQuery(string author, string publishDate)
         {
-            IQueryable<Story> story = _storyRepository.GetAll();
+            IQueryable<Story> story = _storyReadRepository.GetAll();
 
             if(author!=null)
             {
@@ -77,7 +95,7 @@ namespace Infrastructure.Services
                 storyDTO.Description,
                 storyDTO.Author);
 
-                return await _storyRepository.AddAsync(story);
+                return await _storyWriteRepository.AddAsync(story);
             }
             else
             {
@@ -87,13 +105,63 @@ namespace Infrastructure.Services
 
         public async Task<Story> UpdateStory(Story story)
         {
-            return await _storyRepository.Update(story);
+            return await _storyWriteRepository.Update(story);
         }
 
         public async Task DeleteStory(string storyId)
         {
             Story story = await GetStoryById(storyId);
-            await _storyRepository.Delete(story);
+            await _storyWriteRepository.Delete(story);
+        }
+
+
+        public async Task UploadImage(string storyId, Stream fileStream, string fileName)
+        {
+            // Get a reference to a blob
+            BlobClient blobClient = containerClient.GetBlobClient(fileName);
+
+            // Upload the file
+            await blobClient.UploadAsync(fileStream, new BlobHttpHeaders { ContentType = "image/png" });
+
+            var imageUrl = GetServiceSasUriForBlob(blobClient);
+
+            var story = await GetStoryById(storyId);
+            story.ImageURL = imageUrl;
+
+            await UpdateStory(story);
+        }
+
+        private string GetServiceSasUriForBlob(BlobClient blobClient, string storedPolicyName = null)
+        {
+            string imageUrl = "";
+
+            // Check whether this BlobClient object has been authorized with Shared Key.
+            if (blobClient.CanGenerateSasUri)
+            {
+                // Create a SAS token that's valid for one hour.
+                BlobSasBuilder sasBuilder = new BlobSasBuilder()
+                {
+                    BlobContainerName = blobClient.GetParentBlobContainerClient().Name,
+                    BlobName = blobClient.Name,
+                    Resource = "b"
+                };
+
+                if (storedPolicyName == null)
+                {
+                    sasBuilder.ExpiresOn = DateTimeOffset.UtcNow.AddHours(1);
+                    sasBuilder.SetPermissions(BlobSasPermissions.Read |
+                        BlobSasPermissions.Write);
+                }
+                else
+                {
+                    sasBuilder.Identifier = storedPolicyName;
+                }
+
+                Uri sasUri = blobClient.GenerateSasUri(sasBuilder);
+                imageUrl = sasUri.AbsoluteUri;
+            }
+
+            return imageUrl;
         }
     }
 }
