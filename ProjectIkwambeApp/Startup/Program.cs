@@ -2,6 +2,7 @@ using Domain;
 using Infrastructure.DBContext;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
+using Infrastructure.Services.Clients;
 using Infrastructure.Services.Transactions;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Extensions.OpenApi;
@@ -54,7 +55,10 @@ namespace ProjectIkwambe.Startup {
             Services.AddScoped<IStoryService, StoryService>();
             Services.AddScoped<IWaterpumpProjectService, WaterpumpProjectService>();
 			Services.AddScoped<ITransactionService, TransactionService>();
+			Services.AddScoped<IPaypalClientService, PaypalClientService>();
 
+			Services.AddHttpClient<PaypalClientService>(c => c.BaseAddress = new System.Uri("https://paypalmicroserviceikwambe.azurewebsites.net/api/"));
+			
 		}
 	}
 }
