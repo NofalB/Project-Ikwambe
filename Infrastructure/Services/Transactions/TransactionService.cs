@@ -20,17 +20,23 @@ namespace Infrastructure.Services.Transactions
         }
         public async Task<Transaction> AddTransaction(Transaction transaction)
         {
-            transaction.links.ForEach(x => x.LinkId = Guid.NewGuid().ToString());
-            transaction.payer.PayerId= Guid.NewGuid().ToString();
-            transaction.purchase_units.ForEach(x => x.PurchaseUnitId = Guid.NewGuid().ToString());
-            transaction.purchase_units.ForEach(x => x.Amount.AmountId = Guid.NewGuid().ToString());
-            transaction.purchase_units.ForEach(x => x.payee.PayeeId = Guid.NewGuid().ToString());
-            transaction.purchase_units.ForEach(x => x.shipping.ShippingId = Guid.NewGuid().ToString());
-            transaction.purchase_units.ForEach(x => x.shipping.name.NameId = Guid.NewGuid().ToString());
-            transaction.payer.name.NameId= Guid.NewGuid().ToString();
-            transaction.purchase_units.ForEach(x => x.shipping.address.AddressId = Guid.NewGuid().ToString());
-            transaction.payer.address.AddressId = Guid.NewGuid().ToString();
-            transaction.payer.name.NameId = Guid.NewGuid().ToString();
+            //transaction.links.ForEach(x => x.LinkId = Guid.NewGuid().ToString());
+            //transaction.payer.PayerId= Guid.NewGuid().ToString();
+            //transaction.purchase_units.ForEach(x => x.PurchaseUnitId = Guid.NewGuid().ToString());
+            //transaction.purchase_units.ForEach(x => x.Amount.AmountId = Guid.NewGuid().ToString());
+            //transaction.purchase_units.ForEach(x => x.payee.PayeeId = Guid.NewGuid().ToString());
+            //payer name field returns null for full name and instead fills the given name and surname from purchase units, this fixes that
+            transaction.Payer.Name.FullName = transaction.Payer.Name.GivenName + transaction.Payer.Name.Surname;
+            transaction.PurchaseUnits.ForEach(x => x.Shipping.ShippingId = Guid.NewGuid().ToString());
+            //couldnt set they [key] attribute so have to set my own
+            transaction.Payer.Address.AddressId = transaction.Payer.Address.CountryCode;
+            transaction.PurchaseUnits.ForEach(x => x.Shipping.Address.AddressId = transaction.PurchaseUnits[0].Shipping.Address.PostalCode);
+
+            //transaction.purchase_units.ForEach(x => x.shipping.name.NameId = Guid.NewGuid().ToString());
+            //transaction.payer.name.NameId= Guid.NewGuid().ToString();
+            //transaction.purchase_units.ForEach(x => x.shipping.address.AddressId = Guid.NewGuid().ToString());
+            //transaction.payer.address.AddressId = Guid.NewGuid().ToString();
+            //transaction.payer.name.NameId = Guid.NewGuid().ToString();
 
             return await _transactionRepository.AddAsync(transaction);
         }

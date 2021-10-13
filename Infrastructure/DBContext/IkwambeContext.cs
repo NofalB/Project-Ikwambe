@@ -87,22 +87,19 @@ namespace Infrastructure.DBContext
             //transaction and its classes
             modelBuilder.Entity<Transaction>()
                 .ToContainer(nameof(Transaction))
-                .HasKey(w => w.TransactionId);
+                .HasKey(t => t.TransactionId);
 
             modelBuilder.Entity<Transaction>()
-                .HasPartitionKey(d => d.PartitionKey);
+                .HasPartitionKey(t => t.PartitionKey);
 
             modelBuilder.Entity<Transaction>()
-                .OwnsMany(l => l.links);
+                .OwnsMany(t => t.Links);
 
             modelBuilder.Entity<Transaction>()
-                .OwnsMany(p => p.purchase_units);
-
-            //modelBuilder.Entity<Payer>()
-            //    .OwnsOne(p => p.address);
+                .OwnsMany(t => t.PurchaseUnits);
 
             modelBuilder.Entity<Transaction>()
-                .OwnsOne(e => e.payer);
+                .OwnsOne(t => t.Payer);
 
             modelBuilder.Entity<Transaction>()
                 .UseETagConcurrency();

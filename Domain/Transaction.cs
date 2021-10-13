@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -8,93 +9,141 @@ using System.Threading.Tasks;
 
 namespace Domain
 {
-    // Transaction myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse); 
+    // Transaction myDeserializedClass = JsonConvert.DeserializeObject<Transaction>(myJsonResponse); 
     public class Link
     {
-        public string href { get; set; }
-        public string method { get; set; }
-        public string rel { get; set; }
-        public string LinkId { get; set; }
+        [JsonProperty("href")]
+        public string Href { get; set; }
 
+        [JsonProperty("method")]
+        public string Method { get; set; }
+
+        [JsonProperty("rel")]
+        public string Rel { get; set; }
     }
 
+
+    //if specified as keyless then EF can not determine the relationship between entities
+    //if there is one entity within another entity then it runs fine, it theres another one in that referenced entity, shitstorm and PK needed
     public class Address
     {
-        public string country_code { get; set; }
-        public string address_line_1 { get; set; }
-        public string admin_area_1 { get; set; }
-        public string admin_area_2 { get; set; }
-        public string postal_code { get; set; }
+        [JsonProperty("country_code")]
+        public string CountryCode { get; set; }
+
+        [JsonProperty("address_line_1")]
+        public string AddressLine1 { get; set; }
+
+        [JsonProperty("admin_area_1")]
+        public string AdminArea1 { get; set; }
+
+        [JsonProperty("admin_area_2")]
+        public string AdminArea2 { get; set; }
+
+        [JsonProperty("postal_code")]
+        public string PostalCode { get; set; }
+
         public string AddressId { get; set; }
     }
 
     public class Name
     {
-        public string NameId { get; set; }
-        public string given_name { get; set; }
-        public string surname { get; set; }
-        public string full_name { get; set; }
+        [JsonProperty("given_name")]
+        public string GivenName { get; set; }
+
+        [JsonProperty("surname")]
+        public string Surname { get; set; }
+
+        [Key]
+        [JsonProperty("full_name")]
+        public string FullName { get; set; }
     }
 
     public class Payer
     {
-        public Address address { get; set; }
-        public string email_address { get; set; }
-        public Name name { get; set; }
-        public string payer_id { get; set; }
-        public string PayerId { get; set; }
+        [JsonProperty("address")]
+        public Address Address { get; set; }
 
+        [JsonProperty("email_address")]
+        public string EmailAddress { get; set; }
+
+        [JsonProperty("name")]
+        public Name Name { get; set; }
+
+        [JsonProperty("payer_id")]
+        public string PayerId { get; set; }
     }
 
     public class Amount
     {
-        public string currency_code { get; set; }
-        public string value { get; set; }
-        public string AmountId { get; set; }
+        [Key]
+        [JsonProperty("currency_code")]
+        public string CurrencyCode { get; set; }
+
+        [JsonProperty("value")]
+        public string Value { get; set; }
     }
 
     public class Payee
     {
-        public string PayeeId { get; set; }
-        public string email_address { get; set; }
-        public string merchant_id { get; set; }
+        [JsonProperty("email_address")]
+        public string EmailAddress { get; set; }
+
+        [Key]
+        [JsonProperty("merchant_id")]
+        public string MerchantId { get; set; }
     }
 
     public class Shipping
     {
+        [JsonProperty("address")]
+        public Address Address { get; set; }
+
+        [JsonProperty("name")]
+        public Name Name { get; set; }
+        //shipping needs a created pk because it cant rely on other classes as PK
         public string ShippingId { get; set; }
-        public Address address { get; set; }
-        public Name name { get; set; }
     }
 
     public class PurchaseUnit
     {
-        public string PurchaseUnitId { get; set; }
+        [JsonProperty("amount")]
         public Amount Amount { get; set; }
-        public Payee payee { get; set; }
-        public string reference_id { get; set; }
-        public Shipping shipping { get; set; }
+
+        [JsonProperty("payee")]
+        public Payee Payee { get; set; }
+
+        [JsonProperty("reference_id")]
+        public string ReferenceId { get; set; }
+
+        [JsonProperty("shipping")]
+        public Shipping Shipping { get; set; }
     }
 
     public class Transaction
     {
-        public DateTime create_time { get; set; }
-        public string id { get; set; }
+        [JsonProperty("create_time")]
+        public DateTime CreateTime { get; set; }
+
+        [JsonProperty("id")]
         public string TransactionId { get; set; }
-        public string intent { get; set; }
-        public List<Link> links { get; set; }
-        public Payer payer { get; set; }
-        public List<PurchaseUnit> purchase_units { get; set; }
-        public string status { get; set; }
+
+        [JsonProperty("intent")]
+        public string Intent { get; set; }
+
+        [JsonProperty("links")]
+        public List<Link> Links { get; set; }
+
+        [JsonProperty("payer")]
+        public Payer Payer { get; set; }
+
+        [JsonProperty("purchase_units")]
+        public List<PurchaseUnit> PurchaseUnits { get; set; }
+
+        [JsonProperty("status")]
+        public string Status { get; set; }
+
         public string PartitionKey { get; set; }
-
-        public Transaction()
-        {
-            TransactionId = id;
-        }
-
     }
-
 
 
     public class CreateTransaction
