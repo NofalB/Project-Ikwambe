@@ -32,15 +32,30 @@ namespace ProjectIkwambe.Controllers
 
         [Function(nameof(TransactionHttpTrigger.GetTransactions))]
         [OpenApiOperation(tags: new[] { "Transactions" }, Summary = "Get all transactions from db", Description = "This will retrieve all transactions", Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiParameter(name: "transactionId", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "ID of transaction to return", Description = "Retrieves a specific transaction by ID", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Transaction), Summary = "Successfully fetched transactions", Description = "transactions successfully retrieved")]
-        [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid transaction ID", Description = "Invalid transaction ID was provided")]
         public async Task<HttpResponseData> GetTransactions([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "dbtransactions")] HttpRequestData req, FunctionContext executionContext)
         {
             {
                 HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
                 await response.WriteAsJsonAsync(await _transactionService.GetAllTransactions());
+
+                return response;
+            }
+        }
+
+        [Function(nameof(TransactionHttpTrigger.GetTransactionsById))]
+        [OpenApiOperation(tags: new[] { "Transactions" }, Summary = "Get a specific transactions from db", Description = "This will retrieve a specific transaction from db", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiParameter(name: "transactionId", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "ID of transaction to return", Description = "Retrieves a specific transaction by ID", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Transaction), Summary = "Successfully fetched transactions", Description = "transactions successfully retrieved")]
+        [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid transaction ID", Description = "Invalid transaction ID was provided")]
+        public async Task<HttpResponseData> GetTransactionsById([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "dbtransactions/{transactionId}")] HttpRequestData req, FunctionContext executionContext)
+        {
+            {
+                HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
+                string transactionId = HttpUtility.ParseQueryString(req.Url.Query).Get("transactionId");
+
+                await response.WriteAsJsonAsync(await _transactionService.GetTransactionById(transactionId));
 
                 return response;
             }
