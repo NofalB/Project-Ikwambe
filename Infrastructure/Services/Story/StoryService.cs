@@ -49,6 +49,36 @@ namespace Infrastructure.Services
             return await _storyRepository.GetAll().FirstOrDefaultAsync(s => s.Title == title);
         }
 
+        private IQueryable<Story> GetStoryByAuthor(string Author)
+        {
+            return _storyRepository.GetAll().Where(s => s.Author == Author);
+        }
+
+        private async Task<Story> GetStoryByDate(DateTime dateTime)
+        {
+            return await _storyRepository.GetAll().FirstOrDefaultAsync(s => s.PublishDate == dateTime);
+        }
+
+        public IQueryable<Story> GetStoryByQuery(string author, string publishDate)
+        {
+            IQueryable<Story> story = _storyRepository.GetAll();
+
+            if(author!=null)
+            {
+                story = story.Where(s => s.Author == author);
+            }
+            if(publishDate !=null)
+            {
+                DateTime time = DateTime.Parse(publishDate);
+                publishDate += "T23:59:59";
+                DateTime time_end = DateTime.Parse(publishDate);
+                story = story.Where(s => s.PublishDate > time && s.PublishDate < time_end);
+            }
+
+            return story;
+        }
+
+
         public async Task<Story> AddStory(StoryDTO storyDTO)
         {
             if(await GetStoryByTitle(storyDTO.Title) == null)

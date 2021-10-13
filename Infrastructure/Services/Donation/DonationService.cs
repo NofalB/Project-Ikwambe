@@ -30,6 +30,29 @@ namespace Infrastructure.Services
             return await _donationRepository.GetAll().FirstOrDefaultAsync(d => d.DonationId == id);
         }
 
+        public IQueryable<Donation> GetDonationByQueryOrGetAll(string userId, string projectId, string date)
+        {
+            IQueryable<Donation> donation = _donationRepository.GetAll();
+            
+            if (userId != null) 
+            {
+                donation = donation.Where(d => d.UserId == Guid.Parse(userId));
+            }
+            if(projectId != null)
+            {
+                donation = donation.Where(d => d.ProjectId == Guid.Parse(projectId));
+            }
+            if(date != null)
+            {
+                DateTime time = DateTime.Parse(date);
+                date += "T23:59:59";
+                DateTime time_end = DateTime.Parse(date);
+                donation = donation.Where(d => d.DonationDate > time && d.DonationDate < time_end);
+            }
+
+            return donation;
+        }
+
         public async Task<Donation> AddDonation(DonationDTO donationDTO)
         {
             Donation donation = new Donation()

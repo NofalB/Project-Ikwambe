@@ -34,6 +34,44 @@ namespace Infrastructure.Services
         {
             return await _userRepository.GetAll().FirstOrDefaultAsync(u => u.Email == email);
         }
+
+        private IQueryable<User> GetUserByFirstName(string firstName)
+        {
+            return _userRepository.GetAll().Where(u => u.FirstName == firstName);
+        }
+
+        private IQueryable<User> GetUserByLastName(string lastName)
+        {
+            return _userRepository.GetAll().Where(u => u.LastName == lastName);
+        }
+
+        private IQueryable<User> GetListOfUserSubscription(string subscribe)
+        {
+            bool isSubscribe = bool.Parse(subscribe);
+            return _userRepository.GetAll().Where(u => u.Subscription == isSubscribe);
+        }
+
+        public IQueryable<User> GetUserByQueryOrGetAll(string firstname, string lastname, string subcribe)
+        {
+
+            IQueryable<User> user = _userRepository.GetAll();
+
+            if (firstname != null)
+            {
+                user = user.Where(f => f.FirstName == firstname);
+            }
+            if (lastname != null)
+            {
+                user = user.Where(l => l.LastName == lastname);
+            }
+            if (subcribe != null)
+            {
+                user = user.Where(s => s.Subscription == bool.Parse(subcribe));
+            }
+
+            return user;
+        }
+
         public async Task<User> AddUser(UserDTO userDTO)
         {
             if(await GetUserByEmail(userDTO.Email) == null)

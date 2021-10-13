@@ -81,7 +81,7 @@ namespace Domain.DTO
 				DateTime.Now, 
 				650, 
 				200,
-				ProjectType.Infrastructrure),
+				ProjectType.Infrastructure),
 				NamingStrategy));
 			
 			return this;
@@ -93,9 +93,9 @@ namespace Domain.DTO
 		public override IOpenApiExample<List<WaterpumpProjectDTO>> Build(NamingStrategy NamingStrategy = null)
 		{
 			Examples.Add(OpenApiExampleResolver.Resolve("Waterpumps", new List<WaterpumpProjectDTO> {
-				new WaterpumpProjectDTO("waterPumpIkwambe", new Coordinates("ikwambe", -8.000, 36.833330), 0, 25000, DateTime.Now, DateTime.Now, 20, 20, ProjectType.Infrastructrure),
-				new WaterpumpProjectDTO("waterPumpAlmere", new Coordinates("ikwambe", -8.000, 36.833330), 123, 40000, DateTime.Now, DateTime.Now, 100, 50, ProjectType.Infrastructrure),
-				new WaterpumpProjectDTO("waterPumpAmsterdam", new Coordinates( "ikwambe", -8.000, 36.833330), 456, 66000, DateTime.Now, DateTime.Now, 50, 200, ProjectType.Infrastructrure)
+				new WaterpumpProjectDTO("waterPumpIkwambe", new Coordinates("ikwambe", -8.000, 36.833330), 0, 25000, DateTime.Now, DateTime.Now, 20, 20, ProjectType.Infrastructure),
+				new WaterpumpProjectDTO("waterPumpAlmere", new Coordinates("ikwambe", -8.000, 36.833330), 123, 40000, DateTime.Now, DateTime.Now, 100, 50, ProjectType.Infrastructure),
+				new WaterpumpProjectDTO("waterPumpAmsterdam", new Coordinates( "ikwambe", -8.000, 36.833330), 456, 66000, DateTime.Now, DateTime.Now, 50, 200, ProjectType.Education)
 			}));
 
 			return this;

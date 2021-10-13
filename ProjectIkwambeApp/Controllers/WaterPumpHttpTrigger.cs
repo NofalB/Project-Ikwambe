@@ -18,6 +18,9 @@ using ProjectIkwambe.Attributes;
 using ProjectIkwambe.Utils;
 using System.Security.Claims;
 using Domain.DTO;
+using Microsoft.Extensions.Primitives;
+using Microsoft.AspNetCore.WebUtilities;
+using System.Web;
 
 namespace ProjectIkwambe.Controllers
 {
@@ -40,12 +43,17 @@ namespace ProjectIkwambe.Controllers
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WaterpumpProject), Summary = "successful operation", Description = "successful operation", Example = typeof(DummyWaterpumpProjectExamples))]
         //[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid ID supplied", Description = "Invalid ID supplied")]
         //[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "waterpumps not found", Description = "waterpumps not found")]
+        [OpenApiParameter(name: "projecttype", In = ParameterLocation.Query, Required = false, Type = typeof(ProjectType), Summary = "project type value", Description = "Project type values that need to be considered for filter", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiParameter(name: "projectName", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "The name of the waterpump", Description = "the waterpump from the database using the name provided", Visibility = OpenApiVisibilityType.Important)]
         public async Task<HttpResponseData> GetWaterpumps([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "waterpumps")] HttpRequestData req, FunctionContext executionContext) 
         {
 
+            string projectName = HttpUtility.ParseQueryString(req.Url.Query).Get("projectName");
+            string projectType = HttpUtility.ParseQueryString(req.Url.Query).Get("projecttype");
+
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
-            await response.WriteAsJsonAsync(await _waterpumpProjectService.GetAllWaterPumpProjects());
+            await response.WriteAsJsonAsync(_waterpumpProjectService.GetWaterPumpProjectByQuery(projectType, projectName));
            
             return response;
 
@@ -62,7 +70,7 @@ namespace ProjectIkwambe.Controllers
         //get water pump information by ID
         [Function(nameof(WaterpumpHttpTrigger.GetWaterpumpById))]
         [OpenApiOperation(operationId: "getWaterpumpById", tags: new[] { "Waterpumps" }, Summary = "Find waterpump by ID", Description = "Returns a single waterpump.", Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiParameter(name: "waterPumpId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "ID of waterpump to return", Description = "ID of waterpump to return", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiParameter(name: "waterPumpId", In = ParameterLocation.Path, Required = false, Type = typeof(string), Summary = "ID of waterpump to return", Description = "ID of waterpump to return", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WaterpumpProject), Summary = "successful operation", Description = "successful operation", Example = typeof(DummyWaterpumpProjectExamples))]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid ID supplied", Description = "Invalid ID supplied")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "waterpump details not found", Description = "waterpump details not found")]
@@ -87,18 +95,9 @@ namespace ProjectIkwambe.Controllers
 
             WaterpumpProjectDTO waterpumpDTO = JsonConvert.DeserializeObject<WaterpumpProjectDTO>(requestBody);
 
-            //if (_waterpumpProjectService.GetWaterpumpProjectByName(waterpumpDTO.NameOfProject) == null) 
-            //{
-                HttpResponseData response = req.CreateResponse(HttpStatusCode.Created);
-                await response.WriteAsJsonAsync(await _waterpumpProjectService.AddWaterpumpProject(waterpumpDTO));
-                return response;
-            //}
-            //else
-            //{
-             //   response = req.CreateResponse(HttpStatusCode.NotAcceptable);
-              //  return response;
-
-            //}
+            HttpResponseData response = req.CreateResponse(HttpStatusCode.Created);
+            await response.WriteAsJsonAsync(await _waterpumpProjectService.AddWaterpumpProject(waterpumpDTO));
+            return response;
         }
 
         //edit waterpump by id

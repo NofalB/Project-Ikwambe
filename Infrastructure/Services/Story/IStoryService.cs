@@ -21,6 +21,7 @@ namespace Infrastructure.Services
 
         Task DeleteStory(string storyId);
 
+        IQueryable<Story> GetStoryByQuery(string author, string date);
         Task UploadImage(string storyId, Stream fileStream, string fileName);
     }
 }

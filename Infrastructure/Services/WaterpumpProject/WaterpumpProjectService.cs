@@ -30,10 +30,42 @@ namespace Infrastructure.Services
             return await _waterpumpProjectRepository.GetAll().FirstOrDefaultAsync(w => w.ProjectId == id);
         }
 
-        private async Task<WaterpumpProject> GetWaterpumpProjectByName(string projectName)
+        public  async Task<WaterpumpProject> GetWaterpumpProjectByName(string projectName)
         {
             WaterpumpProject p = await _waterpumpProjectRepository.GetAll().FirstOrDefaultAsync(w => w.NameOfProject == projectName);
             return p;
+        }
+
+        public async Task<WaterpumpProject> GetWaterPumpByProjectType(string projectType)
+        {
+            ProjectType pt = (ProjectType)Enum.Parse(typeof(ProjectType), projectType);
+
+            return await _waterpumpProjectRepository.GetAll().FirstOrDefaultAsync(p => p.ProjectType == pt);
+        }
+
+        public IQueryable<WaterpumpProject>GetWaterPumpByProjectType1(string projectType)
+        {
+            ProjectType pt = (ProjectType)Enum.Parse(typeof(ProjectType), projectType);
+
+            return _waterpumpProjectRepository.GetAll().Where(p => p.ProjectType == pt);
+        }
+
+        public IQueryable<WaterpumpProject> GetWaterPumpProjectByQuery(string projectType, string projectName)
+        {
+            IQueryable<WaterpumpProject> waterpumpProjects = _waterpumpProjectRepository.GetAll();
+
+
+            if(projectType != null)
+            {
+                ProjectType pt = (ProjectType)Enum.Parse(typeof(ProjectType), projectType);
+
+                waterpumpProjects = waterpumpProjects.Where(p => p.ProjectType == pt);
+            }
+            if(projectName !=null)
+            {
+                waterpumpProjects = waterpumpProjects.Where(p => p.NameOfProject == projectName);
+            }
+            return waterpumpProjects;
         }
 
         public async Task<WaterpumpProject> AddWaterpumpProject(WaterpumpProjectDTO waterpumpProjectDTO)
@@ -51,7 +83,8 @@ namespace Infrastructure.Services
                     TargetGoal = waterpumpProjectDTO.TargetGoal,
                     StartDate = waterpumpProjectDTO.StartDate,
                     EndDate = waterpumpProjectDTO.EndDate,
-                    ProjectType = waterpumpProjectDTO.ProjectType
+                    ProjectType = waterpumpProjectDTO.ProjectType,
+                    PartitionKey = waterpumpProjectDTO.ProjectType.ToString()
                 };
                 return await _waterpumpProjectRepository.AddAsync(wp);
             }
