@@ -17,6 +17,9 @@ namespace Infrastructure.DBContext
         
         public DbSet<WaterpumpProject> WaterpumpProject { get; set; }
 
+        public DbSet<Transaction> Transactions { get; set; }
+
+
         public IkwambeContext(DbContextOptions options) : base(options)
         {
             Database.EnsureCreated();
@@ -62,7 +65,7 @@ namespace Infrastructure.DBContext
 
             //transaction and its classes
             modelBuilder.Entity<Transaction>()
-                .ToContainer(nameof(Transaction))
+                .ToContainer(nameof(Transactions))
                 .HasKey(t => t.TransactionId);
 
             modelBuilder.Entity<Transaction>()
