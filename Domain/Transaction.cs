@@ -179,6 +179,11 @@ namespace Domain
         public string Status { get; set; }
 
         public string PartitionKey { get; set; }
+
+        public Transaction()
+        {
+
+        }
     }
 
 
