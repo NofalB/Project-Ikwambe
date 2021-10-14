@@ -33,7 +33,7 @@ namespace Domain
 				ProjectId = Guid.NewGuid(),
 				NameOfProject = "waterPumpIkwambe",
 				Coordinates = new Coordinates("ikwambe", -8.000, 36.833330),
-				CurrentDonation = 0,
+				CurrentTotal = 0,
 				TargetGoal = 25000,
 				StartDate = DateTime.Now,
 				EndDate = DateTime.Now,
@@ -51,11 +51,11 @@ namespace Domain
 		{
 			Examples.Add(OpenApiExampleResolver.Resolve("waterPumps", new List<WaterpumpProject> {
 				new WaterpumpProject() { ProjectId = Guid.NewGuid(), NameOfProject = "waterPump Ikwambe",
-				Coordinates = new Coordinates("ikwambe", -8.000, 36.833330), CurrentDonation = 0, TargetGoal = 25000, StartDate = DateTime.Now, EndDate = DateTime.Now , RatedPower = 20, FlowRate = 20, ProjectType = ProjectType.Infrastructure},
+				Coordinates = new Coordinates("ikwambe", -8.000, 36.833330), CurrentTotal = 0, TargetGoal = 25000, StartDate = DateTime.Now, EndDate = DateTime.Now , RatedPower = 20, FlowRate = 20, ProjectType = ProjectType.Infrastructure},
 				new WaterpumpProject() { ProjectId = Guid.NewGuid(), NameOfProject = "waterPumpAlmere",
-				Coordinates = new Coordinates("ikwambe", -8.000, 36.833330), CurrentDonation = 123, TargetGoal = 40000, StartDate = DateTime.Now, EndDate = DateTime.Now, RatedPower = 100, FlowRate = 50, ProjectType = ProjectType.Infrastructure},
+				Coordinates = new Coordinates("ikwambe", -8.000, 36.833330), CurrentTotal = 123, TargetGoal = 40000, StartDate = DateTime.Now, EndDate = DateTime.Now, RatedPower = 100, FlowRate = 50, ProjectType = ProjectType.Infrastructure},
 				new WaterpumpProject() { ProjectId = Guid.NewGuid(), NameOfProject = "waterPumpAmsterdam",
-				Coordinates = new Coordinates("ikwambe", -8.000, 36.833330), CurrentDonation = 456, TargetGoal = 66000, StartDate = DateTime.Now, EndDate = DateTime.Now, RatedPower = 50, FlowRate = 200, ProjectType = ProjectType.Infrastructure}
+				Coordinates = new Coordinates("ikwambe", -8.000, 36.833330), CurrentTotal = 456, TargetGoal = 66000, StartDate = DateTime.Now, EndDate = DateTime.Now, RatedPower = 50, FlowRate = 200, ProjectType = ProjectType.Infrastructure}
 			}));
 			return this;
 		}

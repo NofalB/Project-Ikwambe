@@ -17,13 +17,15 @@ namespace Infrastructure.Services.Transactions
         private readonly ICosmosWriteRepository<Transaction> _transactionWriteRepository;
         private readonly IPaypalClientService _paypalClientService;
         private readonly IDonationService _donationService;
+        private readonly IWaterpumpProjectService _waterpumpProjectService;
 
-        public TransactionService(ICosmosReadRepository<Transaction> transactionReadRepository, ICosmosWriteRepository<Transaction> transactionWriteRepository, IPaypalClientService paypalClientService, IDonationService donationService)
+        public TransactionService(ICosmosReadRepository<Transaction> transactionReadRepository, ICosmosWriteRepository<Transaction> transactionWriteRepository, IPaypalClientService paypalClientService, IDonationService donationService, IWaterpumpProjectService waterpumpProjectService)
         {
             _transactionReadRepository = transactionReadRepository;
             _transactionWriteRepository = transactionWriteRepository;
             _paypalClientService = paypalClientService;
             _donationService = donationService;
+            _waterpumpProjectService = waterpumpProjectService;
         }
         public async Task<Transaction> AddTransaction(Transaction transaction)
         {
@@ -55,36 +57,43 @@ namespace Infrastructure.Services.Transactions
             return await _transactionReadRepository.GetAll().FirstOrDefaultAsync(t => t.TransactionId == transactionId);
         }
 
-        public async Task CompleteTransaction(string transactionId,Guid userId)
+        public async Task CompleteTransaction(string transactionId,Guid userId,string projectId)
         {
             var transaction=await _paypalClientService.GetTransaction(transactionId);
-            if (transaction.Status == "APPROVED")
+            var project = await _waterpumpProjectService.GetWaterPumpProjectById(projectId);
+            if (project != null)
             {
-                //this captures the funds after the payer buys or approves of the payment and sets the status as "Completed"
-                await _paypalClientService.CaptureTransaction(transactionId);
-                transaction = await _paypalClientService.GetTransaction(transactionId);
-
-                if (transaction.Status == "COMPLETED")
+                if (transaction.Status == "APPROVED")
                 {
-                    DonationDTO donation = new DonationDTO()
+                    //this captures the funds after the payer buys or approves of the payment and sets the status as "Completed"
+                    await _paypalClientService.CaptureTransaction(transactionId);
+                    transaction = await _paypalClientService.GetTransaction(transactionId);
+
+                    if (transaction.Status == "COMPLETED")
                     {
-                        UserId = userId != Guid.Empty ? userId : Guid.Empty, 
-                        ProjectId = Guid.NewGuid(),
-                        TransactionId = transactionId,
-                        Amount = double.Parse(transaction.PurchaseUnits[0].Amount.Value),
-                        DonationDate = DateTime.Now,
-                    };
-                    await AddTransaction(transaction);
-                    await _donationService.AddDonation(donation);
+                        DonationDTO donationDTO = new DonationDTO()
+                        {
+                            UserId = userId != Guid.Empty ? userId : Guid.Empty,
+                            ProjectId = Guid.Parse(projectId),
+                            TransactionId = transactionId,
+                            Amount = double.Parse(transaction.PurchaseUnits[0].Amount.Value),
+                            DonationDate = DateTime.Now,
+                        };
+                        await AddTransaction(transaction);
+                        var donationDb = await _donationService.AddDonation(donationDTO);
+
+                        var donationCheck = await _donationService.GetDonationByIdAsync(donationDb.DonationId.ToString());
+                        if (donationCheck != null)
+                        {
+                            project.CurrentTotal += donationDb.Amount;
+                            await _waterpumpProjectService.UpdateWaterPumpProject(project);
+                        }
+                    }
                 }
             }
             
+            
         }
 
-
-        //public Task<Transaction> UpdateTransaction(Transaction transaction)
-        //{
-        //    throw new NotImplementedException();
-        //}
     }
 }

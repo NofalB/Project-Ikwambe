@@ -178,7 +178,10 @@ namespace Domain
         [JsonProperty("status")]
         public string Status { get; set; }
 
+        //project Id
         public string PartitionKey { get; set; }
+
+        public Guid ProjectId { get; set; }
 
         public Transaction()
         {
