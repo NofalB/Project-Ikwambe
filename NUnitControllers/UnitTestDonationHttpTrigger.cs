@@ -4,6 +4,7 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using Moq;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using ProjectIkwambe.Controllers;
 using System;
@@ -15,29 +16,18 @@ namespace NUnitControllers
 {
     public class Tests
     {
-       // private HttpClient _httpClient;
-
+        private HttpClient _httpClient;
         private List<Donation> _mockLstDonations;
-        private DonationHttpTrigger _donationHttpTrigger;
         private Mock<IDonationService> _mockDonationService;
-        private Mock<ILogger<DonationHttpTrigger>> _mockLogger;
-
-        private Mock<HttpRequestData> _mockReq;
-        private Mock<FunctionContext> _mockExecutionContext;
 
         [SetUp]
         public void Setup()
         {
-            /*_httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri("http://localhost:7071/");*/
-
-            _mockReq = new Mock<HttpRequestData>();
-            _mockExecutionContext = new Mock<FunctionContext>();
+            _httpClient = new HttpClient();
+            _httpClient.BaseAddress = new Uri("http://localhost:7071/");
 
             // set up mock donation trigger
-            _mockLogger = new Mock<ILogger<DonationHttpTrigger>>();
             _mockDonationService = new Mock<IDonationService>();
-            _donationHttpTrigger = new DonationHttpTrigger(_mockLogger.Object, _mockDonationService.Object);
 
             // set up mock donation data
             _mockLstDonations = new List<Donation>()
@@ -54,17 +44,14 @@ namespace NUnitControllers
             _mockDonationService.Setup(d => d.GetAllDonationsAsync().Result).Returns(_mockLstDonations);
 
             // Act
-            var donations = _donationHttpTrigger.GetDonations(_mockReq.Object, _mockExecutionContext.Object).Result;
-
-            // HttpResponseMessage response = _httpClient.GetAsync("api/donations").Result;
-            // var donations = response.Content.ReadAsStringAsync().Result;
+            HttpResponseMessage response = _httpClient.GetAsync("api/donations").Result;
+            var responseData = response.Content.ReadAsStringAsync().Result;
+            var donations = JsonConvert.DeserializeObject<List<Donation>>(responseData);
 
             // Assert
-            Assert.IsInstanceOf<IEnumerable<Donation>>(donations);
             Assert.IsNotNull(donations);
-            Assert.AreEqual(HttpStatusCode.OK, donations.StatusCode);
-            //Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-            //CollectionAssert.AreEqual(donations, _mockLstDonations);
+            Assert.IsInstanceOf<IEnumerable<Donation>>(donations);
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         }
     }
 }
