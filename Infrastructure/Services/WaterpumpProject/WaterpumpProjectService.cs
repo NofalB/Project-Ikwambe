@@ -78,6 +78,7 @@ namespace Infrastructure.Services
                 WaterpumpProject wp = new WaterpumpProject()
                 {
                     ProjectId = Guid.NewGuid(),
+                    Description = waterpumpProjectDTO.Description,
                     NameOfProject = waterpumpProjectDTO.NameOfProject,
                     RatedPower = waterpumpProjectDTO.RatedPower,
                     FlowRate = waterpumpProjectDTO.FlowRate,

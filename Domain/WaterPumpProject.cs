@@ -31,7 +31,8 @@ namespace Domain
 			Examples.Add(OpenApiExampleResolver.Resolve("waterPumpIkwambe", new WaterpumpProject()
 			{
 				ProjectId = Guid.NewGuid(),
-				NameOfProject = "waterPumpIkwambe",
+				NameOfProject = "waterpump Ikwambe",
+				Description = "This is a description",
 				Coordinates = new Coordinates("ikwambe", -8.000, 36.833330),
 				CurrentDonation = 0,
 				TargetGoal = 25000,
@@ -50,11 +51,11 @@ namespace Domain
 		public override IOpenApiExample<List<WaterpumpProject>> Build(NamingStrategy NamingStrategy = null)
 		{
 			Examples.Add(OpenApiExampleResolver.Resolve("waterPumps", new List<WaterpumpProject> {
-				new WaterpumpProject() { ProjectId = Guid.NewGuid(), NameOfProject = "waterPump Ikwambe",
+				new WaterpumpProject() { ProjectId = Guid.NewGuid(), NameOfProject = "waterPump Ikwambe", Description = "This is a description",
 				Coordinates = new Coordinates("ikwambe", -8.000, 36.833330), CurrentDonation = 0, TargetGoal = 25000, StartDate = DateTime.Now, EndDate = DateTime.Now , RatedPower = 20, FlowRate = 20, ProjectType = ProjectType.infrastructure},
-				new WaterpumpProject() { ProjectId = Guid.NewGuid(), NameOfProject = "waterPumpAlmere",
+				new WaterpumpProject() { ProjectId = Guid.NewGuid(), NameOfProject = "waterPumpAlmere", Description = "This is a description",
 				Coordinates = new Coordinates("ikwambe", -8.000, 36.833330), CurrentDonation = 123, TargetGoal = 40000, StartDate = DateTime.Now, EndDate = DateTime.Now, RatedPower = 100, FlowRate = 50, ProjectType = ProjectType.infrastructure},
-				new WaterpumpProject() { ProjectId = Guid.NewGuid(), NameOfProject = "waterPumpAmsterdam",
+				new WaterpumpProject() { ProjectId = Guid.NewGuid(), NameOfProject = "waterPumpAmsterdam", Description = "This is a description",
 				Coordinates = new Coordinates("ikwambe", -8.000, 36.833330), CurrentDonation = 456, TargetGoal = 66000, StartDate = DateTime.Now, EndDate = DateTime.Now, RatedPower = 50, FlowRate = 200, ProjectType = ProjectType.infrastructure}
 			}));
 			return this;
