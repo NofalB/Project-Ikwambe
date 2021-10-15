@@ -93,8 +93,6 @@ namespace Domain
         [JsonProperty("merchant_id")]
         public string MerchantId { get; set; }
 
-        public string PayeeId { get; set; }
-
     }
 
     public class Shipping

@@ -79,20 +79,27 @@ namespace Infrastructure.DBContext
                 {
                     p.OwnsOne(a => a.Amount);
                     p.OwnsOne(b => b.Payee);
-                    p.OwnsOne(b => b.Shipping);
                     p.OwnsOne(b => b.Payments)
-                    .OwnsMany(p => p.Captures);
-
+                    .OwnsMany(c => c.Captures);
+                    p.OwnsOne(d => d.Shipping, s =>
+                    {
+                        s.OwnsOne(a => a.Address);
+                        s.OwnsOne(b => b.Name);
+                    });
                 });
 
             modelBuilder.Entity<Transaction>()
-                .OwnsOne(t => t.Payer);
+                .OwnsOne(t => t.Payer, p =>
+                 {
+                     p.OwnsOne(a => a.Address);
+                     p.OwnsOne(b => b.Name);
+                 });
 
             //modelBuilder.Entity<Payments>()
             //    .OwnsMany(p => p.Captures);
 
-            modelBuilder.Entity<Name>()
-                .Property(n => n.NameId).ValueGeneratedOnAdd();
+            //modelBuilder.Entity<Name>()
+            //    .Property(n => n.NameId).ValueGeneratedOnAdd();
 
             //modelBuilder.Entity<Payee>()
             //    .Property(p => p.PayeeId).ValueGeneratedOnAdd();
