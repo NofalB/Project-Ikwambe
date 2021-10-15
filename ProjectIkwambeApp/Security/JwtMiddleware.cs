@@ -26,6 +26,7 @@ namespace ProjectIkwambe.Security
 
         public async Task Invoke(FunctionContext Context, FunctionExecutionDelegate Next)
         {
+            //this is where the authentication happens
             string HeadersString = (string)Context.BindingContext.BindingData["Headers"];
 
             Dictionary<string, string> Headers = JsonConvert.DeserializeObject<Dictionary<string, string>>(HeadersString);
@@ -36,13 +37,9 @@ namespace ProjectIkwambe.Security
                 {
                     AuthenticationHeaderValue BearerHeader = AuthenticationHeaderValue.Parse(AuthorizationHeader);
 
-                    ClaimsPrincipal User = await TokenService.GetByValue(BearerHeader.Parameter);
-
-                    ClaimsPrincipal Admin = await TokenService.GetByValue(BearerHeader.Parameter);
+                    ClaimsPrincipal User = await TokenService.ValidateToken(BearerHeader.Parameter);
 
                     Context.Items["User"] = User;
-
-                    Context.Items["Admin"] = Admin;
                 }
                 catch (Exception e)
                 {
