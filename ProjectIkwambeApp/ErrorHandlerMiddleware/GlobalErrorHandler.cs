@@ -3,7 +3,6 @@ using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Azure.Functions.Worker.Middleware;
 using Microsoft.Extensions.Logging;
 using ProjectIkwambe.Utils;
-using SendGrid.Helpers.Errors.Model;
 using System;
 using System.IO;
 using System.Net;
@@ -42,8 +41,6 @@ namespace ProjectIkwambe.ErrorHandlerMiddleware
             {
                 Status = exception.GetBaseException() switch
                 {
-                    NotFoundException => HttpStatusCode.NotFound,
-                    BadRequestException => HttpStatusCode.BadRequest,
                     ArgumentNullException => HttpStatusCode.BadRequest,
                     NullReferenceException => HttpStatusCode.BadRequest,
                     FileNotFoundException => HttpStatusCode.BadRequest,

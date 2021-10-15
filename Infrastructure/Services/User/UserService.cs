@@ -53,6 +53,26 @@ namespace Infrastructure.Services
             return _userReadRepository.GetAll().Where(u => u.Subscription == isSubscribe);
         }
 
+        public User UserCheck(string email, string password)
+        {
+            User user = _userReadRepository.GetAll().FirstOrDefault(u => u.Email == email);
+            if(user== null)
+            {
+                throw new Exception("The email you have provided does not exist");
+            }
+            else
+            {
+                if (user.Password == password)
+                {
+                    return user;
+                }
+                else
+                {
+                    throw new Exception("Please check your credentials");
+                }
+            }
+        }
+
         public IQueryable<User> GetUserByQueryOrGetAll(string firstname, string lastname, string subcribe)
         {
 

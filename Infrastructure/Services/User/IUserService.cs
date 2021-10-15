@@ -21,5 +21,7 @@ namespace Infrastructure.Services
         Task DeleteUserAsync(string userId);
 
         IQueryable<User> GetUserByQueryOrGetAll(string firstname, string lastname, string subcribe);
+
+        User UserCheck(string email, string password);
     }
 }

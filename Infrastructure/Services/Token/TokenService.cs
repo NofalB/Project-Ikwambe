@@ -1,4 +1,5 @@
-﻿using Domain.DTO;
+﻿using Domain;
+using Domain.DTO;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -15,6 +16,8 @@ namespace Infrastructure.Services
 {
     public class TokenService : ITokenService
     {
+        private readonly IUserService _userService;
+
         private ILogger Logger { get; }
 
         private string Issuer { get; }
@@ -23,9 +26,10 @@ namespace Infrastructure.Services
         private SigningCredentials Credentials { get; }
         private TokenIdentityValidationParameters ValidationParameters { get; }
 
-        public TokenService(IConfiguration Configuration, ILogger<TokenService> Logger)
+        public TokenService(IConfiguration Configuration, ILogger<TokenService> Logger, IUserService userService)
         {
             this.Logger = Logger;
+            _userService = userService;
 
             Issuer = "DebugIssuer";// Configuration.GetClassValueChecked("JWT:Issuer", "DebugIssuer", Logger);
             Audience = "DebugAudience";// Configuration.GetClassValueChecked("JWT:Audience", "DebugAudience", Logger);
@@ -58,14 +62,24 @@ namespace Infrastructure.Services
         public async Task<LoginResult> CreateToken(LoginRequest Login)
         {
             // Todo: Check if username and password match with some database...
+            // from the database
+            User userExist = _userService.UserCheck(Login.Email, Login.Password);
 
-            JwtSecurityToken Token = await CreateToken(new Claim[] {
-                new Claim(ClaimTypes.Role, "User"),
-                new Claim(ClaimTypes.Role, "Admin"),//something to look about when creating the role types.
-				//new Claim(ClaimTypes.Name, Login.Username)
-              });
+            if(userExist != null)
+            {
+                JwtSecurityToken Token = await CreateToken(new Claim[] {
+                //new Claim(ClaimTypes.Role, userExist.Role.ToString()),
+                new Claim(ClaimTypes.Role, userExist.Role.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, userExist.UserId.ToString()),
+                new Claim(ClaimTypes.Email, userExist.Email),
+                new Claim(ClaimTypes.Name, userExist.FirstName),
+                new Claim(ClaimTypes.Surname, userExist.LastName),
+                });
 
-            return new LoginResult(Token);
+                return new LoginResult(Token);
+            }
+
+            throw new Exception("user does not exist");
         }
 
         public async Task<ClaimsPrincipal> GetByValue(string Value)

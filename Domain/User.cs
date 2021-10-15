@@ -36,6 +36,8 @@ namespace Domain
 		[JsonRequired]
 		public bool Subscription { get; set; }
 
+		public Role Role { get; set; }
+
 		public string PartitionKey { get; set; }//Subcription.
 		
 
@@ -48,6 +50,7 @@ namespace Domain
 			Password = password;
 			Subscription = subscription;
 			PartitionKey = subscription.ToString();
+			Role = Role.User;
 		}
 
         public User()

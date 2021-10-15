@@ -31,7 +31,8 @@ namespace Domain
 			Examples.Add(OpenApiExampleResolver.Resolve("waterPumpIkwambe", new WaterpumpProject()
 			{
 				ProjectId = Guid.NewGuid(),
-				NameOfProject = "waterPumpIkwambe",
+				NameOfProject = "waterpump Ikwambe",
+				Description = "This is a description",
 				Coordinates = new Coordinates("ikwambe", -8.000, 36.833330),
 				CurrentTotal = 0,
 				TargetGoal = 25000,
@@ -39,7 +40,7 @@ namespace Domain
 				EndDate = DateTime.Now,
 				RatedPower = 650,
 				FlowRate = 200,
-				ProjectType = ProjectType.Infrastructure
+				ProjectType = ProjectType.infrastructure
 			}));
 			return this;
 		}

@@ -19,6 +19,8 @@ namespace Domain
 		[JsonRequired]
 		public string NameOfProject { get; set; }
 
+		public string Description { get; set; }
+
 		[OpenApiProperty(Description = "Get or sets the Coordination of the project")]
 		[JsonRequired]
 		public Coordinates Coordinates { get; set; }
