@@ -83,8 +83,6 @@ namespace Domain
         [JsonProperty("value")]
         public string Value { get; set; }
 
-        public string AmountId { get; set; }
-
     }
 
     public class Payee

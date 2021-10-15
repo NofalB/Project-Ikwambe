@@ -82,9 +82,6 @@ namespace Infrastructure.DBContext
             modelBuilder.Entity<Payments>()
                 .OwnsMany(p => p.Captures);
 
-            //modelBuilder.Entity<Amount>()
-            //    .Property(a => a.AmountId).ValueGeneratedOnAdd();
-
             modelBuilder.Entity<Name>()
                 .Property(n => n.NameId).ValueGeneratedOnAdd();
 
