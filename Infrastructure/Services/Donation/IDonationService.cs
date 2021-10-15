@@ -10,6 +10,8 @@ namespace Infrastructure.Services
     {
         Task<IEnumerable<Donation>> GetAllDonationsAsync();
 
+        Task<Donation> GetDonationByIdAsync(string donationId);
+
         Task<Donation> GetDonationByIdAsync(string donationId, string userId);
 
         Task<Donation> AddDonation(DonationDTO donation);

@@ -27,6 +27,12 @@ namespace Infrastructure.Services
             return await _donationReadRepository.GetAll().ToListAsync();
         }
 
+        public async Task<Donation> GetDonationByIdAsync(string donationId)
+        {
+            Guid id = Guid.Parse(donationId);
+            return await _donationReadRepository.GetAll().FirstOrDefaultAsync(d => d.DonationId == id);
+        }
+
         public async Task<Donation> GetDonationByIdAsync(string donationId, string userId)
         {
             Guid id = Guid.Parse(donationId);
