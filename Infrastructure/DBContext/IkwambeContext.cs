@@ -18,6 +18,7 @@ namespace Infrastructure.DBContext
         public DbSet<WaterpumpProject> WaterpumpProject { get; set; }
 
         public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<Amount> Amounts { get; set; }
 
 
         public IkwambeContext(DbContextOptions options) : base(options)
@@ -27,7 +28,7 @@ namespace Infrastructure.DBContext
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasDefaultContainer("IkambeContainer"); // sets the default container
+            modelBuilder.HasDefaultContainer("IkwambeContainer"); // sets the default container
 
             modelBuilder.Entity<Donation>()
                 .ToContainer(nameof(Donations))
