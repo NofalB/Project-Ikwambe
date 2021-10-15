@@ -83,8 +83,6 @@ namespace Domain
         [JsonProperty("value")]
         public string Value { get; set; }
 
-        public string AmountId { get; set; }
-
     }
 
     public class Payee
@@ -94,8 +92,6 @@ namespace Domain
 
         [JsonProperty("merchant_id")]
         public string MerchantId { get; set; }
-
-        public string PayeeId { get; set; }
 
     }
 
@@ -178,7 +174,15 @@ namespace Domain
         [JsonProperty("status")]
         public string Status { get; set; }
 
+        //project Id
         public string PartitionKey { get; set; }
+
+        public Guid ProjectId { get; set; }
+
+        public Transaction()
+        {
+
+        }
     }
 
 

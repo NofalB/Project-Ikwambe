@@ -23,7 +23,7 @@ namespace Domain
         public Guid ProjectId { get; set; }
 
         [OpenApiProperty(Description = "Gets or sets the transaction ID.")]
-        public Guid TransactionId { get; set; }
+        public string TransactionId { get; set; }
 
         [OpenApiProperty(Description = "Gets or sets the amount.")]
         public double Amount { get; set; }
@@ -38,7 +38,7 @@ namespace Domain
 
         }
 
-        public Donation(Guid donationId, Guid userId, Guid projectId, Guid transactionId, double amount)
+        public Donation(Guid donationId, Guid userId, Guid projectId, string transactionId, double amount)
         {
             DonationId = donationId;
             UserId = userId;
@@ -53,9 +53,9 @@ namespace Domain
     {
         public override IOpenApiExample<Donation> Build(NamingStrategy NamingStrategy = null)
         {
-            Examples.Add(OpenApiExampleResolver.Resolve("Donation 1", new Donation(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), 4000), NamingStrategy));
-            Examples.Add(OpenApiExampleResolver.Resolve("Donation 2", new Donation(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), 599), NamingStrategy));
-            Examples.Add(OpenApiExampleResolver.Resolve("Donation 3", new Donation(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), 200), NamingStrategy));
+            Examples.Add(OpenApiExampleResolver.Resolve("Donation 1", new Donation(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "1Y7311651B552625V", 4000), NamingStrategy));
+            Examples.Add(OpenApiExampleResolver.Resolve("Donation 2", new Donation(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "1Y7311651B552625V", 599), NamingStrategy));
+            Examples.Add(OpenApiExampleResolver.Resolve("Donation 3", new Donation(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "1Y7311651B552625V", 200), NamingStrategy));
 
             return this;
         }
@@ -66,9 +66,9 @@ namespace Domain
         public override IOpenApiExample<List<Donation>> Build(NamingStrategy NamingStrategy = null)
         {
             Examples.Add(OpenApiExampleResolver.Resolve("Donations", new List<Donation> {
-                    new Donation(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), 4000),
-                    new Donation(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), 599),
-                    new Donation(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), 200)
+                    new Donation(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "1Y7311651B552625V", 4000),
+                    new Donation(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "1Y7311651B552625V", 599),
+                    new Donation(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "1Y7311651B552625V", 200)
                 }));
 
             return this;
