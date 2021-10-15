@@ -13,7 +13,7 @@ namespace Domain.DTO
 {
     public class DonationDTO
     {
-        public Guid UserId { get; set; }
+        public Guid? UserId { get; set; }
 
         [OpenApiProperty(Description = "Gets or sets the project ID.")]
         public Guid ProjectId { get; set; }

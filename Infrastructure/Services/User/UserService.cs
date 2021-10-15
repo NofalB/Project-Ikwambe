@@ -37,22 +37,6 @@ namespace Infrastructure.Services
             return await _userReadRepository.GetAll().FirstOrDefaultAsync(u => u.Email == email);
         }
 
-        private IQueryable<User> GetUserByFirstName(string firstName)
-        {
-            return _userReadRepository.GetAll().Where(u => u.FirstName == firstName);
-        }
-
-        private IQueryable<User> GetUserByLastName(string lastName)
-        {
-            return _userReadRepository.GetAll().Where(u => u.LastName == lastName);
-        }
-
-        private IQueryable<User> GetListOfUserSubscription(string subscribe)
-        {
-            bool isSubscribe = bool.Parse(subscribe);
-            return _userReadRepository.GetAll().Where(u => u.Subscription == isSubscribe);
-        }
-
         public User UserCheck(string email, string password)
         {
             User user = _userReadRepository.GetAll().FirstOrDefault(u => u.Email == email);

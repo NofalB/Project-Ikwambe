@@ -61,19 +61,16 @@ namespace Infrastructure.Services
 
         public async Task<LoginResult> CreateToken(LoginRequest Login)
         {
-            // Todo: Check if username and password match with some database...
-            // from the database
+            //check if user exist from DB
             User userExist = _userService.UserCheck(Login.Email, Login.Password);
 
             if(userExist != null)
             {
                 JwtSecurityToken Token = await CreateToken(new Claim[] {
-                //new Claim(ClaimTypes.Role, userExist.Role.ToString()),
                 new Claim(ClaimTypes.Role, userExist.Role.ToString()),
-                new Claim(ClaimTypes.NameIdentifier, userExist.UserId.ToString()),
+                new Claim(ClaimTypes.Name, userExist.UserId.ToString()), //using claimTypes.name to represent Id.
                 new Claim(ClaimTypes.Email, userExist.Email),
-                new Claim(ClaimTypes.Name, userExist.FirstName),
-                new Claim(ClaimTypes.Surname, userExist.LastName),
+                new Claim(ClaimTypes.NameIdentifier, userExist.UserId.ToString())
                 });
 
                 return new LoginResult(Token);

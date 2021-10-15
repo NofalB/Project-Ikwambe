@@ -18,8 +18,10 @@ namespace ProjectIkwambe.Utils
 		}
 
 		// Todo: Move this to a baseclass!!
-		internal static async Task<HttpResponseData> ExecuteForUser(HttpRequestData Request, FunctionContext ExecutionContext, Func<ClaimsPrincipal, Task<HttpResponseData>> Delegate)
+
+		internal static async Task<HttpResponseData> ExecuteForUser(HttpRequestData Request, FunctionContext ExecutionContext, Func<ClaimsPrincipal, Task<HttpResponseData>> Delegate, string userId = null)
 		{
+			//authenticate for user, need a proper way
 			try
 			{
 				ClaimsPrincipal User = ExecutionContext.GetUser();
@@ -28,6 +30,11 @@ namespace ProjectIkwambe.Utils
 				{
 					HttpResponseData Response = Request.CreateResponse(HttpStatusCode.Forbidden);
 
+					return Response;
+				}
+                else if(User.Identity.Name != userId)
+                {
+					HttpResponseData Response = Request.CreateResponse(HttpStatusCode.Forbidden);
 					return Response;
 				}
 				try
@@ -49,13 +56,14 @@ namespace ProjectIkwambe.Utils
 
 		internal static async Task<HttpResponseData> ExecuteForAdmin(HttpRequestData Request, FunctionContext ExecutionContext, Func<ClaimsPrincipal, Task<HttpResponseData>> Delegate)
 		{
+			HttpResponseData Response;
 			try
 			{
 				ClaimsPrincipal Admin = ExecutionContext.GetAdmin();
 
 				if (!Admin.IsInRole("Admin"))
 				{
-					HttpResponseData Response = Request.CreateResponse(HttpStatusCode.Forbidden);
+					Response = Request.CreateResponse(HttpStatusCode.Forbidden);
 
 					return Response;
 				}
@@ -65,13 +73,13 @@ namespace ProjectIkwambe.Utils
 				}
 				catch (Exception e)
 				{
-					HttpResponseData Response = Request.CreateResponse(HttpStatusCode.BadRequest);
+					Response = Request.CreateResponse(HttpStatusCode.BadRequest);
 					return Response;
 				}
 			}
 			catch (Exception e)
 			{
-				HttpResponseData Response = Request.CreateResponse(HttpStatusCode.Unauthorized);
+				Response = Request.CreateResponse(HttpStatusCode.Unauthorized);
 				return Response;
 			}
 		}
