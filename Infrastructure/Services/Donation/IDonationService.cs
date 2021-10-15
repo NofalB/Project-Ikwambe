@@ -16,6 +16,6 @@ namespace Infrastructure.Services
 
         IQueryable<Donation> GetDonationByUserId(string userId);
 
-        IQueryable<Donation> GetDonationByQueryOrGetAll(string userId, string projectId, string date);
+        IQueryable<Donation> GetDonationByQueryOrGetAll(string projectId, string date);
     }
 }

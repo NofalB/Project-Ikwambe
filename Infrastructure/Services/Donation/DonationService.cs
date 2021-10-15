@@ -46,15 +46,11 @@ namespace Infrastructure.Services
             return _donationReadRepository.GetAll().Where(d=> d.UserId == Guid.Parse(userId));
         }
 
-        public IQueryable<Donation> GetDonationByQueryOrGetAll(string userId, string projectId, string date)
+        public IQueryable<Donation> GetDonationByQueryOrGetAll(string projectId, string date)
         {
             //need to fix this
             IQueryable<Donation> donation = _donationReadRepository.GetAll();
             
-            if (userId != null) 
-            {
-                donation = donation.Where(d => d.UserId == Guid.Parse(userId));
-            }
             if (projectId != null)
             {
                 donation = donation.Where(d => d.ProjectId == Guid.Parse(projectId));
