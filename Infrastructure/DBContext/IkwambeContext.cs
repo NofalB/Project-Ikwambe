@@ -18,6 +18,8 @@ namespace Infrastructure.DBContext
         public DbSet<WaterpumpProject> WaterpumpProject { get; set; }
 
         public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<PurchaseUnit> PurchaseUnits { get; set; }
+
 
         public IkwambeContext(DbContextOptions options) : base(options)
         {
@@ -73,20 +75,27 @@ namespace Infrastructure.DBContext
                 .OwnsMany(t => t.Links);
 
             modelBuilder.Entity<Transaction>()
-                .OwnsMany(t => t.PurchaseUnits)
-                .OwnsOne(t => t.Amount);
+                .OwnsMany(t => t.PurchaseUnits, p =>
+                {
+                    p.OwnsOne(a => a.Amount);
+                    p.OwnsOne(b => b.Payee);
+                    p.OwnsOne(b => b.Shipping);
+                    p.OwnsOne(b => b.Payments)
+                    .OwnsMany(p => p.Captures);
+
+                });
 
             modelBuilder.Entity<Transaction>()
                 .OwnsOne(t => t.Payer);
 
-            modelBuilder.Entity<Payments>()
-                .OwnsMany(p => p.Captures);
+            //modelBuilder.Entity<Payments>()
+            //    .OwnsMany(p => p.Captures);
 
             modelBuilder.Entity<Name>()
                 .Property(n => n.NameId).ValueGeneratedOnAdd();
 
-            modelBuilder.Entity<Payee>()
-                .Property(p => p.PayeeId).ValueGeneratedOnAdd();
+            //modelBuilder.Entity<Payee>()
+            //    .Property(p => p.PayeeId).ValueGeneratedOnAdd();
         }
     }
 }
