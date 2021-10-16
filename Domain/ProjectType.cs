@@ -12,13 +12,13 @@ namespace Domain
     [JsonConverter(typeof(StringEnumConverter))]
     public enum ProjectType
     {
-        [EnumMember(Value = "Health_service")]
-        Health_service,
+        [EnumMember(Value = "health_service")]
+        health_service,
 
-        [EnumMember(Value = "Education")]
-        Education,
+        [EnumMember(Value = "education")]
+        education,
 
-        [EnumMember(Value = "Infrastructure")]
-        Infrastructure 
+        [EnumMember(Value = "infrastructure")]
+        infrastructure 
     }
 }

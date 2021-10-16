@@ -11,6 +11,6 @@ namespace Infrastructure.Services
     public interface ITokenService
     {
         Task<LoginResult> CreateToken(LoginRequest Login);
-        Task<ClaimsPrincipal> GetByValue(string Value);
+        Task<ClaimsPrincipal> ValidateToken(string Value);
     }
 }

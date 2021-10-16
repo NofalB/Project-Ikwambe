@@ -19,19 +19,7 @@ namespace ProjectIkwambe.Utils
 			}
 			catch (Exception e)
 			{
-				throw new UnauthorizedAccessException(/*e.Message*/);
-			}
-		}
-
-		public static ClaimsPrincipal GetAdmin(this FunctionContext FunctionContext)
-		{
-			try
-			{
-				return (ClaimsPrincipal)FunctionContext.Items["Admin"];
-			}
-			catch (Exception e)
-			{
-				throw new UnauthorizedAccessException(/*e.Message*/);
+				throw new UnauthorizedAccessException("The user is does not have access to this call");
 			}
 		}
 

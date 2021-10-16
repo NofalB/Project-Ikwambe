@@ -30,7 +30,10 @@ namespace Infrastructure.Services
         public async Task<WaterpumpProject> GetWaterPumpProjectById(string projectId)
         {
             Guid id = Guid.Parse(projectId);
-            return await _waterpumpProjectReadRepository.GetAll().FirstOrDefaultAsync(w => w.ProjectId == id);
+            var test = await _waterpumpProjectReadRepository.GetAll().ToListAsync();
+
+            var project =  await _waterpumpProjectReadRepository.GetAll().FirstOrDefaultAsync(w => w.ProjectId == id);
+            return project;
         }
 
         public  async Task<WaterpumpProject> GetWaterpumpProjectByName(string projectName)
@@ -78,11 +81,12 @@ namespace Infrastructure.Services
                 WaterpumpProject wp = new WaterpumpProject()
                 {
                     ProjectId = Guid.NewGuid(),
+                    Description = waterpumpProjectDTO.Description,
                     NameOfProject = waterpumpProjectDTO.NameOfProject,
                     RatedPower = waterpumpProjectDTO.RatedPower,
                     FlowRate = waterpumpProjectDTO.FlowRate,
                     Coordinates = waterpumpProjectDTO.Coordinates,
-                    CurrentDonation = waterpumpProjectDTO.CurrentDonation,
+                    CurrentTotal = waterpumpProjectDTO.CurrentDonation,
                     TargetGoal = waterpumpProjectDTO.TargetGoal,
                     StartDate = waterpumpProjectDTO.StartDate,
                     EndDate = waterpumpProjectDTO.EndDate,

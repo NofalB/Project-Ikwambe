@@ -1,4 +1,5 @@
-﻿using Domain.DTO;
+﻿using Domain;
+using Domain.DTO;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -15,6 +16,8 @@ namespace Infrastructure.Services
 {
     public class TokenService : ITokenService
     {
+        private readonly IUserService _userService;
+
         private ILogger Logger { get; }
 
         private string Issuer { get; }
@@ -23,13 +26,14 @@ namespace Infrastructure.Services
         private SigningCredentials Credentials { get; }
         private TokenIdentityValidationParameters ValidationParameters { get; }
 
-        public TokenService(IConfiguration Configuration, ILogger<TokenService> Logger)
+        public TokenService(IConfiguration Configuration, ILogger<TokenService> Logger, IUserService userService)
         {
             this.Logger = Logger;
+            _userService = userService;
 
-            Issuer = "DebugIssuer";// Configuration.GetClassValueChecked("JWT:Issuer", "DebugIssuer", Logger);
+            Issuer = "DebugIssuer";//Configuration.GetClassValueChecked("JWT:Issuer", "DebugIssuer", Logger);
             Audience = "DebugAudience";// Configuration.GetClassValueChecked("JWT:Audience", "DebugAudience", Logger);
-            ValidityDuration = TimeSpan.FromDays(1);// Todo: configure
+            ValidityDuration = TimeSpan.FromMinutes(60);// Todo: configure
             string Key = "DebugKey DebugKey";//Configuration.GetClassValueChecked("JWT:Key", "DebugKey DebugKey", Logger);
 
             SymmetricSecurityKey SecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Key));
@@ -57,18 +61,25 @@ namespace Infrastructure.Services
 
         public async Task<LoginResult> CreateToken(LoginRequest Login)
         {
-            // Todo: Check if username and password match with some database...
+            //check if user exist from DB
+            User userExist = _userService.UserCheck(Login.Email, Login.Password);
 
-            JwtSecurityToken Token = await CreateToken(new Claim[] {
-                new Claim(ClaimTypes.Role, "User"),
-                new Claim(ClaimTypes.Role, "Admin"),//something to look about when creating the role types.
-				//new Claim(ClaimTypes.Name, Login.Username)
-              });
+            if(userExist != null)
+            {
+                JwtSecurityToken Token = await CreateToken(new Claim[] {
+                new Claim(ClaimTypes.Role, userExist.Role.ToString()),
+                new Claim(ClaimTypes.Name, userExist.UserId.ToString()), //using claimTypes.name to represent Id.
+                new Claim(ClaimTypes.Email, userExist.Email),
+                new Claim(ClaimTypes.NameIdentifier, userExist.UserId.ToString())
+                });
 
-            return new LoginResult(Token);
+                return new LoginResult(Token);
+            }
+
+            throw new Exception("user does not exist");
         }
 
-        public async Task<ClaimsPrincipal> GetByValue(string Value)
+        public async Task<ClaimsPrincipal> ValidateToken(string Value)
         {
             if (Value == null)
             {
@@ -86,7 +97,7 @@ namespace Infrastructure.Services
             }
             catch (Exception e)
             {
-                throw;
+                throw new Exception("Invalid token");
             }
         }
         private async Task<JwtSecurityToken> CreateToken(Claim[] Claims)

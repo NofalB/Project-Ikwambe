@@ -1,18 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
+using Domain;
 
 namespace ProjectIkwambe.Utils
 {
@@ -23,65 +16,62 @@ namespace ProjectIkwambe.Utils
 		public RoleChecker(ILogger<RoleChecker> Logger)
 		{
 			this.Logger = Logger;
-		}
+        }
 
-		// Todo: Move this to a baseclass!!
-		/*protected async Task<HttpResponseData> ExecuteForUser(HttpRequestData Request, FunctionContext ExecutionContext, Func<ClaimsPrincipal, Task<HttpResponseData>> Delegate)
+        internal static async Task<HttpResponseData> ExecuteForUser(HttpRequestData Request, FunctionContext ExecutionContext, Func<ClaimsPrincipal, Task<HttpResponseData>> Delegate, Role accessLevel, string userId = null)
+        {
+            //authenticate for user, need a proper way
+            try
+            {
+				ClaimsPrincipal User = ExecutionContext.GetUser();
+				if (!User.IsInRole(accessLevel.ToString()) || User.Identity.Name != userId)
+                {
+                    HttpResponseData Response = Request.CreateResponse(HttpStatusCode.Forbidden);
+                    return Response;
+                }
+                try
+                {
+                    return await Delegate(User).ConfigureAwait(false);
+                }
+                catch (Exception e)
+                {
+                    HttpResponseData Response = Request.CreateResponse(HttpStatusCode.BadRequest);
+                    return Response;
+                }
+            }
+            catch (Exception e)
+            {
+                HttpResponseData Response = Request.CreateResponse(HttpStatusCode.Unauthorized);
+                return Response;
+            }
+        }
+
+		internal static async Task<HttpResponseData> ExecuteForAdmin1(HttpRequestData Request, FunctionContext ExecutionContext, Func<ClaimsPrincipal, Task<HttpResponseData>> Delegate)
 		{
+			HttpResponseData Response;
 			try
 			{
-				ClaimsPrincipal User = ExecutionContext.GetUser();
-				if (!User.IsInRole("User"))
+				ClaimsPrincipal Admin = ExecutionContext.GetUser();
+
+				if (!Admin.IsInRole("Admin"))
 				{
-					HttpResponseData Response = Request.CreateResponse(HttpStatusCode.Forbidden);
+					Response = Request.CreateResponse(HttpStatusCode.Forbidden);
+
 					return Response;
 				}
 				try
 				{
-					return await Delegate(User).ConfigureAwait(false);
+					return await Delegate(Admin).ConfigureAwait(false);
 				}
 				catch (Exception e)
 				{
-					HttpResponseData Response = Request.CreateResponse(HttpStatusCode.BadRequest);
+					Response = Request.CreateResponse(HttpStatusCode.BadRequest);
 					return Response;
 				}
 			}
 			catch (Exception e)
 			{
-				Logger.LogError(e.Message);
-				HttpResponseData Response = Request.CreateResponse(HttpStatusCode.Unauthorized);
-				return Response;
-			}
-		}*/
-
-		internal static async Task<HttpResponseData> ExecuteForUser(HttpRequestData Request, FunctionContext ExecutionContext, Func<ClaimsPrincipal, Task<HttpResponseData>> Delegate)
-		{
-			try
-			{
-				ClaimsPrincipal User = ExecutionContext.GetUser();
-				//ClaimsPrincipal Admin = ExecutionContext.GetAdmin();
-
-				if (!User.IsInRole("User")/* || !Admin.IsInRole("Admin")*/)
-				{
-					HttpResponseData Response = Request.CreateResponse(HttpStatusCode.Forbidden);
-
-					return Response;
-				}
-				try
-				{
-					return await Delegate(User).ConfigureAwait(false);
-				}
-				catch (Exception e)
-				{
-					HttpResponseData Response = Request.CreateResponse(HttpStatusCode.BadRequest);
-					return Response;
-				}
-			}
-			catch (Exception e)
-			{
-				//Logger.LogError(e.Message);
-
-				HttpResponseData Response = Request.CreateResponse(HttpStatusCode.Unauthorized);
+				Response = Request.CreateResponse(HttpStatusCode.Unauthorized);
 				return Response;
 			}
 		}

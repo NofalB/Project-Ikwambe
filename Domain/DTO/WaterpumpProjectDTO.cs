@@ -18,25 +18,27 @@ namespace Domain.DTO
 		[JsonRequired]
 		public string NameOfProject { get; set; }
 
+		public string Description { get; set; }
+
 		[OpenApiProperty(Description = "Get or sets the Coordination of the project")]
 		[JsonRequired]
 		public Coordinates Coordinates { get; set; }
 
 		[OpenApiProperty(Description = "The current amount collected from all the donations")]
 		[JsonRequired]
-		public double? CurrentDonation { get; set; }
+		public double CurrentDonation { get; set; }
 
 		[OpenApiProperty(Description = "Get or sets the target goal to achieve the amount needed to finish the project")]
 		[JsonRequired]
-		public double? TargetGoal { get; set; }
+		public double TargetGoal { get; set; }
 
 		[OpenApiProperty(Description = "Get or sets the date when the project started.")]
 		[JsonRequired]
-		public DateTime? StartDate { get; set; }
+		public DateTime StartDate { get; set; }
 
 		[OpenApiProperty(Description = "Get or sets the date when the project will end.")]
 		[JsonRequired]
-		public DateTime? EndDate { get; set; }
+		public DateTime EndDate { get; set; }
 
 		[OpenApiProperty(Description = "The maximum power input needed for the waterpump")]
 		[JsonRequired]
@@ -53,9 +55,10 @@ namespace Domain.DTO
 
 		}
 
-		public WaterpumpProjectDTO(string nameOfProject, Coordinates coordinates, double currentDonation, double targetGoal, DateTime startDate, DateTime endDate, int ratedPower, int flowRate, ProjectType projectType)
+		public WaterpumpProjectDTO(string nameOfProject, string description, Coordinates coordinates, double currentDonation, double targetGoal, DateTime startDate, DateTime endDate, int ratedPower, int flowRate, ProjectType projectType)
 		{
 			NameOfProject = nameOfProject;
+			Description = description;
 			Coordinates = coordinates;
 			CurrentDonation = currentDonation;
 			TargetGoal = targetGoal;
@@ -73,7 +76,8 @@ namespace Domain.DTO
 		public override IOpenApiExample<WaterpumpProjectDTO> Build(NamingStrategy NamingStrategy = null)
 		{
 			Examples.Add(OpenApiExampleResolver.Resolve("WaterpumpResult", new WaterpumpProjectDTO(
-				"WaterpumpIkwambe", 
+				"WaterpumpIkwambe",
+				"This is a description",
 				new Coordinates("ikwambe", -8.000, 36.833330), 
 				0, 
 				25000, 
@@ -81,7 +85,7 @@ namespace Domain.DTO
 				DateTime.Now, 
 				650, 
 				200,
-				ProjectType.Infrastructure),
+				ProjectType.infrastructure),
 				NamingStrategy));
 			
 			return this;
@@ -93,9 +97,9 @@ namespace Domain.DTO
 		public override IOpenApiExample<List<WaterpumpProjectDTO>> Build(NamingStrategy NamingStrategy = null)
 		{
 			Examples.Add(OpenApiExampleResolver.Resolve("Waterpumps", new List<WaterpumpProjectDTO> {
-				new WaterpumpProjectDTO("waterPumpIkwambe", new Coordinates("ikwambe", -8.000, 36.833330), 0, 25000, DateTime.Now, DateTime.Now, 20, 20, ProjectType.Infrastructure),
-				new WaterpumpProjectDTO("waterPumpAlmere", new Coordinates("ikwambe", -8.000, 36.833330), 123, 40000, DateTime.Now, DateTime.Now, 100, 50, ProjectType.Infrastructure),
-				new WaterpumpProjectDTO("waterPumpAmsterdam", new Coordinates( "ikwambe", -8.000, 36.833330), 456, 66000, DateTime.Now, DateTime.Now, 50, 200, ProjectType.Education)
+				new WaterpumpProjectDTO("waterPumpIkwambe", "This is a description", new Coordinates("ikwambe", -8.000, 36.833330), 0, 25000, DateTime.Now, DateTime.Now, 20, 20, ProjectType.infrastructure),
+				new WaterpumpProjectDTO("waterPumpAlmere", "This is a description", new Coordinates("ikwambe", -8.000, 36.833330), 123, 40000, DateTime.Now, DateTime.Now, 100, 50, ProjectType.infrastructure),
+				new WaterpumpProjectDTO("waterPumpAmsterdam", "This is a description", new Coordinates( "ikwambe", -8.000, 36.833330), 456, 66000, DateTime.Now, DateTime.Now, 50, 200, ProjectType.education)
 			}));
 
 			return this;

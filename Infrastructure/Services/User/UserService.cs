@@ -37,20 +37,24 @@ namespace Infrastructure.Services
             return await _userReadRepository.GetAll().FirstOrDefaultAsync(u => u.Email == email);
         }
 
-        private IQueryable<User> GetUserByFirstName(string firstName)
+        public User UserCheck(string email, string password)
         {
-            return _userReadRepository.GetAll().Where(u => u.FirstName == firstName);
-        }
-
-        private IQueryable<User> GetUserByLastName(string lastName)
-        {
-            return _userReadRepository.GetAll().Where(u => u.LastName == lastName);
-        }
-
-        private IQueryable<User> GetListOfUserSubscription(string subscribe)
-        {
-            bool isSubscribe = bool.Parse(subscribe);
-            return _userReadRepository.GetAll().Where(u => u.Subscription == isSubscribe);
+            User user = _userReadRepository.GetAll().FirstOrDefault(u => u.Email == email);
+            if(user== null)
+            {
+                throw new Exception("The email you have provided does not exist");
+            }
+            else
+            {
+                if (user.Password == password)
+                {
+                    return user;
+                }
+                else
+                {
+                    throw new Exception("Please check your credentials");
+                }
+            }
         }
 
         public IQueryable<User> GetUserByQueryOrGetAll(string firstname, string lastname, string subcribe)

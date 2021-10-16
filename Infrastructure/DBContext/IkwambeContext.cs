@@ -17,6 +17,10 @@ namespace Infrastructure.DBContext
         
         public DbSet<WaterpumpProject> WaterpumpProject { get; set; }
 
+        public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<PurchaseUnit> PurchaseUnits { get; set; }
+
+
         public IkwambeContext(DbContextOptions options) : base(options)
         {
             Database.EnsureCreated();
@@ -24,7 +28,7 @@ namespace Infrastructure.DBContext
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasDefaultContainer("IkambeContainer"); // sets the default container
+            modelBuilder.HasDefaultContainer("IkwambeContainer"); // sets the default container
 
             modelBuilder.Entity<Donation>()
                 .ToContainer(nameof(Donations))
@@ -59,6 +63,46 @@ namespace Infrastructure.DBContext
                 .HasPartitionKey(d => d.PartitionKey)
                 .UseETagConcurrency()
                 .OwnsOne(o => o.Coordinates);
+
+            //transaction and its classes
+            modelBuilder.Entity<Transaction>()
+                .ToContainer(nameof(Transactions))
+                .HasKey(t => t.TransactionId);
+
+            modelBuilder.Entity<Transaction>()
+                .HasPartitionKey(t => t.PartitionKey)
+                .UseETagConcurrency()
+                .OwnsMany(t => t.Links);
+
+            modelBuilder.Entity<Transaction>()
+                .OwnsMany(t => t.PurchaseUnits, p =>
+                {
+                    p.OwnsOne(a => a.Amount);
+                    p.OwnsOne(b => b.Payee);
+                    p.OwnsOne(b => b.Payments)
+                    .OwnsMany(c => c.Captures);
+                    p.OwnsOne(d => d.Shipping, s =>
+                    {
+                        s.OwnsOne(a => a.Address);
+                        s.OwnsOne(b => b.Name);
+                    });
+                });
+
+            modelBuilder.Entity<Transaction>()
+                .OwnsOne(t => t.Payer, p =>
+                 {
+                     p.OwnsOne(a => a.Address);
+                     p.OwnsOne(b => b.Name);
+                 });
+
+            //modelBuilder.Entity<Payments>()
+            //    .OwnsMany(p => p.Captures);
+
+            //modelBuilder.Entity<Name>()
+            //    .Property(n => n.NameId).ValueGeneratedOnAdd();
+
+            //modelBuilder.Entity<Payee>()
+            //    .Property(p => p.PayeeId).ValueGeneratedOnAdd();
         }
     }
 }

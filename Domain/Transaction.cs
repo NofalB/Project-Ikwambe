@@ -1,102 +1,206 @@
-﻿using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Abstractions;
-using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
-using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Resolvers;
+﻿using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Domain
 {
-    public class Transaction
+    // Transaction myDeserializedClass = JsonConvert.DeserializeObject<Transaction>(myJsonResponse); 
+    public class Link
     {
-        [OpenApiProperty(Description = "Gets or sets the a response containing a payment object. Will always contain payment for this endpoint.")]
-        [JsonRequired]
-        public string Resource { get; set; }
+        [JsonProperty("href")]
+        public string Href { get; set; }
 
-        [OpenApiProperty(Description = "Gets or sets a unique transaction id for a transaction")]
-        [JsonRequired]
-        public string TransactionId { get; set; }
-        
-        [OpenApiProperty(Description = "Gets or sets the amount object for a transaction.")]
-        [JsonRequired]
-        public TransactionAmount Amount { get; set; }
-
-        [OpenApiProperty(Description = "Gets or sets a short description of the payment. ")]
-        [JsonRequired]
-        public string Description { get; set; }
-
-        [OpenApiProperty(Description = "Gets or sets the URL your customer will be redirected to after completing or canceling the payment process.")]
-        [JsonRequired]
-        public string RedirectUrl { get; set; }
-
-        [OpenApiProperty(Description = "Gets or sets the mode(real or test) used to create this payment")]
-        [JsonRequired]
-        public string Mode { get; set; }
-
-        [OpenApiProperty(Description = "Gets or sets the payment’s date and time of creation, in ISO 8601 format.")]
-        [JsonRequired]
-        public DateTime CreatedAt { get; set; }
-
-        [OpenApiProperty(Description = "Gets or sets the payment’s status.")]
-        [JsonRequired]
-        public string Status { get; set; }
-
-        [OpenApiProperty(Description = "Gets or sets the payment method used for this payment, either forced on creation by specifying the method parameter, or chosen by the customer on our payment method selection screen.")]
-        [JsonRequired]
+        [JsonProperty("method")]
         public string Method { get; set; }
 
-        [OpenApiProperty(Description = "Gets or sets an object with several URL objects relevant to the payment. Every URL object will contain an href and a type field.")]
-        [JsonRequired]
-        public TransactionLink Link { get; set; }
+        [JsonProperty("rel")]
+        public string Rel { get; set; }
+    }
 
-        public Transaction(string resource,string transactionId,TransactionAmount amount,string description,string redirectUrl,string mode,DateTime createdAt, string status,string method,TransactionLink link)
-        {
-            Resource = resource;
-            TransactionId = transactionId;
-            Amount = amount;
-            Description = description;
-            RedirectUrl = redirectUrl;
-            Mode = mode;
-            CreatedAt = createdAt;
-            Status = status;
-            Method = method;
-            Link = link;
-        }
 
-        public class DummyTransactionExample : OpenApiExample<Transaction>
-        {
-            public override IOpenApiExample<Transaction> Build(NamingStrategy NamingStrategy = null)
-            {
-                TransactionAmount transactionAmount = new TransactionAmount("EUR", "10.00");
-                TransactionLink transactionLink = new("https://api.mollie.com/v2/payments/tr_WDqYK6vllg", "https://www.mollie.com/payscreen/select-method/WDqYK6vllg");
+    //if specified as keyless then EF can not determine the relationship between entities
+    //if there is one entity within another entity then it runs fine, it theres another one in that referenced entity, shitstorm and PK needed
+    public class Address
+    {
+        [JsonProperty("country_code")]
+        public string CountryCode { get; set; }
 
-                Examples.Add(OpenApiExampleResolver.Resolve("Transaction 1", new Transaction("payment", "tr_WDqYK6vllg",transactionAmount, "Donation #12345", "https://webshop.example.org/order/12345/", "test", DateTime.Now, "open", "Paypal",transactionLink), NamingStrategy));
-                Examples.Add(OpenApiExampleResolver.Resolve("Transaction 2", new Transaction("payment", "tr_WDqYK6vllg", transactionAmount, "Donation #676", "https://webshop.example.org/order/12345/", "live", DateTime.Now, "open", "Banq", transactionLink), NamingStrategy));
-                Examples.Add(OpenApiExampleResolver.Resolve("Transaction 3", new Transaction("payment", "tr_WDqYK6vllg", transactionAmount, "Donation #234", "https://webshop.example.org/order/12345/", "test", DateTime.Now, "open", "Ideal", transactionLink), NamingStrategy));
+        [JsonProperty("address_line_1")]
+        public string AddressLine1 { get; set; }
 
-                return this;
-            }
-        }
+        [JsonProperty("admin_area_1")]
+        public string AdminArea1 { get; set; }
 
-        public class DummyTransactionsExamples : OpenApiExample<List<Transaction>>
-        {
-             TransactionAmount transactionAmount = new TransactionAmount("EUR", "54.00");
-             TransactionLink transactionLink = new("https://api.mollie.com/v2/payments/tr_WDqYK6vllg", "https://www.mollie.com/payscreen/select-method/WDqYK6vllg");
-            public override IOpenApiExample<List<Transaction>> Build(NamingStrategy NamingStrategy = null)
-            {
-                Examples.Add(OpenApiExampleResolver.Resolve("Transactions", new List<Transaction> {
-                    new Transaction("payment", "tr_WDqYK6vllg",transactionAmount, "Donation #12345", "https://webshop.example.org/order/12345/", "test", DateTime.Now, "open", "Paypal",transactionLink),
-                    new Transaction("payment", "tr_WDqYK6vllg",transactionAmount, "Donation #12345", "https://webshop.example.org/order/12345/", "test", DateTime.Now, "open", "Banq",transactionLink),
-                    new Transaction("payment", "tr_WDqYK6vllg",transactionAmount, "Donation #12345", "https://webshop.example.org/order/12345/", "test", DateTime.Now, "open", "Ideal",transactionLink)
-                }));
+        [JsonProperty("admin_area_2")]
+        public string AdminArea2 { get; set; }
 
-                return this;
-            }
-        }
+        [JsonProperty("postal_code")]
+        public string PostalCode { get; set; }
+
+        public string AddressId { get; set; }
+    }
+
+    public class Name
+    {
+        [JsonProperty("given_name")]
+        public string GivenName { get; set; }
+
+        [JsonProperty("surname")]
+        public string Surname { get; set; }
+
+        [JsonProperty("full_name")]
+        public string FullName { get; set; }
+
+        public string NameId { get; set; }
 
     }
+
+    public class Payer
+    {
+        [JsonProperty("address")]
+        public Address Address { get; set; }
+
+        [JsonProperty("email_address")]
+        public string EmailAddress { get; set; }
+
+        [JsonProperty("name")]
+        public Name Name { get; set; }
+
+        [JsonProperty("payer_id")]
+        public string PayerId { get; set; }
+    }
+
+    public class Amount
+    {
+        [JsonProperty("currency_code")]
+        public string CurrencyCode { get; set; }
+
+        [JsonProperty("value")]
+        public string Value { get; set; }
+
+    }
+
+    public class Payee
+    {
+        [JsonProperty("email_address")]
+        public string EmailAddress { get; set; }
+
+        [JsonProperty("merchant_id")]
+        public string MerchantId { get; set; }
+
+    }
+
+    public class Shipping
+    {
+        [JsonProperty("address")]
+        public Address Address { get; set; }
+
+        [JsonProperty("name")]
+        public Name Name { get; set; }
+        //shipping needs a created pk because it cant rely on other classes as PK
+        public string ShippingId { get; set; }
+    }
+
+    public class Payments
+    {
+        public string PaymentsId { get; set; }
+
+        [JsonProperty("captures")]
+        public List<Capture> Captures { get; set; }
+    }
+
+    public class Capture
+    {
+
+        [JsonProperty("create_time")]
+        public DateTime CreateTime { get; set; }
+
+        [JsonProperty("final_capture")]
+        public bool FinalCapture { get; set; }
+
+        [JsonProperty("id")]
+        public string CaptureId { get; set; }
+
+        [JsonProperty("status")]
+        public string Status { get; set; }
+
+        [JsonProperty("update_time")]
+        public DateTime UpdateTime { get; set; }
+    }
+
+    public class PurchaseUnit
+    {
+        [JsonProperty("amount")]
+        public Amount Amount { get; set; }
+
+        [JsonProperty("payee")]
+        public Payee Payee { get; set; }
+
+        [JsonProperty("payments")]
+        public Payments Payments { get; set; }
+
+        [JsonProperty("reference_id")]
+        public string ReferenceId { get; set; }
+
+        [JsonProperty("shipping")]
+        public Shipping Shipping { get; set; }
+    }
+
+    public class Transaction
+    {
+        [JsonProperty("create_time")]
+        public DateTime CreateTime { get; set; }
+
+        [JsonProperty("id")]
+        public string TransactionId { get; set; }
+
+        [JsonProperty("intent")]
+        public string Intent { get; set; }
+
+        [JsonProperty("links")]
+        public List<Link> Links { get; set; }
+
+        [JsonProperty("payer")]
+        public Payer Payer { get; set; }
+
+        [JsonProperty("purchase_units")]
+        public List<PurchaseUnit> PurchaseUnits { get; set; }
+
+        [JsonProperty("status")]
+        public string Status { get; set; }
+
+        //project Id
+        public string PartitionKey { get; set; }
+
+        public Guid ProjectId { get; set; }
+
+        public Transaction()
+        {
+
+        }
+    }
+
+
+    public class CheckoutUrl
+    {
+        [JsonProperty("message")]
+        public string Message { get; set; }
+
+        [JsonProperty("link")]
+        public string Link { get; set; }
+
+        [JsonProperty("orderId")]
+        public string TransactionId { get; set; }
+
+        [JsonProperty("status")]
+        public string Status { get; set; }
+    }
+
+
+
 }
