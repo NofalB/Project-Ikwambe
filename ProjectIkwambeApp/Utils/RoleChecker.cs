@@ -9,7 +9,7 @@ using Domain;
 
 namespace ProjectIkwambe.Utils
 {
-    class RoleChecker
+    public class RoleChecker
     {
 		ILogger Logger { get; }
 

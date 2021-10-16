@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using Domain;
@@ -14,6 +15,7 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using ProjectIkwambe.Utils;
 
 namespace ProjectIkwambe.Controllers
 {
@@ -36,7 +38,7 @@ namespace ProjectIkwambe.Controllers
 		[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(User), Summary = "successful operation", Description = "successful operation", Example = typeof(DummyUserExamples))]
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Check connection", Description = "Check connection")]
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "User not found", Description = "User not found")]
-		public async Task<HttpResponseData> GetUsers([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "users")] HttpRequestData req, FunctionContext executionContext)
+		public async Task<HttpResponseData> GetUsers([HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "users")] HttpRequestData req, FunctionContext executionContext)
 		{
 			string firstName = HttpUtility.ParseQueryString(req.Url.Query).Get("firstName");
 			string lastName = HttpUtility.ParseQueryString(req.Url.Query).Get("lasttName");
@@ -57,7 +59,7 @@ namespace ProjectIkwambe.Controllers
 		[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(User), Summary = "successful operation", Description = "successful operation", Example = typeof(DummyUserExamples))]
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid user ID supplied", Description = "Invalid ID supplied")]
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "User not found", Description = "User not found")]
-		public async Task<HttpResponseData> GetUserById([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "users/{userId}")] HttpRequestData req, string userId, FunctionContext executionContext)
+		public async Task<HttpResponseData> GetUserById([HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "users/{userId}")] HttpRequestData req, string userId, FunctionContext executionContext)
 		{
 			// Generate output
 			HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
@@ -71,17 +73,14 @@ namespace ProjectIkwambe.Controllers
 		[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(UserDTO), Required = true, Description = "User object that needs to be added to the system")]
 		[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(User), Summary = "New user details added", Description = "New user details added", Example = typeof(UserHttpTrigger))]
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Invalid input", Description = "Invalid input")]
-		public async Task<HttpResponseData> AddUser([HttpTrigger(AuthorizationLevel.Function, "POST", Route = "users")] HttpRequestData req, FunctionContext executionContext)
+		public async Task<HttpResponseData> AddUser([HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "users")] HttpRequestData req, FunctionContext executionContext)
 		{
 			// Parse input
 			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 			UserDTO userDTO = JsonConvert.DeserializeObject<UserDTO>(requestBody);
-
 			// Generate output
 			HttpResponseData response = req.CreateResponse(HttpStatusCode.Created);
-
 			await response.WriteAsJsonAsync(await _userService.AddUser(userDTO));
-
 			return response;
 		}
 
@@ -90,17 +89,14 @@ namespace ProjectIkwambe.Controllers
 		[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(User), Required = true, Description = "User object that needs to be updated in the system")]
 		[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(User), Summary = "User details updated", Description = "The user has been sucessfully updated", Example = typeof(DummyUserExample))]
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Invalid input", Description = "Invalid input")]
-		public async Task<HttpResponseData> UpdateUser([HttpTrigger(AuthorizationLevel.Function, "PUT", Route = "users/{userId}")] HttpRequestData req, FunctionContext executionContext)
+		public async Task<HttpResponseData> UpdateUser([HttpTrigger(AuthorizationLevel.Anonymous, "PUT", Route = "users/{userId}")] HttpRequestData req, FunctionContext executionContext)
 		{
 			// Parse input
 			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 			User user = JsonConvert.DeserializeObject<User>(requestBody);
-
 			// Generate output
 			HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
-
 			await response.WriteAsJsonAsync(await _userService.UpdateUser(user));
-
 			return response;
 		}
 
@@ -111,12 +107,13 @@ namespace ProjectIkwambe.Controllers
 		[OpenApiResponseWithBody(statusCode: HttpStatusCode.Accepted, contentType: "application/json", bodyType: typeof(User), Summary = "successfull operation", Description = "the user has been deleted successfully", Example = typeof(User))]
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid user ID supplied", Description = "The user ID is invalid ")]
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "user not found", Description = "user not found by the inserted ID,please check again")]
-		public async Task<HttpResponseData> DeleteUser([HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "users/{userId}")] HttpRequestData req, string userId, FunctionContext executionContext)
+		public async Task<HttpResponseData> DeleteUser([HttpTrigger(AuthorizationLevel.Anonymous, "DELETE", Route = "users/{userId}")] HttpRequestData req, string userId, FunctionContext executionContext)
 		{
-			HttpResponseData response = req.CreateResponse(HttpStatusCode.Accepted);
-			await _userService.DeleteUserAsync(userId);
-
-			return response;
+			return await RoleChecker.ExecuteForUser(req, executionContext, async (ClaimsPrincipal User) => {
+				HttpResponseData response = req.CreateResponse(HttpStatusCode.Accepted);
+				await _userService.DeleteUserAsync(userId);
+				return response;
+			}, Role.Admin);
 		}
 	}
 }

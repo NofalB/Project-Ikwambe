@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using Infrastructure.Services;
 using Domain.DTO;
 using Microsoft.Extensions.Logging;
+using ProjectIkwambe.Attributes;
 
 namespace ProjectIkwambe.Controllers
 {
@@ -28,7 +29,8 @@ namespace ProjectIkwambe.Controllers
                             Description = "This method logs in the user, and retrieves a JWT bearer token.")]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(LoginRequest), Required = true, Description = "The user credentials")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(LoginResult), Description = "Login success")]
-        public async Task<HttpResponseData> Login([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData req, FunctionContext executionContext)
+        [UnauthorizedResponse]
+        public async Task<HttpResponseData> Login([HttpTrigger(AuthorizationLevel.Anonymous, "POST")] HttpRequestData req, FunctionContext executionContext)
         {
             LoginRequest login = JsonConvert.DeserializeObject<LoginRequest>(await new StreamReader(req.Body).ReadToEndAsync());
 
