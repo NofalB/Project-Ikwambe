@@ -60,13 +60,22 @@ namespace Infrastructure.Services
             if (projectId != null)
             {
                 donation = donation.Where(d => d.ProjectId == Guid.Parse(projectId));
+
+                if (donation == null) { throw new ArgumentException("Invalid Project ID provided."); }
             }
             if(date != null)
             {
-                DateTime time = DateTime.Parse(date);
-                date += "T23:59:59";
-                DateTime time_end = DateTime.Parse(date);
-                donation = donation.Where(d => d.DonationDate > time && d.DonationDate < time_end);
+                try
+                {
+                    DateTime time = DateTime.Parse(date);
+                    date += "T23:59:59";
+                    DateTime time_end = DateTime.Parse(date);
+                    donation = donation.Where(d => d.DonationDate > time && d.DonationDate < time_end);
+                }
+                catch (ArgumentException e)
+                {
+                    throw new ArgumentException("Invalid date provided." + e);
+                }
             }
 
             return donation;

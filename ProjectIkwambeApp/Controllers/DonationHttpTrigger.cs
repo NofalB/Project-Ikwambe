@@ -88,9 +88,10 @@ namespace ProjectIkwambe.Controllers
 			
 			DonationDTO donationDTO = JsonConvert.DeserializeObject<DonationDTO>(requestBody);
 			// Generate output
-			HttpResponseData response = req.CreateResponse(HttpStatusCode.Created);
+			HttpResponseData response = req.CreateResponse();
 
 			await response.WriteAsJsonAsync(await _donationService.AddDonation(donationDTO));
+			response.StatusCode = HttpStatusCode.Created;
 
 			return response;
 		}
