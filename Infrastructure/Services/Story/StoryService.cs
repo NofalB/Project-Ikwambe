@@ -52,25 +52,15 @@ namespace Infrastructure.Services
             return await _storyReadRepository.GetAll().FirstOrDefaultAsync(s => s.Title == title);
         }
 
-        private IQueryable<Story> GetStoryByAuthor(string Author)
-        {
-            return _storyReadRepository.GetAll().Where(s => s.Author == Author);
-        }
-
-        private async Task<Story> GetStoryByDate(DateTime dateTime)
-        {
-            return await _storyReadRepository.GetAll().FirstOrDefaultAsync(s => s.PublishDate == dateTime);
-        }
-
         public IQueryable<Story> GetStoryByQuery(string author, string publishDate)
         {
             IQueryable<Story> story = _storyReadRepository.GetAll();
 
-            if(author!=null)
+            if(author != null)
             {
                 story = story.Where(s => s.Author == author);
             }
-            if(publishDate !=null)
+            if(publishDate != null)
             {
                 DateTime time = DateTime.Parse(publishDate);
                 publishDate += "T23:59:59";

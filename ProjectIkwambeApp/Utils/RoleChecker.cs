@@ -36,8 +36,8 @@ namespace ProjectIkwambe.Utils
                     {
                         if (User.Identity.Name != userId)
                         {
-							HttpResponseData r = Request.CreateResponse(HttpStatusCode.Forbidden);
-							return r;
+							HttpResponseData response = Request.CreateResponse(HttpStatusCode.Forbidden);
+							return response;
 						}
                     }
 				}
@@ -67,9 +67,9 @@ namespace ProjectIkwambe.Utils
 		public static bool CheckUserRole(ClaimsPrincipal User, Role[] accessLevel)
         {
 			bool allowedRole = false;
-			foreach (Role r in accessLevel) //r = user 
+			foreach (Role role in accessLevel) //r = user 
 			{
-				if (User.IsInRole(r.ToString()))
+				if (User.IsInRole(role.ToString()))
 				{
 					allowedRole = true;
 				}
