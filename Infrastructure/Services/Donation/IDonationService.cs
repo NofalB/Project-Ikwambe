@@ -12,7 +12,12 @@ namespace Infrastructure.Services
 
         Task<Donation> GetDonationByIdAsync(string donationId);
 
+        Task<Donation> GetDonationByIdAsync(string donationId, string userId);
+
         Task<Donation> AddDonation(DonationDTO donation);
-        IQueryable<Donation> GetDonationByQueryOrGetAll(string userId, string projectId, string date);
+
+        IQueryable<Donation> GetDonationByUserId(string userId);
+
+        IQueryable<Donation> GetDonationByQueryOrGetAll(string projectId, string date);
     }
 }

@@ -5,6 +5,7 @@ using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using System.Net;
 using System.Security.Claims;
+using Domain;
 
 namespace ProjectIkwambe.Utils
 {
@@ -15,47 +16,46 @@ namespace ProjectIkwambe.Utils
 		public RoleChecker(ILogger<RoleChecker> Logger)
 		{
 			this.Logger = Logger;
-		}
+        }
 
-		// Todo: Move this to a baseclass!!
-		internal static async Task<HttpResponseData> ExecuteForUser(HttpRequestData Request, FunctionContext ExecutionContext, Func<ClaimsPrincipal, Task<HttpResponseData>> Delegate)
-		{
-			try
-			{
+        internal static async Task<HttpResponseData> ExecuteForUser(HttpRequestData Request, FunctionContext ExecutionContext, Func<ClaimsPrincipal, Task<HttpResponseData>> Delegate, Role accessLevel, string userId = null)
+        {
+            //authenticate for user, need a proper way
+            try
+            {
 				ClaimsPrincipal User = ExecutionContext.GetUser();
+				if (!User.IsInRole(accessLevel.ToString()) || User.Identity.Name != userId)
+                {
+                    HttpResponseData Response = Request.CreateResponse(HttpStatusCode.Forbidden);
+                    return Response;
+                }
+                try
+                {
+                    return await Delegate(User).ConfigureAwait(false);
+                }
+                catch (Exception e)
+                {
+                    HttpResponseData Response = Request.CreateResponse(HttpStatusCode.BadRequest);
+                    return Response;
+                }
+            }
+            catch (Exception e)
+            {
+                HttpResponseData Response = Request.CreateResponse(HttpStatusCode.Unauthorized);
+                return Response;
+            }
+        }
 
-				if (!User.IsInRole("User"))
-				{
-					HttpResponseData Response = Request.CreateResponse(HttpStatusCode.Forbidden);
-
-					return Response;
-				}
-				try
-				{
-					return await Delegate(User).ConfigureAwait(false);
-				}
-				catch (Exception e)
-				{
-					HttpResponseData Response = Request.CreateResponse(HttpStatusCode.BadRequest);
-					return Response;
-				}
-			}
-			catch (Exception e)
-			{
-				HttpResponseData Response = Request.CreateResponse(HttpStatusCode.Unauthorized);
-				return Response;
-			}
-		}
-
-		internal static async Task<HttpResponseData> ExecuteForAdmin(HttpRequestData Request, FunctionContext ExecutionContext, Func<ClaimsPrincipal, Task<HttpResponseData>> Delegate)
+		internal static async Task<HttpResponseData> ExecuteForAdmin1(HttpRequestData Request, FunctionContext ExecutionContext, Func<ClaimsPrincipal, Task<HttpResponseData>> Delegate)
 		{
+			HttpResponseData Response;
 			try
 			{
-				ClaimsPrincipal Admin = ExecutionContext.GetAdmin();
+				ClaimsPrincipal Admin = ExecutionContext.GetUser();
 
 				if (!Admin.IsInRole("Admin"))
 				{
-					HttpResponseData Response = Request.CreateResponse(HttpStatusCode.Forbidden);
+					Response = Request.CreateResponse(HttpStatusCode.Forbidden);
 
 					return Response;
 				}
@@ -65,13 +65,13 @@ namespace ProjectIkwambe.Utils
 				}
 				catch (Exception e)
 				{
-					HttpResponseData Response = Request.CreateResponse(HttpStatusCode.BadRequest);
+					Response = Request.CreateResponse(HttpStatusCode.BadRequest);
 					return Response;
 				}
 			}
 			catch (Exception e)
 			{
-				HttpResponseData Response = Request.CreateResponse(HttpStatusCode.Unauthorized);
+				Response = Request.CreateResponse(HttpStatusCode.Unauthorized);
 				return Response;
 			}
 		}

@@ -23,6 +23,7 @@ namespace Infrastructure.Services
 
         public async Task<IEnumerable<Donation>> GetAllDonationsAsync()
         {
+            //here a check. for user 
             return await _donationReadRepository.GetAll().ToListAsync();
         }
 
@@ -32,15 +33,31 @@ namespace Infrastructure.Services
             return await _donationReadRepository.GetAll().FirstOrDefaultAsync(d => d.DonationId == id);
         }
 
-        public IQueryable<Donation> GetDonationByQueryOrGetAll(string userId, string projectId, string date)
+        public async Task<Donation> GetDonationByIdAsync(string donationId, string userId)
         {
+            Guid id = Guid.Parse(donationId);
+            
+            var donation  = await _donationReadRepository.GetAll().FirstOrDefaultAsync(d => d.DonationId == id && d.UserId == Guid.Parse(userId));
+            
+            if(donation == null)
+            {
+                throw new Exception("Donation does not exist. Incorrect donation ID or user ID provided");
+            }
+
+            return donation;
+        }
+
+        public IQueryable<Donation> GetDonationByUserId(string userId)
+        {
+            return _donationReadRepository.GetAll().Where(d=> d.UserId == Guid.Parse(userId));
+        }
+
+        public IQueryable<Donation> GetDonationByQueryOrGetAll(string projectId, string date)
+        {
+            //need to fix this
             IQueryable<Donation> donation = _donationReadRepository.GetAll();
             
-            if (userId != null) 
-            {
-                donation = donation.Where(d => d.UserId == Guid.Parse(userId));
-            }
-            if(projectId != null)
+            if (projectId != null)
             {
                 donation = donation.Where(d => d.ProjectId == Guid.Parse(projectId));
             }

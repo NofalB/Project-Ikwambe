@@ -31,9 +31,9 @@ namespace Infrastructure.Services
             this.Logger = Logger;
             _userService = userService;
 
-            Issuer = "DebugIssuer";// Configuration.GetClassValueChecked("JWT:Issuer", "DebugIssuer", Logger);
+            Issuer = "DebugIssuer";//Configuration.GetClassValueChecked("JWT:Issuer", "DebugIssuer", Logger);
             Audience = "DebugAudience";// Configuration.GetClassValueChecked("JWT:Audience", "DebugAudience", Logger);
-            ValidityDuration = TimeSpan.FromDays(1);// Todo: configure
+            ValidityDuration = TimeSpan.FromMinutes(60);// Todo: configure
             string Key = "DebugKey DebugKey";//Configuration.GetClassValueChecked("JWT:Key", "DebugKey DebugKey", Logger);
 
             SymmetricSecurityKey SecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Key));
@@ -61,19 +61,16 @@ namespace Infrastructure.Services
 
         public async Task<LoginResult> CreateToken(LoginRequest Login)
         {
-            // Todo: Check if username and password match with some database...
-            // from the database
+            //check if user exist from DB
             User userExist = _userService.UserCheck(Login.Email, Login.Password);
 
             if(userExist != null)
             {
                 JwtSecurityToken Token = await CreateToken(new Claim[] {
-                //new Claim(ClaimTypes.Role, userExist.Role.ToString()),
                 new Claim(ClaimTypes.Role, userExist.Role.ToString()),
-                new Claim(ClaimTypes.NameIdentifier, userExist.UserId.ToString()),
+                new Claim(ClaimTypes.Name, userExist.UserId.ToString()), //using claimTypes.name to represent Id.
                 new Claim(ClaimTypes.Email, userExist.Email),
-                new Claim(ClaimTypes.Name, userExist.FirstName),
-                new Claim(ClaimTypes.Surname, userExist.LastName),
+                new Claim(ClaimTypes.NameIdentifier, userExist.UserId.ToString())
                 });
 
                 return new LoginResult(Token);
@@ -82,7 +79,7 @@ namespace Infrastructure.Services
             throw new Exception("user does not exist");
         }
 
-        public async Task<ClaimsPrincipal> GetByValue(string Value)
+        public async Task<ClaimsPrincipal> ValidateToken(string Value)
         {
             if (Value == null)
             {
@@ -100,7 +97,7 @@ namespace Infrastructure.Services
             }
             catch (Exception e)
             {
-                throw;
+                throw new Exception("Invalid token");
             }
         }
         private async Task<JwtSecurityToken> CreateToken(Claim[] Claims)
