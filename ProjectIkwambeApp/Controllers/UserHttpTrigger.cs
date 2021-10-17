@@ -109,11 +109,13 @@ namespace ProjectIkwambe.Controllers
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "user not found", Description = "user not found by the inserted ID,please check again")]
 		public async Task<HttpResponseData> DeleteUser([HttpTrigger(AuthorizationLevel.Anonymous, "DELETE", Route = "users/{userId}")] HttpRequestData req, string userId, FunctionContext executionContext)
 		{
-			return await RoleChecker.ExecuteForUser(req, executionContext, async (ClaimsPrincipal User) => {
+			Role[] roles = { Role.Admin };
+
+			return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) => {
 				HttpResponseData response = req.CreateResponse(HttpStatusCode.Accepted);
 				await _userService.DeleteUserAsync(userId);
 				return response;
-			}, Role.Admin);
+			});
 		}
 	}
 }

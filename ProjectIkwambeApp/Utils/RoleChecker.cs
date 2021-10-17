@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using System.Net;
 using System.Security.Claims;
 using Domain;
+using Infrastructure.Services;
 
 namespace ProjectIkwambe.Utils
 {
@@ -13,31 +14,29 @@ namespace ProjectIkwambe.Utils
     {
 		ILogger Logger { get; }
 
-		public RoleChecker(ILogger<RoleChecker> Logger)
+		private readonly IUserService _userService;
+
+		public RoleChecker(ILogger<RoleChecker> Logger, IUserService userService)
 		{
 			this.Logger = Logger;
+			_userService = userService;
         }
 
-        internal static async Task<HttpResponseData> ExecuteForUser(HttpRequestData Request, FunctionContext ExecutionContext, Func<ClaimsPrincipal, Task<HttpResponseData>> Delegate, Role accessLevel, string userId = null)
+        internal static async Task<HttpResponseData> ExecuteForUser(Role[] accessLevel, HttpRequestData Request, FunctionContext ExecutionContext, Func<ClaimsPrincipal, Task<HttpResponseData>> Delegate, string userId = null)
         {
             //authenticate for user, need a proper way
             try
             {
 				ClaimsPrincipal User = ExecutionContext.GetUser();
-				if (!User.IsInRole(accessLevel.ToString()) || User.Identity.Name != userId)
+				bool allowedRole = CheckUserRole(User, accessLevel);
+               
+				if (!allowedRole || User.Identity.Name != userId)
                 {
                     HttpResponseData Response = Request.CreateResponse(HttpStatusCode.Forbidden);
                     return Response;
                 }
-                try
-                {
-                    return await Delegate(User).ConfigureAwait(false);
-                }
-                catch (Exception e)
-                {
-                    HttpResponseData Response = Request.CreateResponse(HttpStatusCode.BadRequest);
-                    return Response;
-                }
+				return await executeDefault(Request, ExecutionContext, User, Delegate);
+
             }
             catch (Exception e)
             {
@@ -45,6 +44,32 @@ namespace ProjectIkwambe.Utils
                 return Response;
             }
         }
+
+		public static async Task<HttpResponseData> executeDefault(HttpRequestData Request, FunctionContext ExecutionContext, ClaimsPrincipal User, Func<ClaimsPrincipal, Task<HttpResponseData>> Delegate)
+        {
+			try
+			{
+				return await Delegate(User).ConfigureAwait(false);
+			}
+			catch (Exception e)
+			{
+				HttpResponseData Response = Request.CreateResponse(HttpStatusCode.BadRequest);
+				return Response;
+			}
+		}
+		
+		public static bool CheckUserRole(ClaimsPrincipal User, Role[] accessLevel)
+        {
+			bool allowedRole = false;
+			foreach (Role r in accessLevel) //r = user 
+			{
+				if (User.IsInRole(r.ToString()))
+				{
+					allowedRole = true;
+				}
+			}
+			return allowedRole;
+		}
 
 		internal static async Task<HttpResponseData> ExecuteForAdmin1(HttpRequestData Request, FunctionContext ExecutionContext, Func<ClaimsPrincipal, Task<HttpResponseData>> Delegate)
 		{

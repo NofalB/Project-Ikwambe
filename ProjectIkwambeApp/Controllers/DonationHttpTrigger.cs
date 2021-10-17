@@ -47,15 +47,16 @@ namespace ProjectIkwambe.Controllers
             string userId = HttpUtility.ParseQueryString(req.Url.Query).Get("userId");
             string projectId = HttpUtility.ParseQueryString(req.Url.Query).Get("projectId");
             string date = HttpUtility.ParseQueryString(req.Url.Query).Get("date");
+			Role[] roles = { Role.User };
 
-			return await RoleChecker.ExecuteForUser(req, executionContext, async (ClaimsPrincipal User) =>
+			return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) =>
 			{
 				HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 			
 				await response.WriteAsJsonAsync(_donationService.GetDonationByQueryOrGetAll(projectId, date));
 
 				return response;
-			},Role.User, userId);
+			}, userId);
 		}
 
 		//get byId
@@ -68,9 +69,10 @@ namespace ProjectIkwambe.Controllers
 		public async Task<HttpResponseData> GetDonationsById([HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "donations/{donationId}")] HttpRequestData req, string donationId, FunctionContext executionContext)
 		{
 			string userId = HttpUtility.ParseQueryString(req.Url.Query).Get("userId");
-			Console.WriteLine("some string1");
 
-			return await RoleChecker.ExecuteForUser(req, executionContext, async (ClaimsPrincipal User)  =>
+			Role[] roles = { Role.User };
+
+			return await RoleChecker.ExecuteForUser(roles, req,  executionContext, async (ClaimsPrincipal User)  =>
 			{
 				HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
@@ -78,7 +80,7 @@ namespace ProjectIkwambe.Controllers
 
 				return response;
 
-			},Role.User ,userId);
+			},userId);
 		}
 
 		[Function(nameof(DonationHttpTrigger.MakeDonation))]

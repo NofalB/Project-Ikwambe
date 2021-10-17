@@ -76,13 +76,15 @@ namespace ProjectIkwambe.Controllers
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Invalid input", Description = "Invalid input")]
         public async Task<HttpResponseData> AddStory([HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "stories")] HttpRequestData req, FunctionContext executionContext)
         {
-            return await RoleChecker.ExecuteForUser(req, executionContext, async (ClaimsPrincipal User) => {
+            Role[] roles = { Role.Admin };
+
+            return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) => {
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                 StoryDTO storyDTO = JsonConvert.DeserializeObject<StoryDTO>(requestBody);
                 HttpResponseData response = req.CreateResponse(HttpStatusCode.Created);
                 await response.WriteAsJsonAsync(await _storyService.AddStory(storyDTO));
                 return response;
-            }, Role.Admin);  
+            });  
         }
 
         //edit story
@@ -98,7 +100,9 @@ namespace ProjectIkwambe.Controllers
         [ForbiddenResponse]
         public async Task<HttpResponseData> UpdateStory([HttpTrigger(AuthorizationLevel.Anonymous, "PUT", Route = "stories")] HttpRequestData req, FunctionContext executionContext)
         {
-            return await RoleChecker.ExecuteForUser(req, executionContext, async (ClaimsPrincipal User) => {
+            Role[] roles = { Role.Admin };
+
+            return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) => {
                 // Parse input
 
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
@@ -108,7 +112,7 @@ namespace ProjectIkwambe.Controllers
                 HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
                 await response.WriteAsJsonAsync(await _storyService.UpdateStory(story));
                 return response;
-            }, Role.Admin);
+            });
         }
 
         //delete story
@@ -124,11 +128,13 @@ namespace ProjectIkwambe.Controllers
         [ForbiddenResponse]
         public async Task<HttpResponseData> DeleteStory([HttpTrigger(AuthorizationLevel.Anonymous, "DELETE", Route = "stories/{storyId}")] HttpRequestData req, string storyId, FunctionContext executionContext)
         {
-            return await RoleChecker.ExecuteForUser(req, executionContext, async (ClaimsPrincipal User) => {
+            Role[] roles = { Role.Admin };
+
+            return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) => {
                 HttpResponseData response = req.CreateResponse(HttpStatusCode.Accepted);
                 await _storyService.DeleteStory(storyId);
                 return response;
-            }, Role.Admin);
+            });
         }
 
         [Function(nameof(StoryHttpTrigger.UploadStoryImage))]
@@ -141,7 +147,9 @@ namespace ProjectIkwambe.Controllers
         [ForbiddenResponse]
         public async Task<HttpResponseData> UploadStoryImage([HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "upload/{storyId}")] HttpRequestData req, string storyId, FunctionContext executionContext)
         {
-            return await RoleChecker.ExecuteForUser(req, executionContext, async (ClaimsPrincipal User) => {
+            Role[] roles = { Role.Admin };
+
+            return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) => {
                 // get form-body        
                 var parsedFormBody = MultipartFormDataParser.ParseAsync(req.Body);
                 var file = parsedFormBody.Result.Files[0];
@@ -153,7 +161,7 @@ namespace ProjectIkwambe.Controllers
                 await response.WriteStringAsync("Uploaded image file");
 
                 return response;
-            }, Role.Admin);
+            });
         }
     }
 }
