@@ -63,7 +63,7 @@ namespace ProjectIkwambe.Controllers
         [OpenApiOperation(tags: new[] { "PaypalTransactions" }, Summary = "Get a transaction directly from paypal microservice", Description = "This will retrieve a transaction directly from paypal microservice", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiParameter(name: "transactionId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "ID of transaction to return", Description = "Retrieves a specific transaction by ID", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Transaction), Summary = "Successfully fetched transactions", Description = "transactions successfully retrieved")]
-        public async Task<HttpResponseData> GetTransactionsPayPal([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "transactions/paypal{transactionId}")] HttpRequestData req, string transactionId, FunctionContext executionContext)
+        public async Task<HttpResponseData> GetTransactionsPayPal([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "transactions/paypal/{transactionId}")] HttpRequestData req, string transactionId, FunctionContext executionContext)
         {
             var transaction = await _paypalClientService.GetTransaction(transactionId);
 
