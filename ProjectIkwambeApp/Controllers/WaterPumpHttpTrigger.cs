@@ -39,11 +39,12 @@ namespace ProjectIkwambe.Controllers
         [Function(nameof(WaterpumpHttpTrigger.GetWaterpumps))]
         [OpenApiOperation(operationId: "getWaterpump", tags: new[] { "Waterpumps" }, Summary = "Find all waterpumps", Description = "return all waterpumps", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WaterpumpProject), Summary = "successful operation", Description = "successful operation", Example = typeof(DummyWaterpumpProjectExamples))]
-        //[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid ID supplied", Description = "Invalid ID supplied")]
-        //[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "waterpumps not found", Description = "waterpumps not found")]
         [OpenApiParameter(name: "projecttype", In = ParameterLocation.Query, Required = false, Type = typeof(ProjectType), Summary = "project type value", Description = "Project type values that need to be considered for filter", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiParameter(name: "projectName", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "The name of the waterpump", Description = "the waterpump from the database using the name provided", Visibility = OpenApiVisibilityType.Important)]
-        public async Task<HttpResponseData> GetWaterpumps([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "waterpumps")] HttpRequestData req, FunctionContext executionContext) 
+        [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid ID supplied", Description = "Invalid ID supplied")]
+        [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "No waterpump projects are found", Description = "No waterpump projects are found")]
+        
+        public async Task<HttpResponseData> GetWaterpumps([HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "waterpumps")] HttpRequestData req, FunctionContext executionContext) 
         {
             string projectName = HttpUtility.ParseQueryString(req.Url.Query).Get("projectName");
             string projectType = HttpUtility.ParseQueryString(req.Url.Query).Get("projecttype");
@@ -61,8 +62,8 @@ namespace ProjectIkwambe.Controllers
         [OpenApiParameter(name: "waterPumpId", In = ParameterLocation.Path, Required = false, Type = typeof(string), Summary = "ID of waterpump to return", Description = "ID of waterpump to return", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WaterpumpProject), Summary = "successful operation", Description = "successful operation", Example = typeof(DummyWaterpumpProjectExamples))]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid ID supplied", Description = "Invalid ID supplied")]
-        [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "waterpump details not found", Description = "waterpump details not found")]
-        public async Task<HttpResponseData> GetWaterpumpById([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "waterpumps/{waterPumpId}")] HttpRequestData req, string waterpumpId, FunctionContext executionContext)
+        [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "No waterpump project found", Description = "No waterpump project found with the provided ID")]
+        public async Task<HttpResponseData> GetWaterpumpById([HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "waterpumps/{waterPumpId}")] HttpRequestData req, string waterpumpId, FunctionContext executionContext)
         {
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
@@ -77,10 +78,13 @@ namespace ProjectIkwambe.Controllers
         [OpenApiOperation(operationId: "addWaterPumps", tags: new[] { "Waterpumps" }, Summary = "Add a new waterpump to the database", Description = "This add waterpump information to the database.", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(WaterpumpProjectDTO), Required = true, Description = "waterpump object that needs to be added to the database")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WaterpumpProjectDTO), Summary = "New waterpump details added", Description = "New waterpump details added to the database", Example = typeof(DummyWaterpumpProjectExample))]
+        [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.Created, Summary = "Created", Description = "The object made has been created")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Invalid input", Description = "Invalid input")]
+        [UnauthorizedResponse]
+        [ForbiddenResponse]
         public async Task<HttpResponseData> AddWaterpumps([HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "waterpumps")] HttpRequestData req, FunctionContext executionContext)
         {
-            return await RoleChecker.ExecuteForUser(req, executionContext, async (ClaimsPrincipal Admin) => {
+            return await RoleChecker.ExecuteForUser(req, executionContext, async (ClaimsPrincipal User) => {
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                 WaterpumpProjectDTO waterpumpDTO = JsonConvert.DeserializeObject<WaterpumpProjectDTO>(requestBody);
                 HttpResponseData response = req.CreateResponse(HttpStatusCode.Created);
@@ -98,9 +102,11 @@ namespace ProjectIkwambe.Controllers
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid waterpump ID supplied", Description = "The waterpump ID does not exist or invalid ID ")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "waterpump not found", Description = "waterpump not found")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Validation exception", Description = "Validation exception")]
-        public async Task<HttpResponseData> UpdateWaterpump([HttpTrigger(AuthorizationLevel.Function, "PUT", Route = "waterpumps")] HttpRequestData req, FunctionContext executionContext)
+        [UnauthorizedResponse]
+        [ForbiddenResponse]
+        public async Task<HttpResponseData> UpdateWaterpump([HttpTrigger(AuthorizationLevel.Anonymous, "PUT", Route = "waterpumps")] HttpRequestData req, FunctionContext executionContext)
         {
-            return await RoleChecker.ExecuteForUser(req, executionContext, async (ClaimsPrincipal Admin) => {
+            return await RoleChecker.ExecuteForUser(req, executionContext, async (ClaimsPrincipal User) => {
                 //take the input
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
@@ -122,10 +128,12 @@ namespace ProjectIkwambe.Controllers
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.Accepted, contentType: "application/json", bodyType: typeof(WaterpumpProject), Summary = "Delete the waterpump details", Description = "waterpump details is removed", Example = typeof(WaterpumpProject))]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid waterpump ID supplied", Description = "The waterpump ID does not exist or invalid ID ")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "waterpump not found", Description = "waterpump not found")]
+        [UnauthorizedResponse]
+        [ForbiddenResponse]
         //[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Validation exception", Description = "Validation exception")]
         public async Task<HttpResponseData> DeleteWaterpump([HttpTrigger(AuthorizationLevel.Anonymous, "DELETE", Route = "waterpumps/{waterpumpId}")] HttpRequestData req, string waterpumpId, FunctionContext executionContext)
         {
-            return await RoleChecker.ExecuteForUser(req, executionContext, async (ClaimsPrincipal Admin) => {
+            return await RoleChecker.ExecuteForUser(req, executionContext, async (ClaimsPrincipal User) => {
                 HttpResponseData response = req.CreateResponse(HttpStatusCode.Accepted);
 
                 await _waterpumpProjectService.DeleteWaterpumpProjectAsync(waterpumpId);

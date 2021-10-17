@@ -17,6 +17,9 @@ using Infrastructure.Services;
 using HttpMultipartParser;
 using Domain.DTO;
 using System.Web;
+using ProjectIkwambe.Utils;
+using System.Security.Claims;
+using ProjectIkwambe.Attributes;
 
 namespace ProjectIkwambe.Controllers
 {
@@ -38,7 +41,7 @@ namespace ProjectIkwambe.Controllers
         [OpenApiParameter(name: "author", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "find story by author", Description = "the stroies from the database using the author provided", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiParameter(name: "publishDate", In = ParameterLocation.Query, Required = false, Type = typeof(DateTime), Summary = "find story by date", Description = "the date from the database using the author provided", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Story), Summary = "successful operation", Description = "successful operation", Example = typeof(DummyStoryExamples))]
-        public async Task<HttpResponseData> GetStories([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "stories")] HttpRequestData req, FunctionContext executionContext)
+        public async Task<HttpResponseData> GetStories([HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "stories")] HttpRequestData req, FunctionContext executionContext)
         {
             string author = HttpUtility.ParseQueryString(req.Url.Query).Get("author");
             string publishDate = HttpUtility.ParseQueryString(req.Url.Query).Get("publishDate");
@@ -56,7 +59,7 @@ namespace ProjectIkwambe.Controllers
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Story), Summary = "successful operation", Description = "successful operation", Example = typeof(DummyStoryExamples))]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid ID supplied", Description = "Invalid ID supplied")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "story details not found", Description = "story details not found")]
-        public async Task<HttpResponseData> GetStoryById([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "stories/{storyId}")] HttpRequestData req, string storyId, FunctionContext executionContext)
+        public async Task<HttpResponseData> GetStoryById([HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "stories/{storyId}")] HttpRequestData req, string storyId, FunctionContext executionContext)
         {
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
             await response.WriteAsJsonAsync(await _storyService.GetStoryById(storyId));
@@ -66,76 +69,91 @@ namespace ProjectIkwambe.Controllers
 
         //post story
         [Function(nameof(StoryHttpTrigger.AddStory))]
+        [Auth]
         [OpenApiOperation(operationId: "addStory", tags: new[] { "Stories" }, Summary = "Add a new story to the database", Description = "This method add story information to the database.", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(StoryDTO), Required = true, Description = "story object that needs to be added to the database")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Story), Summary = "New story details added", Description = "New story details added to the database", Example = typeof(DummyStoryExamples))]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Invalid input", Description = "Invalid input")]
-        public async Task<HttpResponseData> AddStory([HttpTrigger(AuthorizationLevel.Function, "POST", Route = "stories")] HttpRequestData req, FunctionContext executionContext)
+        public async Task<HttpResponseData> AddStory([HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "stories")] HttpRequestData req, FunctionContext executionContext)
         {
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-
-            StoryDTO storyDTO = JsonConvert.DeserializeObject<StoryDTO>(requestBody);
-
-            HttpResponseData response = req.CreateResponse(HttpStatusCode.Created);
-            await response.WriteAsJsonAsync(await _storyService.AddStory(storyDTO));
-
-            return response;
+            return await RoleChecker.ExecuteForUser(req, executionContext, async (ClaimsPrincipal User) => {
+                string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                StoryDTO storyDTO = JsonConvert.DeserializeObject<StoryDTO>(requestBody);
+                HttpResponseData response = req.CreateResponse(HttpStatusCode.Created);
+                await response.WriteAsJsonAsync(await _storyService.AddStory(storyDTO));
+                return response;
+            }, Role.Admin);  
         }
 
         //edit story
         [Function(nameof(StoryHttpTrigger.UpdateStory))]
+        [Auth]
         [OpenApiOperation(operationId: "updateStory", tags: new[] { "Stories" }, Summary = "Update an existing story", Description = "This updates an existing story.", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(Story), Required = true, Description = "story object that needs to be changed in the database")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Story), Summary = "Story details updated", Description = "Story details updated", Example = typeof(DummyStoryExamples))]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid ID supplied", Description = "Invalid ID supplied")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "Story not found", Description = "Story not found")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Validation exception", Description = "Validation exception")]
-        public async Task<HttpResponseData> UpdateStory([HttpTrigger(AuthorizationLevel.Function, "PUT", Route = "stories")] HttpRequestData req, FunctionContext executionContext)
+        [UnauthorizedResponse]
+        [ForbiddenResponse]
+        public async Task<HttpResponseData> UpdateStory([HttpTrigger(AuthorizationLevel.Anonymous, "PUT", Route = "stories")] HttpRequestData req, FunctionContext executionContext)
         {
-            // Parse input
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            Story story = JsonConvert.DeserializeObject<Story>(requestBody);
+            return await RoleChecker.ExecuteForUser(req, executionContext, async (ClaimsPrincipal User) => {
+                // Parse input
 
-            // Generate output
-            HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
-            await response.WriteAsJsonAsync(await _storyService.UpdateStory(story));
-            return response;
+                string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                Story story = JsonConvert.DeserializeObject<Story>(requestBody);
+
+                // Generate output
+                HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
+                await response.WriteAsJsonAsync(await _storyService.UpdateStory(story));
+                return response;
+            }, Role.Admin);
         }
 
         //delete story
         [Function(nameof(StoryHttpTrigger.DeleteStory))]
+        [Auth]
         [OpenApiOperation(operationId: "deleteStory", tags: new[] { "Stories" }, Summary = "Delete the story", Description = "Delete an existing story details from the database", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiParameter(name: "storyId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "The id of the story to be deleted", Description = "Delete the story from the database using the Id provided", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Story), Summary = "Delete the story details", Description = "story details is removed", Example = typeof(DummyStoryExamples))]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid story ID supplied", Description = "The story ID does not exist or invalid ID ")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "Story not found", Description = "Story not found")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Validation exception", Description = "Validation exception")]
-        public async Task<HttpResponseData> DeleteStory([HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "stories/{storyId}")] HttpRequestData req, string storyId, FunctionContext executionContext)
+        [UnauthorizedResponse]
+        [ForbiddenResponse]
+        public async Task<HttpResponseData> DeleteStory([HttpTrigger(AuthorizationLevel.Anonymous, "DELETE", Route = "stories/{storyId}")] HttpRequestData req, string storyId, FunctionContext executionContext)
         {
-            HttpResponseData response = req.CreateResponse(HttpStatusCode.Accepted);
-            await _storyService.DeleteStory(storyId);
-            return response;
+            return await RoleChecker.ExecuteForUser(req, executionContext, async (ClaimsPrincipal User) => {
+                HttpResponseData response = req.CreateResponse(HttpStatusCode.Accepted);
+                await _storyService.DeleteStory(storyId);
+                return response;
+            }, Role.Admin);
         }
 
         [Function(nameof(StoryHttpTrigger.UploadStoryImage))]
+        [Auth]
         [OpenApiOperation(operationId: "uploadStoryImage", tags: new[] { "Stories" }, Summary = "Add a new story to the database", Description = "This method add story information to the database.", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(StoryDTO), Required = true, Description = "story object that needs to be added to the database")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Story), Summary = "New story details added", Description = "New story details added to the database", Example = typeof(DummyStoryExamples))]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Invalid input", Description = "Invalid input")]
-        public async Task<HttpResponseData> UploadStoryImage([HttpTrigger(AuthorizationLevel.Function, "POST", Route = "upload/{storyId}")] HttpRequestData req, string storyId, FunctionContext executionContext)
+        [UnauthorizedResponse]
+        [ForbiddenResponse]
+        public async Task<HttpResponseData> UploadStoryImage([HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "upload/{storyId}")] HttpRequestData req, string storyId, FunctionContext executionContext)
         {
-            // get form-body        
-            var parsedFormBody = MultipartFormDataParser.ParseAsync(req.Body);
-            var file = parsedFormBody.Result.Files[0];
+            return await RoleChecker.ExecuteForUser(req, executionContext, async (ClaimsPrincipal User) => {
+                // get form-body        
+                var parsedFormBody = MultipartFormDataParser.ParseAsync(req.Body);
+                var file = parsedFormBody.Result.Files[0];
 
-            HttpResponseData response = req.CreateResponse(HttpStatusCode.Created);
+                HttpResponseData response = req.CreateResponse(HttpStatusCode.Created);
 
-            await _storyService.UploadImage(storyId, file.Data, file.Name);
+                await _storyService.UploadImage(storyId, file.Data, file.Name);
 
-            await response.WriteStringAsync("Uploaded image file");
+                await response.WriteStringAsync("Uploaded image file");
 
-            return response;
+                return response;
+            }, Role.Admin);
         }
-
     }
 }
