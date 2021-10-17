@@ -24,7 +24,7 @@ namespace ProjectIkwambe.Utils
 
         internal static async Task<HttpResponseData> ExecuteForUser(Role[] accessLevel, HttpRequestData Request, FunctionContext ExecutionContext, Func<ClaimsPrincipal, Task<HttpResponseData>> Delegate, string userId = null)
         {
-            //authenticate for user, need a proper way
+            //authenticate for user
             try
             {
 				ClaimsPrincipal User = ExecutionContext.GetUser();
@@ -69,36 +69,6 @@ namespace ProjectIkwambe.Utils
 				}
 			}
 			return allowedRole;
-		}
-
-		internal static async Task<HttpResponseData> ExecuteForAdmin1(HttpRequestData Request, FunctionContext ExecutionContext, Func<ClaimsPrincipal, Task<HttpResponseData>> Delegate)
-		{
-			HttpResponseData Response;
-			try
-			{
-				ClaimsPrincipal Admin = ExecutionContext.GetUser();
-
-				if (!Admin.IsInRole("Admin"))
-				{
-					Response = Request.CreateResponse(HttpStatusCode.Forbidden);
-
-					return Response;
-				}
-				try
-				{
-					return await Delegate(Admin).ConfigureAwait(false);
-				}
-				catch (Exception e)
-				{
-					Response = Request.CreateResponse(HttpStatusCode.BadRequest);
-					return Response;
-				}
-			}
-			catch (Exception e)
-			{
-				Response = Request.CreateResponse(HttpStatusCode.Unauthorized);
-				return Response;
-			}
 		}
 	}
 }
