@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using Xunit;
 
@@ -13,8 +14,8 @@ namespace IntegrationTests
 {
     public class IntegrationTestDonation
     {
-        private HttpClient client { get; }
-
+        private HttpClient _httpClient { get; }
+        private string token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6ImJiNzU5ZDFjLTFiM2YtNDlmMy1iNGYxLWY3OTE5MTAyYTZmZCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6InRlc3RFIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZWlkZW50aWZpZXIiOiJiYjc1OWQxYy0xYjNmLTQ5ZjMtYjRmMS1mNzkxOTEwMmE2ZmQiLCJuYmYiOjE2MzQ0OTI0OTgsImV4cCI6MTYzNDQ5NjA5OCwiaWF0IjoxNjM0NDkyNDk4LCJpc3MiOiJEZWJ1Z0lzc3VlciIsImF1ZCI6IkRlYnVnQXVkaWVuY2UifQ.VG9FyWi26DXIpaJoQPPgP127Hy7KmYh8ggUiFAtCwu4";
 
         public IntegrationTestDonation()
         {
@@ -22,16 +23,22 @@ namespace IntegrationTests
 
             if (hostname == null)
                 hostname = $"http://localhost:{7071}";
-            client = new HttpClient();
-            client.BaseAddress = new Uri(hostname);
+            _httpClient = new HttpClient();
+            _httpClient.BaseAddress = new Uri(hostname);
+
+            _httpClient.DefaultRequestHeaders.Authorization = 
+                new AuthenticationHeaderValue("Bearer", token);
         }
 
         #region Sucesssful Tests
         [Fact]
         public void GetAllDonationsSuccess()
         {
+            // setup
+            string userId = "bb759d1c-1b3f-49f3-b4f1-f7919102a6fd";
+
             // run request
-            HttpResponseMessage response = client.GetAsync("api/donations").Result;
+            HttpResponseMessage response = _httpClient.GetAsync($"api/donations?userId={userId}").Result;
 
             // process response
             var responseData = response.Content.ReadAsStringAsync().Result;
@@ -46,12 +53,13 @@ namespace IntegrationTests
         public void FilterDonationsByProjectIdAndDonationDateSuccess()
         {
             // setup
+            string userId = "bb759d1c-1b3f-49f3-b4f1-f7919102a6fd";
             string projectId = "3fa85f64-5717-4562-b3fc-2c963f66afa6";
             string donationDate = "2021-10-16";
 
             // run request
-            HttpResponseMessage responseWithDonationDate = client.GetAsync($"api/donations?date={donationDate}").Result;
-            HttpResponseMessage responseWithProjectId = client.GetAsync($"api/donations?projectId={projectId}").Result;
+            HttpResponseMessage responseWithDonationDate = _httpClient.GetAsync($"api/donations?date={donationDate}&userId={userId}").Result;
+            HttpResponseMessage responseWithProjectId = _httpClient.GetAsync($"api/donations?projectId={projectId}&userId={userId}").Result;
 
             // process response
             var responseDataByProjectId = responseWithProjectId.Content.ReadAsStringAsync().Result;
@@ -76,7 +84,7 @@ namespace IntegrationTests
             string userId = "bb759d1c-1b3f-49f3-b4f1-f7919102a6fd";
 
             // run request
-            HttpResponseMessage response = client.GetAsync($"api/donations/{donationId}?userId={userId}").Result;
+            HttpResponseMessage response = _httpClient.GetAsync($"api/donations/{donationId}?userId={userId}").Result;
 
             // process response
             var responseData = response.Content.ReadAsStringAsync().Result;
@@ -96,7 +104,7 @@ namespace IntegrationTests
             HttpContent donationData = new StringContent(JsonConvert.SerializeObject(donationDTO), Encoding.UTF8, "application/json");
 
             // run request
-            HttpResponseMessage response = client.PostAsync($"api/donations", donationData).Result;
+            HttpResponseMessage response = _httpClient.PostAsync($"api/donations", donationData).Result;
 
             // process response
             var responseData = response.Content.ReadAsStringAsync().Result;
@@ -119,12 +127,12 @@ namespace IntegrationTests
             string donationDate = "InvalidProjectId DonationDate";
 
             // run request
-            HttpResponseMessage responseByProjectId = client.GetAsync($"api/donations?projectId={projectId}").Result;
-            HttpResponseMessage responseByDonationDate = client.GetAsync($"api/donations?date={donationDate}").Result;
+            HttpResponseMessage responseByProjectId = _httpClient.GetAsync($"api/donations?projectId={projectId}").Result;
+            HttpResponseMessage responseByDonationDate = _httpClient.GetAsync($"api/donations?date={donationDate}").Result;
 
             // verify results
-            Assert.Equal(HttpStatusCode.BadRequest, responseByProjectId.StatusCode);
-            Assert.Equal(HttpStatusCode.BadRequest, responseByDonationDate.StatusCode);
+            Assert.Equal(HttpStatusCode.Forbidden, responseByProjectId.StatusCode);
+            Assert.Equal(HttpStatusCode.Forbidden, responseByDonationDate.StatusCode);
         }
 
         [Fact]
@@ -135,16 +143,15 @@ namespace IntegrationTests
             string userId = "Invalid user ID";
 
             // run request
-            HttpResponseMessage response = client.GetAsync($"api/donations/{donationId}?userId={userId}").Result;
+            HttpResponseMessage response = _httpClient.GetAsync($"api/donations/{donationId}?userId={userId}").Result;
 
             // process response
             var responseData = response.Content.ReadAsStringAsync().Result;
             var donation = JsonConvert.DeserializeObject<Donation>(responseData);
 
             // verify results
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-            Assert.DoesNotMatch(donationId, donation.DonationId.ToString());
-            Assert.DoesNotMatch(userId, donation.UserId.ToString());
+            Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+            Assert.Null(donation);
         }
 
         [Fact]
@@ -155,7 +162,7 @@ namespace IntegrationTests
             HttpContent donationData = new StringContent(JsonConvert.SerializeObject(donationDTO), Encoding.UTF8, "application/json");
             
             // run request
-            HttpResponseMessage response = client.PostAsync($"api/donations", donationData).Result;
+            HttpResponseMessage response = _httpClient.PostAsync($"api/donations", donationData).Result;
 
             // process response
             var responseData = response.Content.ReadAsStringAsync().Result;
