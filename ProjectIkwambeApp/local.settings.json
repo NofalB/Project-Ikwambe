@@ -8,5 +8,10 @@
     "CosmosDb:DatabaseName": "ProjectIkwambeDB",
     "BlobCredentialOptions:ContainerName": "ContainerName",
     "BlobCredentialOptions:ConnectionString": "ConnectionString"
+  },
+  "Host": {
+    "LocalHttpPort": 7071,
+    "CORS": "*",
+    "CORSCredentials": false
   }
 }
