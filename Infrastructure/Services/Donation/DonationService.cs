@@ -4,7 +4,9 @@ using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -35,16 +37,22 @@ namespace Infrastructure.Services
 
         public async Task<Donation> GetDonationByIdAsync(string donationId, string userId)
         {
-            Guid id = Guid.Parse(donationId);
-            
-            var donation  = await _donationReadRepository.GetAll().FirstOrDefaultAsync(d => d.DonationId == id && d.UserId == Guid.Parse(userId));
-            
-            if(donation == null)
+            try
             {
-                throw new Exception("Donation does not exist. Incorrect donation ID or user ID provided");
-            }
+                Guid id = Guid.Parse(donationId);
 
-            return donation;
+                var donation = await _donationReadRepository.GetAll().FirstOrDefaultAsync(d => d.DonationId == id && d.UserId == Guid.Parse(userId));
+
+                if (donation == null)
+                {
+                    throw new Exception("Donation does not exist. Incorrect donation ID or user ID provided");
+                }
+                return donation;
+            }
+            catch
+            {
+                throw new InvalidOperationException("Invalid donation ID provided.");
+            }
         }
 
         public IQueryable<Donation> GetDonationByUserId(string userId)
@@ -52,33 +60,41 @@ namespace Infrastructure.Services
             return _donationReadRepository.GetAll().Where(d=> d.UserId == Guid.Parse(userId));
         }
 
-        public IQueryable<Donation> GetDonationByQueryOrGetAll(string projectId, string date)
+        public List<Donation> GetDonationByQueryOrGetAll(string projectId, string donationDate)
         {
             //need to fix this
-            IQueryable<Donation> donation = _donationReadRepository.GetAll();
+            List<Donation> resultsList = new List<Donation>();
+            List<Donation> donations = _donationReadRepository.GetAll().ToList();
             
             if (projectId != null)
             {
-                donation = donation.Where(d => d.ProjectId == Guid.Parse(projectId));
-
-                if (donation == null) { throw new ArgumentException("Invalid Project ID provided."); }
+                resultsList.AddRange(donations.Where(d =>
+                {
+                    try
+                    {
+                        return d.ProjectId == Guid.Parse(projectId);
+                    }
+                    catch
+                    {
+                        throw new InvalidOperationException("Invalid Project ID provided.");
+                    }
+                }));
             }
-            if(date != null)
+            if(donationDate != null)
             {
-                try
+                DateTime donationDt;
+
+                if (!DateTime.TryParseExact(donationDate, "yyyy-MM-dd", CultureInfo.InvariantCulture,
+                    DateTimeStyles.None, out donationDt))
                 {
-                    DateTime time = DateTime.Parse(date);
-                    date += "T23:59:59";
-                    DateTime time_end = DateTime.Parse(date);
-                    donation = donation.Where(d => d.DonationDate > time && d.DonationDate < time_end);
+                    throw new InvalidOperationException("Invalid date provided.");
                 }
-                catch (ArgumentException e)
-                {
-                    throw new ArgumentException("Invalid date provided." + e);
-                }
+                
+                donationDt.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+                resultsList.AddRange(donations.Where(d => d.DonationDate.Date == donationDt.Date).ToList());
             }
 
-            return donation;
+            return resultsList.Count != 0 ? resultsList : donations;
         }
 
         public async Task<Donation> AddDonation(DonationDTO donationDTO)
@@ -87,11 +103,11 @@ namespace Infrastructure.Services
             {
                 DonationId = Guid.NewGuid(),
                 UserId = donationDTO.UserId,
-                ProjectId = donationDTO.ProjectId,
-                TransactionId = donationDTO.TransactionId,
-                Amount = donationDTO.Amount,
-                DonationDate = donationDTO.DonationDate,
-                PartitionKey = donationDTO.ProjectId.ToString()
+                ProjectId = donationDTO.ProjectId != Guid.Empty ? donationDTO.ProjectId : throw new InvalidOperationException($"Invalid {nameof(donationDTO.ProjectId)} provided."),
+                TransactionId = donationDTO.TransactionId ?? throw new ArgumentNullException($"Invalid {nameof(donationDTO.TransactionId)} provided"),
+                Amount = donationDTO.Amount != 0 ? donationDTO.Amount : throw new InvalidOperationException($"Invalid {nameof(donationDTO.Amount)} provided."),
+                DonationDate = donationDTO.DonationDate != default(DateTime) ? donationDTO.DonationDate : throw new InvalidOperationException($"Invalid {nameof(donationDTO.DonationDate)} provided."),
+                PartitionKey = donationDTO.ProjectId.ToString() ?? throw new ArgumentNullException($"Invalid {nameof(donationDTO.ProjectId)} provided")
             };
 
             return await _donationWriteRepository.AddAsync(donation);
