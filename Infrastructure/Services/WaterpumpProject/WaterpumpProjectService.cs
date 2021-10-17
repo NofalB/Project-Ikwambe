@@ -82,22 +82,22 @@ namespace Infrastructure.Services
                 {
                     ProjectId = Guid.NewGuid(),
                     Description = waterpumpProjectDTO.Description,
-                    NameOfProject = waterpumpProjectDTO.NameOfProject,
+                    NameOfProject = waterpumpProjectDTO.NameOfProject != null ? waterpumpProjectDTO.NameOfProject : throw new ArgumentException($"Invalid {nameof(waterpumpProjectDTO.NameOfProject)} provided"),
                     RatedPower = waterpumpProjectDTO.RatedPower,
                     FlowRate = waterpumpProjectDTO.FlowRate,
                     Coordinates = waterpumpProjectDTO.Coordinates,
                     CurrentTotal = waterpumpProjectDTO.CurrentDonation,
                     TargetGoal = waterpumpProjectDTO.TargetGoal,
-                    StartDate = waterpumpProjectDTO.StartDate,
-                    EndDate = waterpumpProjectDTO.EndDate,
+                    StartDate = waterpumpProjectDTO.StartDate != default(DateTime) ? waterpumpProjectDTO.StartDate : throw new InvalidOperationException($"Invalid {nameof(waterpumpProjectDTO.StartDate)} provided."),
+                    EndDate = waterpumpProjectDTO.EndDate != default(DateTime) ? waterpumpProjectDTO.EndDate : throw new InvalidOperationException($"Invalid {nameof(waterpumpProjectDTO.EndDate)} provided."),
                     ProjectType = waterpumpProjectDTO.ProjectType,
-                    PartitionKey = waterpumpProjectDTO.ProjectType.ToString()
+                    PartitionKey = waterpumpProjectDTO.ProjectType.ToString() ?? throw new ArgumentNullException($"Invalid value provided")
                 };
                 return await _waterpumpProjectWriteRepository.AddAsync(wp);
             }
             else
             {
-                throw new ("Project already exist");
+                throw new Exception("Project already exist");
             }
         }
 

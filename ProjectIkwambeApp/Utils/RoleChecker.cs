@@ -30,11 +30,17 @@ namespace ProjectIkwambe.Utils
 				ClaimsPrincipal User = ExecutionContext.GetUser();
 				bool allowedRole = CheckUserRole(User, accessLevel);
                
-				if (!allowedRole || User.Identity.Name != userId)
+				if (!allowedRole /*|| User.Identity.Name != userId*/)
                 {
-                    HttpResponseData Response = Request.CreateResponse(HttpStatusCode.Forbidden);
-                    return Response;
-                }
+					if(!User.IsInRole("Admin"))
+                    {
+                        if (User.Identity.Name != userId)
+                        {
+							HttpResponseData r = Request.CreateResponse(HttpStatusCode.Forbidden);
+							return r;
+						}
+                    }
+				}
 				return await executeDefault(Request, ExecutionContext, User, Delegate);
 
             }
