@@ -81,8 +81,8 @@ namespace Infrastructure.Services
                 WaterpumpProject wp = new WaterpumpProject()
                 {
                     ProjectId = Guid.NewGuid(),
-                    Description = waterpumpProjectDTO.Description,
-                    NameOfProject = waterpumpProjectDTO.NameOfProject != null ? waterpumpProjectDTO.NameOfProject : throw new ArgumentException($"Invalid {nameof(waterpumpProjectDTO.NameOfProject)} provided"),
+                    Description = waterpumpProjectDTO.Description != null ? waterpumpProjectDTO.Description : throw new ArgumentNullException($"Invalid {nameof(waterpumpProjectDTO.NameOfProject)} provided"),
+                    NameOfProject = waterpumpProjectDTO.NameOfProject != null ? waterpumpProjectDTO.NameOfProject : throw new ArgumentNullException($"Invalid {nameof(waterpumpProjectDTO.NameOfProject)} provided"),
                     RatedPower = waterpumpProjectDTO.RatedPower,
                     FlowRate = waterpumpProjectDTO.FlowRate,
                     Coordinates = waterpumpProjectDTO.Coordinates,

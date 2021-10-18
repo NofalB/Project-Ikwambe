@@ -36,8 +36,8 @@ namespace ProjectIkwambe.Utils
                     {
                         if (User.Identity.Name != userId)
                         {
-							HttpResponseData response = Request.CreateResponse(HttpStatusCode.Forbidden);
-							return response;
+							HttpResponseData reponse = Request.CreateResponse(HttpStatusCode.Forbidden);
+							return reponse;
 						}
                     }
 				}
