@@ -121,6 +121,15 @@ namespace Infrastructure.Services
             return await _storyWriteRepository.Update(story);
         }
 
+        public async Task<Story> UpdateStory(Story story, string storyId)
+        {
+            if(await GetStoryById(storyId) == null)
+            {
+                throw new InvalidOperationException("The story ID provided does not exist");
+            }
+            return await _storyWriteRepository.Update(story);
+        }
+
         public async Task DeleteStory(string storyId)
         {
             Story story = await GetStoryById(storyId);

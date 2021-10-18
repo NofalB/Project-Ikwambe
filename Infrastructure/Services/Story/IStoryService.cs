@@ -18,6 +18,7 @@ namespace Infrastructure.Services
         Task<Story> AddStory(StoryDTO story);
 
         Task<Story> UpdateStory(Story story);
+        Task<Story> UpdateStory(Story story, string userId);
 
         Task DeleteStory(string storyId);
 

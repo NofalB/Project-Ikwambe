@@ -32,11 +32,11 @@ namespace Infrastructure.Services
             Guid id = Guid.Parse(projectId);
             var test = await _waterpumpProjectReadRepository.GetAll().ToListAsync();
 
-            var project =  await _waterpumpProjectReadRepository.GetAll().FirstOrDefaultAsync(w => w.ProjectId == id);
+            var project = await _waterpumpProjectReadRepository.GetAll().FirstOrDefaultAsync(w => w.ProjectId == id);
             return project;
         }
 
-        public  async Task<WaterpumpProject> GetWaterpumpProjectByName(string projectName)
+        public async Task<WaterpumpProject> GetWaterpumpProjectByName(string projectName)
         {
             WaterpumpProject p = await _waterpumpProjectReadRepository.GetAll().FirstOrDefaultAsync(w => w.NameOfProject == projectName);
             return p;
@@ -49,19 +49,12 @@ namespace Infrastructure.Services
             return await _waterpumpProjectReadRepository.GetAll().FirstOrDefaultAsync(p => p.ProjectType == pt);
         }
 
-        public IQueryable<WaterpumpProject>GetWaterPumpByProjectType1(string projectType)
-        {
-            ProjectType pt = (ProjectType)Enum.Parse(typeof(ProjectType), projectType);
-
-            return _waterpumpProjectReadRepository.GetAll().Where(p => p.ProjectType == pt);
-        }
-
         public List<WaterpumpProject> GetWaterpumpProjectByQuery(string projectType, string projectName)
         {
             List<WaterpumpProject> resultList = new List<WaterpumpProject>();
             List<WaterpumpProject> waterpumpProjects = _waterpumpProjectReadRepository.GetAll().ToList();
 
-            if(projectType != null)
+            if (projectType != null)
             {
                 ProjectType pt = (ProjectType)Enum.Parse(typeof(ProjectType), projectType);
 
@@ -78,9 +71,9 @@ namespace Infrastructure.Services
                 }));
                 //waterpumpProjects = waterpumpProjects.Where(p => p.ProjectType == pt);
             }
-            if(projectName != null)
+            if (projectName != null)
             {
-                resultList.AddRange(waterpumpProjects.Where(p => 
+                resultList.AddRange(waterpumpProjects.Where(p =>
                 {
                     try
                     {
@@ -89,14 +82,14 @@ namespace Infrastructure.Services
                     catch
                     {
                         throw new InvalidOperationException("The Project name you have provided is invalid or does not exist");
+
                     }
                 }));
                 //waterpumpProjects = waterpumpProjects.Where(p => p.NameOfProject == projectName);
             }
 
-            return resultList.Count != 0? resultList : waterpumpProjects;
+            return resultList.Count != 0 ? resultList : waterpumpProjects;
         }
-
         public async Task<WaterpumpProject> AddWaterpumpProject(WaterpumpProjectDTO waterpumpProjectDTO)
         {            
             if(await GetWaterpumpProjectByName(waterpumpProjectDTO.NameOfProject) == null)
@@ -135,6 +128,15 @@ namespace Infrastructure.Services
 
         public async Task<WaterpumpProject> UpdateWaterPumpProject(WaterpumpProject waterpumProject)
         {
+            return await _waterpumpProjectWriteRepository.Update(waterpumProject);
+        }
+
+        public async Task<WaterpumpProject> UpdateWaterPumpProject(WaterpumpProject waterpumProject, string projectId)
+        {
+            if(await GetWaterPumpProjectById(projectId) == null)
+            {
+                throw new InvalidOperationException("The project ID provided does not exist.");
+            }
             return await _waterpumpProjectWriteRepository.Update(waterpumProject);
         }
 

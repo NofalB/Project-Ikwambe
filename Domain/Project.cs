@@ -42,7 +42,6 @@ namespace Domain
 
 		public ProjectType ProjectType { get; set; }
 
-		//potential partition key is a new property about type of project.
-		public string PartitionKey { get; set; }//partition key is project type
+		public string PartitionKey { get; set; }
 	}
 }

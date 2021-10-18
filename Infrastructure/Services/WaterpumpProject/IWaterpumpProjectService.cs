@@ -16,7 +16,8 @@ namespace Infrastructure.Services
 
         Task<WaterpumpProject> AddWaterpumpProject(WaterpumpProjectDTO waterpumpProjectDTO);
 
-        Task<WaterpumpProject> UpdateWaterPumpProject(WaterpumpProject waterPumProject);
+        Task<WaterpumpProject> UpdateWaterPumpProject(WaterpumpProject waterpumpProject);
+        Task<WaterpumpProject> UpdateWaterPumpProject(WaterpumpProject waterpumpProject, string projectId);
 
         Task DeleteWaterpumpProjectAsync(string projectId);
 

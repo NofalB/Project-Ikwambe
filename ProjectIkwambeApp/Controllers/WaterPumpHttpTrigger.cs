@@ -99,14 +99,14 @@ namespace ProjectIkwambe.Controllers
         [Auth]
         [OpenApiOperation(operationId: "updatWaterPump", tags: new[] { "Waterpumps" }, Summary = "Update an existing waterpump information", Description = "This updates an existing waterpump.", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiParameter(name: "waterpumpId", In = ParameterLocation.Path, Required = false, Type = typeof(string), Summary = "ID of waterpump to return", Description = "ID of waterpump to return", Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(WaterpumpProject), Required = true, Description = "waterpump object that needs to be change in the database")]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(WaterpumpProjectDTO), Required = true, Description = "waterpump object that needs to be change in the database")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WaterpumpProject), Summary = "updated the waterpump details", Description = "waterpump details is updated", Example = typeof(WaterpumpProject))]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid waterpump ID supplied", Description = "The waterpump ID does not exist or invalid ID ")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "waterpump not found", Description = "waterpump not found")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Validation exception", Description = "Validation exception")]
         [UnauthorizedResponse]
         [ForbiddenResponse]
-        public async Task<HttpResponseData> UpdateWaterpump([HttpTrigger(AuthorizationLevel.Anonymous, "PUT", Route = "waterpumps/{waterpumpId}")] HttpRequestData req, FunctionContext executionContext)
+        public async Task<HttpResponseData> UpdateWaterpump([HttpTrigger(AuthorizationLevel.Anonymous, "PUT", Route = "waterpumps/{waterpumpId}")] HttpRequestData req, string waterpumpId, FunctionContext executionContext)
         {
             //Role[] roles = { Role.Admin };
 
@@ -119,7 +119,7 @@ namespace ProjectIkwambe.Controllers
 
                 HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
-                await response.WriteAsJsonAsync(await _waterpumpProjectService.UpdateWaterPumpProject(waterPumpProject));
+                await response.WriteAsJsonAsync(await _waterpumpProjectService.UpdateWaterPumpProject(waterPumpProject, waterpumpId));
 
                 return response;
             //});

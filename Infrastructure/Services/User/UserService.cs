@@ -28,8 +28,7 @@ namespace Infrastructure.Services
 
         public async Task<User> GetUserById(string userId)
         {
-            Guid id = Guid.Parse(userId);
-            return await _userReadRepository.GetAll().FirstOrDefaultAsync(u => u.UserId == id);
+            return await _userReadRepository.GetAll().FirstOrDefaultAsync(u => u.UserId == Guid.Parse(userId));
         }
 
         private async Task<User> GetUserByEmail(string email)
@@ -132,8 +131,12 @@ namespace Infrastructure.Services
             }
         }
 
-        public async Task<User> UpdateUser(User user)
+        public async Task<User> UpdateUser(User user, string userId)
         {
+            if(await GetUserById(userId) == null)
+            {
+                throw new InvalidOperationException("The user ID provided does not exist.");
+            }
             return await _userWriteRepository.Update(user);
         }
 
