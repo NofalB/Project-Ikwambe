@@ -57,25 +57,58 @@ namespace Infrastructure.Services
             }
         }
 
-        public IQueryable<User> GetUserByQueryOrGetAll(string firstname, string lastname, string subcribe)
+        public List<User> GetUserByQueryOrGetAll(string firstname, string lastname, string subcribe)
         {
-
-            IQueryable<User> user = _userReadRepository.GetAll();
+            List<User> users = _userReadRepository.GetAll().ToList();
+            List<User> resultList = new List<User>();
 
             if (firstname != null)
             {
-                user = user.Where(f => f.FirstName == firstname);
+                resultList.AddRange(users.Where(f =>
+                {
+                    try
+                    {
+                        return f.FirstName == firstname;
+                    }
+                    catch
+                    {
+                        throw new InvalidOperationException($"No user with the firstname {firstname} has been found.");
+                    }
+                }));
+                //user = user.Where(f => f.FirstName == firstname);
             }
             if (lastname != null)
             {
-                user = user.Where(l => l.LastName == lastname);
+                resultList.AddRange(users.Where(l =>
+                {
+                    try
+                    {
+                        return l.LastName == lastname;
+                    }
+                    catch
+                    {
+                        throw new InvalidOperationException($"No user with the firstname {lastname} has been found.");
+                    }
+                }));
+                //user = user.Where(l => l.LastName == lastname);
             }
             if (subcribe != null)
             {
-                user = user.Where(s => s.Subscription == bool.Parse(subcribe));
+                resultList.AddRange(users.Where(s =>
+                {
+                    try
+                    {
+                        return s.Subscription == bool.Parse(subcribe);
+                    }
+                    catch
+                    {
+                        throw new InvalidOperationException("Please either use true or false");
+                    }
+                }));
+                //user = user.Where(s => s.Subscription == bool.Parse(subcribe));
             }
 
-            return user;
+            return resultList.Count != 0 ? resultList: users;
         }
 
         public async Task<User> AddUser(UserDTO userDTO)

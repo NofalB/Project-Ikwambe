@@ -56,22 +56,45 @@ namespace Infrastructure.Services
             return _waterpumpProjectReadRepository.GetAll().Where(p => p.ProjectType == pt);
         }
 
-        public IQueryable<WaterpumpProject> GetWaterPumpProjectByQuery(string projectType, string projectName)
+        public List<WaterpumpProject> GetWaterpumpProjectByQuery(string projectType, string projectName)
         {
-            IQueryable<WaterpumpProject> waterpumpProjects = _waterpumpProjectReadRepository.GetAll();
-
+            List<WaterpumpProject> resultList = new List<WaterpumpProject>();
+            List<WaterpumpProject> waterpumpProjects = _waterpumpProjectReadRepository.GetAll().ToList();
 
             if(projectType != null)
             {
                 ProjectType pt = (ProjectType)Enum.Parse(typeof(ProjectType), projectType);
 
-                waterpumpProjects = waterpumpProjects.Where(p => p.ProjectType == pt);
+                resultList.AddRange(waterpumpProjects.Where(p =>
+                {
+                    try
+                    {
+                        return p.ProjectType == pt;
+                    }
+                    catch
+                    {
+                        throw new InvalidOperationException("Invalid ProjectType Provided");
+                    }
+                }));
+                //waterpumpProjects = waterpumpProjects.Where(p => p.ProjectType == pt);
             }
-            if(projectName !=null)
+            if(projectName != null)
             {
-                waterpumpProjects = waterpumpProjects.Where(p => p.NameOfProject == projectName);
+                resultList.AddRange(waterpumpProjects.Where(p => 
+                {
+                    try
+                    {
+                        return p.NameOfProject == projectName;
+                    }
+                    catch
+                    {
+                        throw new InvalidOperationException("The Project name you have provided is invalid or does not exist");
+                    }
+                }));
+                //waterpumpProjects = waterpumpProjects.Where(p => p.NameOfProject == projectName);
             }
-            return waterpumpProjects;
+
+            return resultList.Count != 0? resultList : waterpumpProjects;
         }
 
         public async Task<WaterpumpProject> AddWaterpumpProject(WaterpumpProjectDTO waterpumpProjectDTO)

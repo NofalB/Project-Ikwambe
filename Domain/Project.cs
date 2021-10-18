@@ -26,7 +26,7 @@ namespace Domain
 
 		[OpenApiProperty(Description = "The current amount collected from all the donations")]
 		[JsonRequired]
-		public double CurrentTotal { get; set; }
+		public double? CurrentTotal { get; set; }
 
 		[OpenApiProperty(Description = "Get or sets the target goal to achieve the amount needed to finish the project")]
 		[JsonRequired]

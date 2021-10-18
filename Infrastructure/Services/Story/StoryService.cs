@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -52,23 +53,45 @@ namespace Infrastructure.Services
             return await _storyReadRepository.GetAll().FirstOrDefaultAsync(s => s.Title == title);
         }
 
-        public IQueryable<Story> GetStoryByQuery(string author, string publishDate)
+        public List<Story> GetStoryByQuery(string author, string publishDate)
         {
-            IQueryable<Story> story = _storyReadRepository.GetAll();
+            List<Story> story = _storyReadRepository.GetAll().ToList();
+            List<Story> storyResultList = new List<Story>();
 
             if(author != null)
             {
-                story = story.Where(s => s.Author == author);
+                storyResultList.AddRange(story.Where(s =>
+                {
+                    try
+                    {
+                        return s.Author == author;
+                    }
+                    catch
+                    {
+                        throw new InvalidOperationException("Author provided either does not exist or ");
+                    }
+                }));
+                //story = story.Where(s => s.Author == author);
             }
             if(publishDate != null)
             {
-                DateTime time = DateTime.Parse(publishDate);
-                publishDate += "T23:59:59";
-                DateTime time_end = DateTime.Parse(publishDate);
-                story = story.Where(s => s.PublishDate > time && s.PublishDate < time_end);
+                DateTime publishDay;
+
+                if(!DateTime.TryParseExact(publishDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out publishDay))
+                {
+                    throw new InvalidOperationException("Invalid date provided");
+                }
+
+                publishDay.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+                storyResultList.AddRange(story.Where(s => s.PublishDate == publishDay.Date).ToList());
+                //DateTime time = DateTime.Parse(publishDate);
+                //publishDate += "T23:59:59";
+                //DateTime time_end = DateTime.Parse(publishDate);
+                //story = story.Where(s => s.PublishDate > time && s.PublishDate < time_end);
             }
 
-            return story;
+            return storyResultList.Count !=0 ? storyResultList : story;
         }
 
 

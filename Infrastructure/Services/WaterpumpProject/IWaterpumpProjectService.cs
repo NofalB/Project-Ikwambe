@@ -20,6 +20,6 @@ namespace Infrastructure.Services
 
         Task DeleteWaterpumpProjectAsync(string projectId);
 
-        IQueryable<WaterpumpProject> GetWaterPumpProjectByQuery(string projectType, string projectName);
+        List<WaterpumpProject> GetWaterpumpProjectByQuery(string projectType, string projectName);
     }
 }
