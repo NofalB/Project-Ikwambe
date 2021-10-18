@@ -5,7 +5,6 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Resolvers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using System.Device.Location;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain
