@@ -84,13 +84,12 @@ namespace Infrastructure.Services
             {
                 User user = new User(
                 Guid.NewGuid(),
-                userDTO.FirstName,
-                userDTO.LastName,
-                userDTO.Email,
-                userDTO.Password,
+                !string.IsNullOrEmpty(userDTO.FirstName) ? userDTO.FirstName : throw new ArgumentNullException($"Invalid {nameof(userDTO.FirstName)} provided"),
+                !string.IsNullOrEmpty(userDTO.LastName) ? userDTO.LastName : throw new ArgumentNullException($"Invalid {nameof(userDTO.LastName)} provided"),
+                !string.IsNullOrEmpty(userDTO.Email) ? userDTO.Email : throw new ArgumentNullException($"Invalid {nameof(userDTO.Email)} provided"),
+                !string.IsNullOrEmpty(userDTO.Password) ?userDTO.Password : throw new ArgumentNullException($"Invalid {nameof(userDTO.Password)} provided"),
                 false
                 );
-
                 return await _userWriteRepository.AddAsync(user);
             }
             else
