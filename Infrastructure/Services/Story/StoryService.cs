@@ -113,15 +113,16 @@ namespace Infrastructure.Services
             // Upload the file
             await blobClient.UploadAsync(fileStream, new BlobHttpHeaders { ContentType = "image/png" });
 
-            var imageUrl = GetServiceSasUriForBlob(blobClient);
+            //var imageUrl = GetServiceSasUriForBlob(blobClient);
 
             var story = await GetStoryById(storyId);
-            story.ImageURL = imageUrl;
+           // story.ImageURL = imageUrl;
 
             await UpdateStory(story);
         }
 
-        private string GetServiceSasUriForBlob(BlobClient blobClient, string storedPolicyName = null)
+        //to be removed.
+        /*private string GetServiceSasUriForBlob(BlobClient blobClient, string storedPolicyName = null)
         {
             string imageUrl = "";
 
@@ -152,6 +153,6 @@ namespace Infrastructure.Services
             }
 
             return imageUrl;
-        }
+        }*/
     }
 }
