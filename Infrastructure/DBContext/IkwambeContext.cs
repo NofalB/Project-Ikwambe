@@ -41,6 +41,9 @@ namespace Infrastructure.DBContext
             // users
             modelBuilder.Entity<User>()
                .ToContainer(nameof(Users))
+               .HasKey(u => u.UserId);
+
+            modelBuilder.Entity<User>()
                .HasNoDiscriminator()
                .HasPartitionKey(u => u.PartitionKey)
                .UseETagConcurrency();

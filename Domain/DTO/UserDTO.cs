@@ -29,19 +29,19 @@ namespace Domain.DTO
 		[JsonRequired]
 		public string Password { get; set; }
 
-		/*[OpenApiProperty(Description = "Gets or sets the subscription status.")]
+		[OpenApiProperty(Description = "Gets or sets the subscription status.")]
 		[JsonRequired]
 		public bool Subscription { get; set; }
 
-		public Role Role { get; set; }*/
+		/*public Role Role { get; set; }*/
 
-		public UserDTO(string firstName, string lastName, string email, string password/*, bool subscription, Role role*/)
+		public UserDTO(string firstName, string lastName, string email, string password, bool subscription /*Role role*/)
 		{
 			FirstName = firstName;
 			LastName = lastName;
 			Email = email;
 			Password = password;
-			//Subscription = subscription;
+			Subscription = subscription;
 			//Role = role;
 		}
 
@@ -54,9 +54,9 @@ namespace Domain.DTO
 	{
 		public override IOpenApiExample<UserDTO> Build(NamingStrategy NamingStrategy = null)
 		{
-			Examples.Add(OpenApiExampleResolver.Resolve("Hamza", new UserDTO("Kratos", "Jumbo", "bruh@gmail.com", "380"/*, true, Role.Admin*/), NamingStrategy));
-			Examples.Add(OpenApiExampleResolver.Resolve("Bruno", new UserDTO("Bam", "Test", "bruh@gmail.com", "Hello123"/*, true, Role.Admin*/), NamingStrategy));
-			Examples.Add(OpenApiExampleResolver.Resolve("Jumbo", new UserDTO("Jumbo", "Kratos", "bruh@gmail.com", "tEst12345"/*, false, Role.User*/), NamingStrategy));
+			Examples.Add(OpenApiExampleResolver.Resolve("Hamza", new UserDTO("Kratos", "Jumbo", "bruh@gmail.com", "380", true /*Role.Admin*/), NamingStrategy));
+			Examples.Add(OpenApiExampleResolver.Resolve("Bruno", new UserDTO("Bam", "Test", "bruh@gmail.com", "Hello123", true /*Role.Admin*/), NamingStrategy));
+			Examples.Add(OpenApiExampleResolver.Resolve("Jumbo", new UserDTO("Jumbo", "Kratos", "bruh@gmail.com", "tEst12345", false /*Role.User*/), NamingStrategy));
 
 			return this;
 		}
@@ -67,9 +67,9 @@ namespace Domain.DTO
 		public override IOpenApiExample<List<UserDTO>> Build(NamingStrategy NamingStrategy = null)
 		{
 			Examples.Add(OpenApiExampleResolver.Resolve("Users", new List<UserDTO> {
-				new UserDTO("Kratos", "Jumbo", "bruh@gmail.com", "380"/*, true, Role.Admin*/),
-				new UserDTO("Bam", "Test", "bruh@gmail.com", "Hello123"/*, true, Role.Admin*/),
-				new UserDTO("Jumbo", "Kratos", "bruh@gmail.com", "tEst12345"/*,true, Role.Admin*/),
+				new UserDTO("Kratos", "Jumbo", "bruh@gmail.com", "380", true /*Role.Admin*/),
+				new UserDTO("Bam", "Test", "bruh@gmail.com", "Hello123", true /*Role.Admin*/),
+				new UserDTO("Jumbo", "Kratos", "bruh@gmail.com", "tEst12345",true /*Role.Admin*/),
 			}));
 
 			return this;

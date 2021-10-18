@@ -49,7 +49,7 @@ namespace Domain
 			Email = email;
 			Password = password;
 			Subscription = subscription;
-			PartitionKey = subscription.ToString();
+			//PartitionKey = subscription.ToString();
 			Role = Role.User;
 		}
 

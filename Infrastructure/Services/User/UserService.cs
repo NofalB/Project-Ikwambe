@@ -114,14 +114,17 @@ namespace Infrastructure.Services
         {
             if(await GetUserByEmail(userDTO.Email) == null)
             {
-                User user = new User(
-                Guid.NewGuid(),
-                !string.IsNullOrEmpty(userDTO.FirstName) ? userDTO.FirstName : throw new ArgumentNullException($"Invalid {nameof(userDTO.FirstName)} provided"),
-                !string.IsNullOrEmpty(userDTO.LastName) ? userDTO.LastName : throw new ArgumentNullException($"Invalid {nameof(userDTO.LastName)} provided"),
-                !string.IsNullOrEmpty(userDTO.Email) ? userDTO.Email : throw new ArgumentNullException($"Invalid {nameof(userDTO.Email)} provided"),
-                !string.IsNullOrEmpty(userDTO.Password) ? userDTO.Password : throw new ArgumentNullException($"Invalid {nameof(userDTO.Password)} provided"),
-                false
-                );
+                User user = new User()
+                { 
+                    UserId = Guid.NewGuid(),
+                    FirstName = !string.IsNullOrEmpty(userDTO.FirstName) ? userDTO.FirstName : throw new ArgumentNullException($"Invalid {nameof(userDTO.FirstName)} provided"),
+                    LastName = !string.IsNullOrEmpty(userDTO.LastName) ? userDTO.LastName : throw new ArgumentNullException($"Invalid {nameof(userDTO.LastName)} provided"),
+                    Email = !string.IsNullOrEmpty(userDTO.Email) ? userDTO.Email : throw new ArgumentNullException($"Invalid {nameof(userDTO.Email)} provided"),
+                    Password = !string.IsNullOrEmpty(userDTO.Password) ? userDTO.Password : throw new ArgumentNullException($"Invalid {nameof(userDTO.Password)} provided"),
+                    Subscription = false,
+                    Role = Role.User,
+                    PartitionKey =  userDTO.FirstName
+                    };
 
                 return await _userWriteRepository.AddAsync(user);
             }
