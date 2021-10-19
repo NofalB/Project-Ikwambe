@@ -18,10 +18,11 @@ namespace Infrastructure.Services
         Task<Story> AddStory(StoryDTO story);
 
         Task<Story> UpdateStory(Story story);
+        Task<Story> UpdateStory(Story story, string userId);
 
         Task DeleteStory(string storyId);
 
-        IQueryable<Story> GetStoryByQuery(string author, string publishDate);
+        List<Story> GetStoryByQuery(string author, string publishDate);
         Task UploadImage(string storyId, Stream fileStream, string fileName);
     }
 }

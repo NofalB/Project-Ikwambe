@@ -91,14 +91,15 @@ namespace ProjectIkwambe.Controllers
         [Function(nameof(StoryHttpTrigger.UpdateStory))]
         [Auth]
         [OpenApiOperation(operationId: "updateStory", tags: new[] { "Stories" }, Summary = "Update an existing story", Description = "This updates an existing story.", Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(Story), Required = true, Description = "story object that needs to be changed in the database")]
+        [OpenApiParameter(name: "storyId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "ID of the story", Description = "ID of story object to return", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(StoryDTO), Required = true, Description = "story object that needs to be changed in the database")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Story), Summary = "Story details updated", Description = "Story details updated", Example = typeof(DummyStoryExamples))]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid ID supplied", Description = "Invalid ID supplied")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "Story not found", Description = "Story not found")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Validation exception", Description = "Validation exception")]
         [UnauthorizedResponse]
         [ForbiddenResponse]
-        public async Task<HttpResponseData> UpdateStory([HttpTrigger(AuthorizationLevel.Anonymous, "PUT", Route = "stories")] HttpRequestData req, FunctionContext executionContext)
+        public async Task<HttpResponseData> UpdateStory([HttpTrigger(AuthorizationLevel.Anonymous, "PUT", Route = "stories{storyId}")] HttpRequestData req, string storyId, FunctionContext executionContext)
         {
             Role[] roles = { Role.Admin };
 
@@ -110,7 +111,7 @@ namespace ProjectIkwambe.Controllers
 
                 // Generate output
                 HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
-                await response.WriteAsJsonAsync(await _storyService.UpdateStory(story));
+                await response.WriteAsJsonAsync(await _storyService.UpdateStory(story, storyId));
                 return response;
             });
         }

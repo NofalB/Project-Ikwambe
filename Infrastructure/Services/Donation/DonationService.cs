@@ -62,7 +62,6 @@ namespace Infrastructure.Services
 
         public List<Donation> GetDonationByQueryOrGetAll(string projectId, string donationDate)
         {
-            //need to fix this
             List<Donation> resultsList = new List<Donation>();
             List<Donation> donations = _donationReadRepository.GetAll().ToList();
             

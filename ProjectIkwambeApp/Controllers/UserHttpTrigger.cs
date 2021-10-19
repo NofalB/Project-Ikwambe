@@ -86,17 +86,18 @@ namespace ProjectIkwambe.Controllers
 
 		[Function(nameof(UserHttpTrigger.UpdateUser))]
 		[OpenApiOperation(operationId: "updateUser", tags: new[] { "Users" }, Summary = "update an existing user in the system", Description = "Updates an existing user by user id", Visibility = OpenApiVisibilityType.Important)]
-		[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(User), Required = true, Description = "User object that needs to be updated in the system")]
+		[OpenApiParameter(name: "userId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "ID of user to return", Description = "ID of user to return", Visibility = OpenApiVisibilityType.Important)]
+		[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(UserDTO), Required = true, Description = "User object that needs to be updated in the system")]
 		[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(User), Summary = "User details updated", Description = "The user has been sucessfully updated", Example = typeof(DummyUserExample))]
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Invalid input", Description = "Invalid input")]
-		public async Task<HttpResponseData> UpdateUser([HttpTrigger(AuthorizationLevel.Anonymous, "PUT", Route = "users/{userId}")] HttpRequestData req, FunctionContext executionContext)
+		public async Task<HttpResponseData> UpdateUser([HttpTrigger(AuthorizationLevel.Anonymous, "PUT", Route = "users/{userId}")] HttpRequestData req, string userId, FunctionContext executionContext)
 		{
 			// Parse input
 			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 			User user = JsonConvert.DeserializeObject<User>(requestBody);
 			// Generate output
 			HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
-			await response.WriteAsJsonAsync(await _userService.UpdateUser(user));
+			await response.WriteAsJsonAsync(await _userService.UpdateUser(user, userId));
 			return response;
 		}
 

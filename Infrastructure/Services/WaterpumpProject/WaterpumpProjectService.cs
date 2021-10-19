@@ -32,11 +32,11 @@ namespace Infrastructure.Services
             Guid id = Guid.Parse(projectId);
             var test = await _waterpumpProjectReadRepository.GetAll().ToListAsync();
 
-            var project =  await _waterpumpProjectReadRepository.GetAll().FirstOrDefaultAsync(w => w.ProjectId == id);
+            var project = await _waterpumpProjectReadRepository.GetAll().FirstOrDefaultAsync(w => w.ProjectId == id);
             return project;
         }
 
-        public  async Task<WaterpumpProject> GetWaterpumpProjectByName(string projectName)
+        public async Task<WaterpumpProject> GetWaterpumpProjectByName(string projectName)
         {
             WaterpumpProject p = await _waterpumpProjectReadRepository.GetAll().FirstOrDefaultAsync(w => w.NameOfProject == projectName);
             return p;
@@ -49,51 +49,76 @@ namespace Infrastructure.Services
             return await _waterpumpProjectReadRepository.GetAll().FirstOrDefaultAsync(p => p.ProjectType == pt);
         }
 
-        public IQueryable<WaterpumpProject>GetWaterPumpByProjectType1(string projectType)
+        public List<WaterpumpProject> GetWaterpumpProjectByQuery(string projectType, string projectName)
         {
-            ProjectType pt = (ProjectType)Enum.Parse(typeof(ProjectType), projectType);
+            List<WaterpumpProject> resultList = new List<WaterpumpProject>();
+            List<WaterpumpProject> waterpumpProjects = _waterpumpProjectReadRepository.GetAll().ToList();
 
-            return _waterpumpProjectReadRepository.GetAll().Where(p => p.ProjectType == pt);
-        }
-
-        public IQueryable<WaterpumpProject> GetWaterPumpProjectByQuery(string projectType, string projectName)
-        {
-            IQueryable<WaterpumpProject> waterpumpProjects = _waterpumpProjectReadRepository.GetAll();
-
-
-            if(projectType != null)
+            if (projectType != null)
             {
                 ProjectType pt = (ProjectType)Enum.Parse(typeof(ProjectType), projectType);
 
-                waterpumpProjects = waterpumpProjects.Where(p => p.ProjectType == pt);
+                resultList.AddRange(waterpumpProjects.Where(p =>
+                {
+                    try
+                    {
+                        return p.ProjectType == pt;
+                    }
+                    catch
+                    {
+                        throw new InvalidOperationException("Invalid ProjectType Provided");
+                    }
+                }));
+                //waterpumpProjects = waterpumpProjects.Where(p => p.ProjectType == pt);
             }
-            if(projectName !=null)
+            if (projectName != null)
             {
-                waterpumpProjects = waterpumpProjects.Where(p => p.NameOfProject == projectName);
-            }
-            return waterpumpProjects;
-        }
+                resultList.AddRange(waterpumpProjects.Where(p =>
+                {
+                    try
+                    {
+                        return p.NameOfProject == projectName;
+                    }
+                    catch
+                    {
+                        throw new InvalidOperationException("The Project name you have provided is invalid or does not exist");
 
+                    }
+                }));
+                //waterpumpProjects = waterpumpProjects.Where(p => p.NameOfProject == projectName);
+            }
+
+            return resultList.Count != 0 ? resultList : waterpumpProjects;
+        }
         public async Task<WaterpumpProject> AddWaterpumpProject(WaterpumpProjectDTO waterpumpProjectDTO)
         {            
             if(await GetWaterpumpProjectByName(waterpumpProjectDTO.NameOfProject) == null)
             {
-                WaterpumpProject wp = new WaterpumpProject()
+                //compare dates.
+                if(DateTime.Compare(waterpumpProjectDTO.StartDate,waterpumpProjectDTO.EndDate) < 0)
                 {
-                    ProjectId = Guid.NewGuid(),
-                    Description = waterpumpProjectDTO.Description != null ? waterpumpProjectDTO.Description : throw new ArgumentNullException($"Invalid {nameof(waterpumpProjectDTO.NameOfProject)} provided"),
-                    NameOfProject = waterpumpProjectDTO.NameOfProject != null ? waterpumpProjectDTO.NameOfProject : throw new ArgumentNullException($"Invalid {nameof(waterpumpProjectDTO.NameOfProject)} provided"),
-                    RatedPower = waterpumpProjectDTO.RatedPower,
-                    FlowRate = waterpumpProjectDTO.FlowRate,
-                    Coordinates = waterpumpProjectDTO.Coordinates,
-                    CurrentTotal = waterpumpProjectDTO.CurrentDonation,
-                    TargetGoal = waterpumpProjectDTO.TargetGoal,
-                    StartDate = waterpumpProjectDTO.StartDate != default(DateTime) ? waterpumpProjectDTO.StartDate : throw new InvalidOperationException($"Invalid {nameof(waterpumpProjectDTO.StartDate)} provided."),
-                    EndDate = waterpumpProjectDTO.EndDate != default(DateTime) ? waterpumpProjectDTO.EndDate : throw new InvalidOperationException($"Invalid {nameof(waterpumpProjectDTO.EndDate)} provided."),
-                    ProjectType = waterpumpProjectDTO.ProjectType,
-                    PartitionKey = waterpumpProjectDTO.ProjectType.ToString() ?? throw new ArgumentNullException($"Invalid value provided")
-                };
-                return await _waterpumpProjectWriteRepository.AddAsync(wp);
+                    WaterpumpProject wp = new WaterpumpProject()
+                    {
+                        ProjectId = Guid.NewGuid(),
+                        Description = waterpumpProjectDTO.Description,
+                        NameOfProject = waterpumpProjectDTO.NameOfProject != null ? waterpumpProjectDTO.NameOfProject : throw new ArgumentException($"Invalid {nameof(waterpumpProjectDTO.NameOfProject)} provided"),
+                        RatedPower = waterpumpProjectDTO.RatedPower,
+                        FlowRate = waterpumpProjectDTO.FlowRate,
+                        Coordinates = waterpumpProjectDTO.Coordinates,
+                        CurrentTotal = 0,
+                        TargetGoal = waterpumpProjectDTO.TargetGoal,
+                        StartDate = waterpumpProjectDTO.StartDate != default(DateTime) ? waterpumpProjectDTO.StartDate : throw new InvalidOperationException($"Invalid {nameof(waterpumpProjectDTO.StartDate)} provided."),
+                        EndDate = waterpumpProjectDTO.EndDate != default(DateTime) ? waterpumpProjectDTO.EndDate : throw new InvalidOperationException($"Invalid {nameof(waterpumpProjectDTO.EndDate)} provided."),
+                        ProjectType = waterpumpProjectDTO.ProjectType,
+                        PartitionKey = waterpumpProjectDTO.ProjectType.ToString() ?? throw new ArgumentNullException($"Invalid value provided")
+                    };
+                    return await _waterpumpProjectWriteRepository.AddAsync(wp);
+                }
+                else
+                {
+                    throw new Exception("The start date provide much be no later than the end date provided.");
+                }
+                
             }
             else
             {
@@ -103,6 +128,15 @@ namespace Infrastructure.Services
 
         public async Task<WaterpumpProject> UpdateWaterPumpProject(WaterpumpProject waterpumProject)
         {
+            return await _waterpumpProjectWriteRepository.Update(waterpumProject);
+        }
+
+        public async Task<WaterpumpProject> UpdateWaterPumpProject(WaterpumpProject waterpumProject, string projectId)
+        {
+            if(await GetWaterPumpProjectById(projectId) == null)
+            {
+                throw new InvalidOperationException("The project ID provided does not exist.");
+            }
             return await _waterpumpProjectWriteRepository.Update(waterpumProject);
         }
 

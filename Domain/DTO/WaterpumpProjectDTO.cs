@@ -24,10 +24,6 @@ namespace Domain.DTO
 		[JsonRequired]
 		public Coordinates Coordinates { get; set; }
 
-		[OpenApiProperty(Description = "The current amount collected from all the donations")]
-		[JsonRequired]
-		public double CurrentDonation { get; set; }
-
 		[OpenApiProperty(Description = "Get or sets the target goal to achieve the amount needed to finish the project")]
 		[JsonRequired]
 		public double TargetGoal { get; set; }
@@ -55,12 +51,11 @@ namespace Domain.DTO
 
 		}
 
-		public WaterpumpProjectDTO(string nameOfProject, string description, Coordinates coordinates, double currentDonation, double targetGoal, DateTime startDate, DateTime endDate, int ratedPower, int flowRate, ProjectType projectType)
+		public WaterpumpProjectDTO(string nameOfProject, string description, Coordinates coordinates, double targetGoal, DateTime startDate, DateTime endDate, int ratedPower, int flowRate, ProjectType projectType)
 		{
 			NameOfProject = nameOfProject;
 			Description = description;
 			Coordinates = coordinates;
-			CurrentDonation = currentDonation;
 			TargetGoal = targetGoal;
 			StartDate = startDate;
 			EndDate = endDate;
@@ -79,7 +74,7 @@ namespace Domain.DTO
 				"WaterpumpIkwambe",
 				"This is a description",
 				new Coordinates("ikwambe", -8.000, 36.833330), 
-				0, 
+				//0, 
 				25000, 
 				DateTime.Now, 
 				DateTime.Now, 
@@ -97,9 +92,9 @@ namespace Domain.DTO
 		public override IOpenApiExample<List<WaterpumpProjectDTO>> Build(NamingStrategy NamingStrategy = null)
 		{
 			Examples.Add(OpenApiExampleResolver.Resolve("Waterpumps", new List<WaterpumpProjectDTO> {
-				new WaterpumpProjectDTO("waterPumpIkwambe", "This is a description", new Coordinates("ikwambe", -8.000, 36.833330), 0, 25000, DateTime.Now, DateTime.Now, 20, 20, ProjectType.infrastructure),
-				new WaterpumpProjectDTO("waterPumpAlmere", "This is a description", new Coordinates("ikwambe", -8.000, 36.833330), 123, 40000, DateTime.Now, DateTime.Now, 100, 50, ProjectType.infrastructure),
-				new WaterpumpProjectDTO("waterPumpAmsterdam", "This is a description", new Coordinates( "ikwambe", -8.000, 36.833330), 456, 66000, DateTime.Now, DateTime.Now, 50, 200, ProjectType.education)
+				new WaterpumpProjectDTO("waterPumpIkwambe", "This is a description", new Coordinates("ikwambe", -8.000, 36.833330), 25000, DateTime.Now, DateTime.Now, 20, 20, ProjectType.infrastructure),
+				new WaterpumpProjectDTO("waterPumpAlmere", "This is a description", new Coordinates("ikwambe", -8.000, 36.833330), 40000, DateTime.Now, DateTime.Now, 100, 50, ProjectType.infrastructure),
+				new WaterpumpProjectDTO("waterPumpAmsterdam", "This is a description", new Coordinates( "ikwambe", -8.000, 36.833330), 66000, DateTime.Now, DateTime.Now, 50, 200, ProjectType.education)
 			}));
 
 			return this;
