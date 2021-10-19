@@ -48,19 +48,19 @@ namespace ProjectIkwambe.Controllers
             string date = HttpUtility.ParseQueryString(req.Url.Query).Get("date");
 			Role[] roles = { Role.Admin };
 
-			return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) =>
-			{
+			//return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) =>
+			//{
 				HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 			
 				await response.WriteAsJsonAsync(_donationService.GetDonationByQueryOrGetAll(projectId, date));
 
 				return response;
-			});
+			//});
 		}
 
 		//get byId
 		[Function(nameof(DonationHttpTrigger.GetDonationsById))]
-		[Auth]
+		//[Auth]
 		[OpenApiOperation(operationId: "getDonationsById", tags: new[] {"Donations"}, Summary = "Find Donation by Id", Description = "return one donation object", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiParameter(name: "donationId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "ID of donation to return", Description = "ID of donation to return", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Donation), Summary = "successful operation", Description = "successful operation", Example = typeof(DummyDonationsExamples))]
@@ -69,15 +69,15 @@ namespace ProjectIkwambe.Controllers
 
 			Role[] roles = { Role.User };
 
-			return await RoleChecker.ExecuteForUser(roles, req,  executionContext, async (ClaimsPrincipal User)  =>
-			{
+			//return await RoleChecker.ExecuteForUser(roles, req,  executionContext, async (ClaimsPrincipal User)  =>
+			//{
 				HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
 				await response.WriteAsJsonAsync(await _donationService.GetDonationByIdAsync(donationId));
 
 				return response;
 
-			});
+			//});
 		}
 
 		[Function(nameof(DonationHttpTrigger.MakeDonation))]
@@ -101,7 +101,7 @@ namespace ProjectIkwambe.Controllers
 
 
 		[Function(nameof(DonationHttpTrigger.GetDonationByUser))]
-		[Auth]
+		//[Auth]
 		[OpenApiOperation(operationId: "GetdonationByUserId", tags: new[] { "Donations" }, Summary = "Get donation for a specific user", Description = "Collect all Donation for a specific user", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiParameter(name: "specificUserId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "The userId to get their list of donations made", Description = "getting all the donation for a specific user", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(Donation), Required = true, Description = "Return a list of donation based on user Id")]
