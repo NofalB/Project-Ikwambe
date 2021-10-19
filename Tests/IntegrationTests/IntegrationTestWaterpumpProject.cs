@@ -131,7 +131,7 @@ namespace IntegrationTests
         [Fact]
         public void EditWaterpumpProjectSuccess()
         {
-            string projectId = "a4b31c94-e8ba-4fcb-bbfc-3739031030d4";
+            string projectId = createdProjectId;
 
             WaterpumpProject TestProjectData = new WaterpumpProject()
             {
@@ -243,7 +243,7 @@ namespace IntegrationTests
             var responseWaterpumpData = responseMessage.Content.ReadAsStringAsync().Result;
             //var waterpump = JsonConvert.DeserializeObject<WaterpumpProject>(responseWaterpumpData);
             //check results
-            Assert.Equal(HttpStatusCode.InternalServerError, responseMessage.StatusCode);
+            Assert.Equal(HttpStatusCode.BadRequest, responseMessage.StatusCode);
             //Assert.IsType<WaterpumpProject>(waterpump);
         }
 
@@ -258,8 +258,8 @@ namespace IntegrationTests
                 Description = "Test Description has been updated",
                 Coordinates = new Coordinates("Test", -8.00, 36.833330),
                 TargetGoal = 100000,
-                StartDate = DateTime.Now,
-                EndDate = DateTime.Now.AddDays(2),
+                StartDate = DateTime.Now.AddDays(2),
+                EndDate = DateTime.Now,
                 RatedPower = 1200,
                 ProjectType = ProjectType.health_service
             };

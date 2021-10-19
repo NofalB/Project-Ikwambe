@@ -148,21 +148,24 @@ namespace Infrastructure.Services
             WaterpumpProject project = await GetWaterPumpProjectById(projectId);
             if(project != null)
             {
-                //update the info
-                project.NameOfProject = waterpumProjectDTO.ToString();
-                project.Description = waterpumProjectDTO.Description;
-                project.NameOfProject = waterpumProjectDTO.NameOfProject;
-                project.RatedPower = waterpumProjectDTO.RatedPower;
-                project.FlowRate = waterpumProjectDTO.FlowRate;
-                project.Coordinates = waterpumProjectDTO.Coordinates;
-                project.TargetGoal = waterpumProjectDTO.TargetGoal;
-                project.StartDate = waterpumProjectDTO.StartDate;
-                project.EndDate = waterpumProjectDTO.EndDate;
-                project.ProjectType = waterpumProjectDTO.ProjectType;
-                project.PartitionKey = waterpumProjectDTO.ProjectType.ToString();
+                if (DateTime.Compare(waterpumProjectDTO.StartDate, waterpumProjectDTO.EndDate) < 0)
+                {
+                    //update the info
+                    project.NameOfProject = waterpumProjectDTO.ToString();
+                    project.Description = waterpumProjectDTO.Description;
+                    project.NameOfProject = waterpumProjectDTO.NameOfProject;
+                    project.RatedPower = waterpumProjectDTO.RatedPower;
+                    project.FlowRate = waterpumProjectDTO.FlowRate;
+                    project.Coordinates = waterpumProjectDTO.Coordinates;
+                    project.TargetGoal = waterpumProjectDTO.TargetGoal;
+                    project.StartDate = waterpumProjectDTO.StartDate;
+                    project.EndDate = waterpumProjectDTO.EndDate;
+                    project.ProjectType = waterpumProjectDTO.ProjectType;
+                    project.PartitionKey = waterpumProjectDTO.ProjectType.ToString();
 
-
-                return await _waterpumpProjectWriteRepository.Update(project);
+                    return await _waterpumpProjectWriteRepository.Update(project);
+                }
+                throw new InvalidOperationException("The start date provide much be no later than the end date provided.");
             }
             throw new InvalidOperationException("The project ID provided does not exist.");
 
