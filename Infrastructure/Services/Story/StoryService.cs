@@ -153,38 +153,5 @@ namespace Infrastructure.Services
             await UpdateStory(story);
         }
 
-        //to be removed.
-        /*private string GetServiceSasUriForBlob(BlobClient blobClient, string storedPolicyName = null)
-        {
-            string imageUrl = "";
-
-            // Check whether this BlobClient object has been authorized with Shared Key.
-            if (blobClient.CanGenerateSasUri)
-            {
-                // Create a SAS token that's valid for one hour.
-                BlobSasBuilder sasBuilder = new BlobSasBuilder()
-                {
-                    BlobContainerName = blobClient.GetParentBlobContainerClient().Name,
-                    BlobName = blobClient.Name,
-                    Resource = "b"
-                };
-
-                if (storedPolicyName == null)
-                {
-                    sasBuilder.ExpiresOn = DateTimeOffset.UtcNow.AddHours(1);
-                    sasBuilder.SetPermissions(BlobSasPermissions.Read |
-                        BlobSasPermissions.Write);
-                }
-                else
-                {
-                    sasBuilder.Identifier = storedPolicyName;
-                }
-
-                Uri sasUri = blobClient.GenerateSasUri(sasBuilder);
-                imageUrl = sasUri.AbsoluteUri;
-            }
-
-            return imageUrl;
-        }*/
     }
 }

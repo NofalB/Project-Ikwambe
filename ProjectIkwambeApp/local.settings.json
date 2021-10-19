@@ -3,11 +3,11 @@
   "Values": {
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
-    "CosmosDb:Account": "https://localhost:8081",
-    "CosmosDb:Key": "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==",
-    "CosmosDb:DatabaseName": "ProjectIkwambeDB",
-    "BlobCredentialOptions:ContainerName": "ContainerName",
-    "BlobCredentialOptions:ConnectionString": "ConnectionString"
+    "CosmosDb:Account": "https://projectikwambedb.documents.azure.com:443/",
+    "CosmosDb:Key": "0gHgOaqhe8NAjY0b02DurzqSZHiKI5NF9zQsRkAhqJsJmOIcPylMGZR44ZzmLSrbkhztzQeW8AKfu7BJnZ2nYQ==",
+    "CosmosDb:DatabaseName": "projectikwambedb",
+    "BlobCredentialOptions:ContainerName": "ikwambe-container",
+    "BlobCredentialOptions:ConnectionString": "DefaultEndpointsProtocol=https;AccountName=ikwambe2storage;AccountKey=5ebhRJYEmf2mNeNaV9ORpSr2M7TW+rGXUYIMMiprlHNp9SavfFn+peaIHxpMb+LyZ+YmfeWY/HGNM5E88R9rBw==;EndpointSuffix=core.windows.net"
   },
   "Host": {
     "LocalHttpPort": 7071,
