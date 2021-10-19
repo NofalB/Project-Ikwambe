@@ -19,7 +19,7 @@ namespace IntegrationTests
         private string _token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6ImJiNzU5ZDFjLTFiM2YtNDlmMy1iNGYxLWY3OTE5MTAyYTZmZCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6InRlc3RFIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZWlkZW50aWZpZXIiOiJiYjc1OWQxYy0xYjNmLTQ5ZjMtYjRmMS1mNzkxOTEwMmE2ZmQiLCJuYmYiOjE2MzQ1NzAzNzUsImV4cCI6MTY4NjQxMDM3NSwiaWF0IjoxNjM0NTcwMzc1LCJpc3MiOiJEZWJ1Z0lzc3VlciIsImF1ZCI6IkRlYnVnQXVkaWVuY2UifQ.nvVcS52-ntRh1NwiBrMzLNYo6aLVhDSYPkf6fEBGOFA";
 
         //this string will be used for deleting and edit test.
-        private string createdProjectId;
+        private string _createdProjectId;
 
         public IntegrationTestWaterpumpProject()
         {
@@ -84,6 +84,13 @@ namespace IntegrationTests
                 w => Assert.Matches(projectName, w.NameOfProject));
         }
         [Fact]
+        public void DoCreateAndGetByIdAndEditAndDeleteSuccess()
+        {
+            CreateWaterpumpProjectSuccess();
+            GetAWaterpumpProjectByIdSuccess();
+            EditWaterpumpProjectSuccess();
+            DeleteWaterpumpProjectSuccess();
+        }
         public void GetAWaterpumpProjectByIdSuccess()
         {
             string projectId = "9ac7ee43-f464-46ca-85b9-b1549a258e50";
@@ -98,8 +105,6 @@ namespace IntegrationTests
             Assert.Equal(HttpStatusCode.OK, responseResult.StatusCode);
             Assert.Matches(projectId, waterpumpProject.ProjectId.ToString());
         }
-
-        [Fact]
         public void CreateWaterpumpProjectSuccess()
         {
             WaterpumpProjectDTO TestProjectData = new WaterpumpProjectDTO()
@@ -125,13 +130,11 @@ namespace IntegrationTests
             Assert.Equal(HttpStatusCode.Created, responseMessage.StatusCode);
             Assert.IsType<WaterpumpProject>(waterpump);
             //add the Id of the created project to this string.
-            createdProjectId = waterpump.ProjectId.ToString();
+            _createdProjectId = waterpump.ProjectId.ToString();
         }
-
-        [Fact]
         public void EditWaterpumpProjectSuccess()
         {
-            string projectId = createdProjectId;
+            string projectId = _createdProjectId;
 
             WaterpumpProject TestProjectData = new WaterpumpProject()
             {
@@ -161,38 +164,34 @@ namespace IntegrationTests
             Assert.Equal(HttpStatusCode.OK, responseMessage.StatusCode);
             Assert.IsType<WaterpumpProject>(waterpump);
         }
-
-        [Fact]
         public void DeleteWaterpumpProjectSuccess()
         {
-            string projectId = createdProjectId;
+            string projectId = _createdProjectId;
 
             HttpResponseMessage responseMessage = _httpClient.DeleteAsync($"api/waterpumps/{projectId}").Result;
 
             Assert.Equal(HttpStatusCode.Accepted, responseMessage.StatusCode);
         }
-
         #endregion
 
 
         #region Failed tests
-        //[Fact]
+        [Fact]
         public void FilterWaterpumpProjectByProjectTypeFailed()
         {
-            string projectType = "abc";
+            string projectType = "";
 
             //request
             HttpResponseMessage responseWithProjectType = _httpClient.GetAsync($"api/waterpumps?projecttype={projectType}").Result;
 
             //get response
             var resultProjectByProjectType = responseWithProjectType.Content.ReadAsStringAsync().Result;
-            var waterpumpProjectByType = JsonConvert.DeserializeObject<WaterpumpProject>(resultProjectByProjectType);
+            //var waterpumpProjectByType = JsonConvert.DeserializeObject<WaterpumpProject>(resultProjectByProjectType);
 
             //check results
-            Assert.Equal(HttpStatusCode.BadRequest, responseWithProjectType.StatusCode);
+            Assert.Equal(HttpStatusCode.InternalServerError, responseWithProjectType.StatusCode);
         }
-
-        //[Fact]
+        [Fact]
         public void FilterWaterpumpProjectByProjectNameFailure()
         {
             string projectName = "absss"; //this need to be changed later
@@ -202,12 +201,11 @@ namespace IntegrationTests
 
             //get response
             var resultProjectByName = responseWithProjectName.Content.ReadAsStringAsync().Result;
-            var waterpumpProjectByName = JsonConvert.DeserializeObject<List<WaterpumpProject>>(resultProjectByName);
+            //var waterpumpProjectByName = JsonConvert.DeserializeObject<List<WaterpumpProject>>(resultProjectByName);
 
             //check results
             Assert.Equal(HttpStatusCode.BadRequest, responseWithProjectName.StatusCode);
         }
-
         [Fact]
         public void GetWaterpumpProjectByIdFailure()
         {
@@ -220,7 +218,6 @@ namespace IntegrationTests
             Assert.Equal(HttpStatusCode.BadRequest, responseResult.StatusCode);
             //Assert.Null(waterpumpProject);
         }
-
         [Fact]
         public void CreateWaterpumpProjectFailure()
         {
@@ -246,7 +243,6 @@ namespace IntegrationTests
             Assert.Equal(HttpStatusCode.BadRequest, responseMessage.StatusCode);
             //Assert.IsType<WaterpumpProject>(waterpump);
         }
-
         [Fact]
         public void EditWaterpumpProjectFailure()
         {
@@ -277,7 +273,6 @@ namespace IntegrationTests
             Assert.Equal(HttpStatusCode.BadRequest, responseMessage.StatusCode);
             //Assert.IsType<WaterpumpProject>(waterpump);
         }
-
         [Fact]
         public void DeleteWaterpumpProjectFailure()
         {

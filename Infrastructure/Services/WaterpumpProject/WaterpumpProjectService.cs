@@ -61,14 +61,13 @@ namespace Infrastructure.Services
 
         public List<WaterpumpProject> GetWaterpumpProjectByQuery(string projectType, string projectName)
         {
-            List<WaterpumpProject> resultList = new List<WaterpumpProject>();
-            List<WaterpumpProject> waterpumpProjects = _waterpumpProjectReadRepository.GetAll().ToList();
+            List<WaterpumpProject> resultList = _waterpumpProjectReadRepository.GetAll().ToList();
 
             if (projectType != null)
             {
                 ProjectType pt = (ProjectType)Enum.Parse(typeof(ProjectType), projectType);
 
-                resultList.AddRange(waterpumpProjects.Where(p =>
+                resultList = resultList.Where(p =>
                 {
                     try
                     {
@@ -78,14 +77,11 @@ namespace Infrastructure.Services
                     {
                         throw new InvalidOperationException("Invalid ProjectType Provided");
                     }
-                }));
-
-                return resultList;
-                //waterpumpProjects = waterpumpProjects.Where(p => p.ProjectType == pt);
+                }).ToList();
             }
             if (projectName != null)
             {
-                resultList.AddRange(waterpumpProjects.Where(p =>
+                resultList  = resultList.Where(p =>
                 {
                     try
                     {
@@ -97,11 +93,10 @@ namespace Infrastructure.Services
 
                     }
                     
-                }));
-                return resultList;
-                //waterpumpProjects = waterpumpProjects.Where(p => p.NameOfProject == projectName);
+                }).ToList();
             }
-            return resultList.Count != 0 ? resultList : waterpumpProjects;
+
+            return resultList.Count != 0 ? resultList : throw new InvalidOperationException("Filter does not result to any objects");
         }
         public async Task<WaterpumpProject> AddWaterpumpProject(WaterpumpProjectDTO waterpumpProjectDTO)
         {            

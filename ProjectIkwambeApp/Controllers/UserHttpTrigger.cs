@@ -79,8 +79,9 @@ namespace ProjectIkwambe.Controllers
 			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 			UserDTO userDTO = JsonConvert.DeserializeObject<UserDTO>(requestBody);
 			// Generate output
-			HttpResponseData response = req.CreateResponse(HttpStatusCode.Created);
+			HttpResponseData response = req.CreateResponse();
 			await response.WriteAsJsonAsync(await _userService.AddUser(userDTO));
+			response.StatusCode = HttpStatusCode.Created;
 			return response;
 		}
 
@@ -110,13 +111,13 @@ namespace ProjectIkwambe.Controllers
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "user not found", Description = "user not found by the inserted ID,please check again")]
 		public async Task<HttpResponseData> DeleteUser([HttpTrigger(AuthorizationLevel.Anonymous, "DELETE", Route = "users/{userId}")] HttpRequestData req, string userId, FunctionContext executionContext)
 		{
-			Role[] roles = { Role.Admin };
+			//Role[] roles = { Role.Admin };
 
-			return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) => {
+			//return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) => {
 				HttpResponseData response = req.CreateResponse(HttpStatusCode.Accepted);
 				await _userService.DeleteUserAsync(userId);
 				return response;
-			});
+			//});
 		}
 	}
 }
