@@ -6,6 +6,7 @@
     "CosmosDb:Key": "0gHgOaqhe8NAjY0b02DurzqSZHiKI5NF9zQsRkAhqJsJmOIcPylMGZR44ZzmLSrbkhztzQeW8AKfu7BJnZ2nYQ==",
     "CosmosDb:DatabaseName": "projectikwambedb",
     "BlobCredentialOptions:ContainerName": "ikwambe-container",
-    "BlobCredentialOptions:ConnectionString": "DefaultEndpointsProtocol=https;AccountName=ikwambe2storage;AccountKey=5ebhRJYEmf2mNeNaV9ORpSr2M7TW+rGXUYIMMiprlHNp9SavfFn+peaIHxpMb+LyZ+YmfeWY/HGNM5E88R9rBw==;EndpointSuffix=core.windows.net"
+    "BlobCredentialOptions:ConnectionString": "DefaultEndpointsProtocol=https;AccountName=ikwambe2storage;AccountKey=5ebhRJYEmf2mNeNaV9ORpSr2M7TW+rGXUYIMMiprlHNp9SavfFn+peaIHxpMb+LyZ+YmfeWY/HGNM5E88R9rBw==;EndpointSuffix=core.windows.net",
+    "OpenApi__HostNames": "https://stichting-ikwambe.azurewebsites.net/api/"
   }
 }

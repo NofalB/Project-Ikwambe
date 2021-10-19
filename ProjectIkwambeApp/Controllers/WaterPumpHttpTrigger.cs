@@ -50,7 +50,6 @@ namespace ProjectIkwambe.Controllers
             string projectType = HttpUtility.ParseQueryString(req.Url.Query).Get("projecttype");
 
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
-
             await response.WriteAsJsonAsync(_waterpumpProjectService.GetWaterpumpProjectByQuery(projectType, projectName));
            
             return response;
