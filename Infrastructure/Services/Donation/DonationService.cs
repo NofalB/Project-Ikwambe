@@ -31,21 +31,15 @@ namespace Infrastructure.Services
 
         public async Task<Donation> GetDonationByIdAsync(string donationId)
         {
-            Guid id = Guid.Parse(donationId);
-            return await _donationReadRepository.GetAll().FirstOrDefaultAsync(d => d.DonationId == id);
-        }
-
-        public async Task<Donation> GetDonationByIdAsync(string donationId, string userId)
-        {
             try
             {
                 Guid id = Guid.Parse(donationId);
 
-                var donation = await _donationReadRepository.GetAll().FirstOrDefaultAsync(d => d.DonationId == id && d.UserId == Guid.Parse(userId));
+                var donation = await _donationReadRepository.GetAll().FirstOrDefaultAsync(d => d.DonationId == id);
 
                 if (donation == null)
                 {
-                    throw new Exception("Donation does not exist. Incorrect donation ID or user ID provided");
+                    throw new ArgumentException("Donation does not exist. Incorrect donation ID or user ID provided");
                 }
                 return donation;
             }

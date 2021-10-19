@@ -12,8 +12,6 @@ namespace Infrastructure.Services
 
         Task<Donation> GetDonationByIdAsync(string donationId);
 
-        Task<Donation> GetDonationByIdAsync(string donationId, string userId);
-
         Task<Donation> AddDonation(DonationDTO donation);
 
         IQueryable<Donation> GetDonationByUserId(string userId);

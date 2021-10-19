@@ -42,6 +42,7 @@ namespace ProjectIkwambe.ErrorHandlerMiddleware
                 Status = exception.GetBaseException() switch
                 {
                     ArgumentNullException => HttpStatusCode.BadRequest,
+                    ArgumentException => HttpStatusCode.BadRequest,
                     InvalidOperationException => HttpStatusCode.BadRequest,
                     NullReferenceException => HttpStatusCode.BadRequest,
                     FileNotFoundException => HttpStatusCode.BadRequest,
