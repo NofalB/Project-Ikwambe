@@ -151,7 +151,7 @@ namespace IntegrationTests
 
             // verify results
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-            Assert.Null(donation);
+            Assert.Matches(donation.DonationId.ToString(), Guid.Empty.ToString());
         }
 
         [Fact]

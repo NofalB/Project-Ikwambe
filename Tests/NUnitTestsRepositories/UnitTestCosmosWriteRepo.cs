@@ -10,7 +10,7 @@ namespace NUnitTestsRepositories
 {
     public class UnitTestCosmosWriteRepocs
     {
-        private IQueryable<Donation> _mockListDonations;
+        private List<Donation> _mockListDonations;
         private Mock<ICosmosWriteRepository<Donation>> _donationWriteMock;
         private ICosmosWriteRepository<Donation> _donationWriteRepo;
 
@@ -31,18 +31,18 @@ namespace NUnitTestsRepositories
             _donationWriteMock.Setup(m => m.AddAsync(It.IsAny<Donation>())).Callback(new Action<Donation>(
                         x =>
                         {
-                            _mockListDonations.ToList().Add(x);
+                            _mockListDonations.Add(x);
+                            _mockListDonations.AsQueryable();
                         }
                     ));
 
             // set up mock donation data
-            _mockListDonations =
-                (new List<Donation> {
+            _mockListDonations = new List<Donation> {
                     new Donation(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "1Y7311651B552625V", 4000),
                     new Donation(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "2Y7311651B552625W", 599)
-                }).AsQueryable();
+                };
 
-            _donationReadMock.Setup(m => m.GetAll()).Returns(_mockListDonations);
+            _donationReadMock.Setup(m => m.GetAll()).Returns(_mockListDonations.AsQueryable());
         }
 
         [Test]
