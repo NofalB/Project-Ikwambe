@@ -134,13 +134,22 @@ namespace Infrastructure.Services
             }
         }
 
-        public async Task<User> UpdateUser(User user, string userId)
+        public async Task<User> UpdateUser(UserDTO userDTO, string userId)
         {
-            if(await GetUserById(userId) == null)
+            User userData = await GetUserById(userId);
+            if (userData != null)
             {
-                throw new InvalidOperationException("The user ID provided does not exist.");
+                //update user info
+                userData.FirstName = userDTO.FirstName;
+                userData.LastName = userDTO.LastName;
+                userData.Email = userDTO.Email;
+                userData.Password = userDTO.Password;
+                userData.Subscription = bool.Parse(userDTO.Subscription.ToString());
+
+                return await _userWriteRepository.Update(userData);
             }
-            return await _userWriteRepository.Update(user);
+            throw new InvalidOperationException("The user ID provided does not exist.");
+
         }
 
         public async Task DeleteUserAsync(string userId)

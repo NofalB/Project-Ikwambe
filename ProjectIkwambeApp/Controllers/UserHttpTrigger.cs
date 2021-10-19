@@ -94,10 +94,10 @@ namespace ProjectIkwambe.Controllers
 		{
 			// Parse input
 			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-			User user = JsonConvert.DeserializeObject<User>(requestBody);
+			UserDTO userDTO = JsonConvert.DeserializeObject<UserDTO>(requestBody);
 			// Generate output
 			HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
-			await response.WriteAsJsonAsync(await _userService.UpdateUser(user, userId));
+			await response.WriteAsJsonAsync(await _userService.UpdateUser(userDTO, userId));
 			return response;
 		}
 
