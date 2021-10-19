@@ -33,6 +33,12 @@ namespace Infrastructure.Services
             var test = await _waterpumpProjectReadRepository.GetAll().ToListAsync();
 
             var project = await _waterpumpProjectReadRepository.GetAll().FirstOrDefaultAsync(w => w.ProjectId == id);
+            
+            if(project == null)
+            {
+                throw new ArgumentNullException("No Id Found");
+            }
+
             return project;
         }
 
@@ -87,7 +93,6 @@ namespace Infrastructure.Services
                 }));
                 //waterpumpProjects = waterpumpProjects.Where(p => p.NameOfProject == projectName);
             }
-
             return resultList.Count != 0 ? resultList : waterpumpProjects;
         }
         public async Task<WaterpumpProject> AddWaterpumpProject(WaterpumpProjectDTO waterpumpProjectDTO)
@@ -101,16 +106,16 @@ namespace Infrastructure.Services
                     {
                         ProjectId = Guid.NewGuid(),
                         Description = waterpumpProjectDTO.Description,
-                        NameOfProject = waterpumpProjectDTO.NameOfProject != null ? waterpumpProjectDTO.NameOfProject : throw new ArgumentException($"Invalid {nameof(waterpumpProjectDTO.NameOfProject)} provided"),
+                        NameOfProject = waterpumpProjectDTO.NameOfProject /*!= null ? waterpumpProjectDTO.NameOfProject : throw new ArgumentException($"Invalid {nameof(waterpumpProjectDTO.NameOfProject)} provided")*/,
                         RatedPower = waterpumpProjectDTO.RatedPower,
                         FlowRate = waterpumpProjectDTO.FlowRate,
                         Coordinates = waterpumpProjectDTO.Coordinates,
                         CurrentTotal = 0,
                         TargetGoal = waterpumpProjectDTO.TargetGoal,
-                        StartDate = waterpumpProjectDTO.StartDate != default(DateTime) ? waterpumpProjectDTO.StartDate : throw new InvalidOperationException($"Invalid {nameof(waterpumpProjectDTO.StartDate)} provided."),
-                        EndDate = waterpumpProjectDTO.EndDate != default(DateTime) ? waterpumpProjectDTO.EndDate : throw new InvalidOperationException($"Invalid {nameof(waterpumpProjectDTO.EndDate)} provided."),
+                        StartDate = waterpumpProjectDTO.StartDate /*!= default(DateTime) ? waterpumpProjectDTO.StartDate : throw new InvalidOperationException($"Invalid {nameof(waterpumpProjectDTO.StartDate)} provided.")*/,
+                        EndDate = waterpumpProjectDTO.EndDate /*!= default(DateTime) ? waterpumpProjectDTO.EndDate : throw new InvalidOperationException($"Invalid {nameof(waterpumpProjectDTO.EndDate)} provided.")*/,
                         ProjectType = waterpumpProjectDTO.ProjectType,
-                        PartitionKey = waterpumpProjectDTO.ProjectType.ToString() ?? throw new ArgumentNullException($"Invalid value provided")
+                        PartitionKey = waterpumpProjectDTO.ProjectType.ToString() /*?? throw new ArgumentNullException($"Invalid value provided")*/
                     };
                     return await _waterpumpProjectWriteRepository.AddAsync(wp);
                 }
@@ -118,7 +123,6 @@ namespace Infrastructure.Services
                 {
                     throw new Exception("The start date provide much be no later than the end date provided.");
                 }
-                
             }
             else
             {

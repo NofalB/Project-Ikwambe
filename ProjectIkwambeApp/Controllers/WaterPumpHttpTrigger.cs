@@ -84,14 +84,15 @@ namespace ProjectIkwambe.Controllers
         [ForbiddenResponse]
         public async Task<HttpResponseData> AddWaterpumps([HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "waterpumps")] HttpRequestData req, FunctionContext executionContext)
         {
-            Role[] roles = { Role.Admin };
-            return await RoleChecker.ExecuteForUser( roles, req, executionContext, async (ClaimsPrincipal User) => {
+            //Role[] roles = { Role.Admin };
+            //return await RoleChecker.ExecuteForUser( roles, req, executionContext, async (ClaimsPrincipal User) => {
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                 WaterpumpProjectDTO waterpumpDTO = JsonConvert.DeserializeObject<WaterpumpProjectDTO>(requestBody);
-                HttpResponseData response = req.CreateResponse(HttpStatusCode.Created);
+                HttpResponseData response = req.CreateResponse();
                 await response.WriteAsJsonAsync(await _waterpumpProjectService.AddWaterpumpProject(waterpumpDTO));
+                response.StatusCode = HttpStatusCode.Created;
                 return response;
-            });
+            //});
         }
 
         //edit waterpump by id
@@ -138,15 +139,16 @@ namespace ProjectIkwambe.Controllers
         //[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Validation exception", Description = "Validation exception")]
         public async Task<HttpResponseData> DeleteWaterpump([HttpTrigger(AuthorizationLevel.Anonymous, "DELETE", Route = "waterpumps/{waterpumpId}")] HttpRequestData req, string waterpumpId, FunctionContext executionContext)
         {
-            Role[] roles = { Role.Admin };
-            return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) => {
-                HttpResponseData response = req.CreateResponse(HttpStatusCode.Accepted);
+            //Role[] roles = { Role.Admin };
+            //return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) => {
+                HttpResponseData response = req.CreateResponse();
 
                 await _waterpumpProjectService.DeleteWaterpumpProjectAsync(waterpumpId);
+                response.StatusCode = HttpStatusCode.Accepted;
 
                 return response;
 
-            });
+            //});
         }
     }
 }
