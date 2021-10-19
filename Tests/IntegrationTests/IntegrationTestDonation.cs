@@ -35,7 +35,7 @@ namespace IntegrationTests
         public void GetAllDonationsSuccess()
         {
             // setup
-            string userId = "bb759d1c-1b3f-49f3-b4f1-f7919102a6fd";
+            string userId = "cafa35da-e093-4946-b50d-f4007d02843f";
 
             // run request
             HttpResponseMessage response = _httpClient.GetAsync($"api/donations?userId={userId}").Result;
@@ -53,13 +53,12 @@ namespace IntegrationTests
         public void FilterDonationsByProjectIdAndDonationDateSuccess()
         {
             // setup
-            string userId = "bb759d1c-1b3f-49f3-b4f1-f7919102a6fd";
-            string projectId = "3fa85f64-5717-4562-b3fc-2c963f66afa6";
-            string donationDate = "2021-10-16";
+            string projectId = "787c7269-33cc-4198-a9d1-17bdade3a622";
+            string donationDate = "2021-10-19";
 
             // run request
-            HttpResponseMessage responseWithDonationDate = _httpClient.GetAsync($"api/donations?date={donationDate}&userId={userId}").Result;
-            HttpResponseMessage responseWithProjectId = _httpClient.GetAsync($"api/donations?projectId={projectId}&userId={userId}").Result;
+            HttpResponseMessage responseWithDonationDate = _httpClient.GetAsync($"api/donations?date={donationDate}").Result;
+            HttpResponseMessage responseWithProjectId = _httpClient.GetAsync($"api/donations?projectId={projectId}").Result;
 
             // process response
             var responseDataByProjectId = responseWithProjectId.Content.ReadAsStringAsync().Result;
@@ -80,8 +79,8 @@ namespace IntegrationTests
         public void GetDonationByDonationIdSuccess()
         {
             // setup
-            string donationId = "89ae88a7-32be-49f2-b1c6-dea3c7097f32";
-            string userId = "bb759d1c-1b3f-49f3-b4f1-f7919102a6fd";
+            string donationId = "9404dc0b-1818-4b2e-b8d5-eb7782a01eea";
+            string userId = "cafa35da-e093-4946-b50d-f4007d02843f";
 
             // run request
             HttpResponseMessage response = _httpClient.GetAsync($"api/donations/{donationId}?userId={userId}").Result;
