@@ -11,7 +11,7 @@ variables:
   azureSubscription: '4f2a76e9-06d0-4d5e-8c78-a58ba312eff7'
 
   # Add two variables
-  integrationTestDirectory: '$(System.DefaultWorkingDirectory)/Tests'
+  integrationTestDirectory: '$(System.DefaultWorkingDirectory)/Tests/IntegrationTests'
 
   functionHostName: 'https://stichting-ikwambe.azurewebsites.net/'
 
