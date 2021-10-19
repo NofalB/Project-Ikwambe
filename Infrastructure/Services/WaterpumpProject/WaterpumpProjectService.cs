@@ -44,8 +44,12 @@ namespace Infrastructure.Services
 
         public async Task<WaterpumpProject> GetWaterpumpProjectByName(string projectName)
         {
-            WaterpumpProject p = await _waterpumpProjectReadRepository.GetAll().FirstOrDefaultAsync(w => w.NameOfProject == projectName);
-            return p;
+            WaterpumpProject projectData = await _waterpumpProjectReadRepository.GetAll().FirstOrDefaultAsync(w => w.NameOfProject == projectName);
+            /*if(projectData == null)
+            {
+                throw new ArgumentNullException("No waterpump project found with the provided name");
+            }*/
+            return projectData;
         }
 
         public async Task<WaterpumpProject> GetWaterPumpByProjectType(string projectType)
@@ -75,6 +79,8 @@ namespace Infrastructure.Services
                         throw new InvalidOperationException("Invalid ProjectType Provided");
                     }
                 }));
+
+                return resultList;
                 //waterpumpProjects = waterpumpProjects.Where(p => p.ProjectType == pt);
             }
             if (projectName != null)
@@ -90,7 +96,9 @@ namespace Infrastructure.Services
                         throw new InvalidOperationException("The Project name you have provided is invalid or does not exist");
 
                     }
+                    
                 }));
+                return resultList;
                 //waterpumpProjects = waterpumpProjects.Where(p => p.NameOfProject == projectName);
             }
             return resultList.Count != 0 ? resultList : waterpumpProjects;
@@ -121,12 +129,12 @@ namespace Infrastructure.Services
                 }
                 else
                 {
-                    throw new Exception("The start date provide much be no later than the end date provided.");
+                    throw new InvalidOperationException("The start date provide much be no later than the end date provided.");
                 }
             }
             else
             {
-                throw new Exception("Project already exist");
+                throw new InvalidOperationException("Project already exist");
             }
         }
 
@@ -135,13 +143,29 @@ namespace Infrastructure.Services
             return await _waterpumpProjectWriteRepository.Update(waterpumProject);
         }
 
-        public async Task<WaterpumpProject> UpdateWaterPumpProject(WaterpumpProject waterpumProject, string projectId)
+        public async Task<WaterpumpProject> UpdateWaterPumpProject(WaterpumpProjectDTO waterpumProjectDTO, string projectId)
         {
-            if(await GetWaterPumpProjectById(projectId) == null)
+            WaterpumpProject project = await GetWaterPumpProjectById(projectId);
+            if(project != null)
             {
-                throw new InvalidOperationException("The project ID provided does not exist.");
+                //update the info
+                project.NameOfProject = waterpumProjectDTO.ToString();
+                project.Description = waterpumProjectDTO.Description;
+                project.NameOfProject = waterpumProjectDTO.NameOfProject;
+                project.RatedPower = waterpumProjectDTO.RatedPower;
+                project.FlowRate = waterpumProjectDTO.FlowRate;
+                project.Coordinates = waterpumProjectDTO.Coordinates;
+                project.TargetGoal = waterpumProjectDTO.TargetGoal;
+                project.StartDate = waterpumProjectDTO.StartDate;
+                project.EndDate = waterpumProjectDTO.EndDate;
+                project.ProjectType = waterpumProjectDTO.ProjectType;
+                project.PartitionKey = waterpumProjectDTO.ProjectType.ToString();
+
+
+                return await _waterpumpProjectWriteRepository.Update(project);
             }
-            return await _waterpumpProjectWriteRepository.Update(waterpumProject);
+            throw new InvalidOperationException("The project ID provided does not exist.");
+
         }
 
         public async Task DeleteWaterpumpProjectAsync(string projectId)
