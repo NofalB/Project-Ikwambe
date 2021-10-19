@@ -8,12 +8,7 @@ trigger:
 
 variables:
   # Azure Resource Manager connection created during pipeline creation
-  azureSubscription: '4f2a76e9-06d0-4d5e-8c78-a58ba312eff7'
-
-  # Add two variables
-  integrationTestDirectory: '$(System.DefaultWorkingDirectory)/Tests/IntegrationTests'
-
-  functionHostName: 'https://stichting-ikwambe.azurewebsites.net/'
+  azureSubscription: 'a7e998d8-1ac2-4b40-b0ed-612d2022e9c2'
 
   # Function app name
   functionAppName: 'stichting-ikwambe'
