@@ -2,6 +2,7 @@ using AutoMapper;
 using Domain;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
+using MockQueryable.Moq;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -14,7 +15,7 @@ namespace NUnitTestsServices
     public class UnitTestDonationService
     {
         private DonationService _donationService;
-        private IQueryable<Donation> _mockListDonations;
+        private List<Donation> _mockListDonations;
         private Mock<ICosmosReadRepository<Donation>> _donationReadRepositoryMock;
         private Mock<ICosmosWriteRepository<Donation>> _donationWriteRepositoryMock;
 
@@ -27,31 +28,27 @@ namespace NUnitTestsServices
             _donationService = new DonationService(_donationReadRepositoryMock.Object, _donationWriteRepositoryMock.Object);
 
             // set up mock donation data
-            /*_mockListDonations = new List<Donation>()
+            _mockListDonations = new List<Donation>()
             {
                 new Donation(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "1Y7311651B552625V", 4000),
                 new Donation(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "2Y7311651B552625W", 599)
-            };*/
-
-            _mockListDonations =
-                (new List<Donation> {
-                    new Donation(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "1Y7311651B552625V", 4000),
-                    new Donation(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "2Y7311651B552625W", 599)
-                }).AsQueryable();
+            };
         }
 
         [Test]
         public void GetAllDonations_Should_Return_All_MockDonationsAsync()
         {
             //Arrange
-            _donationReadRepositoryMock.Setup(d => d.GetAll()).Returns(_mockListDonations);
+            var mockDonations = _mockListDonations.AsQueryable().BuildMockDbSet();
+            _donationReadRepositoryMock.Setup(d => d.GetAll()).Returns(mockDonations.Object);
 
             //Act
-            IEnumerable<Donation> donations = _donationService.GetAllDonationsAsync().Result;
+            var donations = _donationService.GetAllDonationsAsync().Result.ToList();
 
             //Assert
             Assert.IsNotNull(donations);
             Assert.That(donations, Is.InstanceOf(typeof(IEnumerable<Donation>)));
+            Assert.AreEqual(2, donations.Count);
 
             //Check that the GetAll method was called once
             _donationReadRepositoryMock.Verify(d => d.GetAll(), Times.Once);

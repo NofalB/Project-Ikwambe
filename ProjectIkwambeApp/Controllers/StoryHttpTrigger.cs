@@ -137,7 +137,6 @@ namespace ProjectIkwambe.Controllers
             HttpResponseData response = req.CreateResponse(HttpStatusCode.Accepted);
                 await _storyService.DeleteStory(storyId);
                 return response;
-        });
         }
 
         [Function(nameof(StoryHttpTrigger.UploadStoryImage))]
