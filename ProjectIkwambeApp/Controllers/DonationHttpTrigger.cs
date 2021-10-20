@@ -64,11 +64,9 @@ namespace ProjectIkwambe.Controllers
 		[Auth]
 		[OpenApiOperation(operationId: "getDonationsById", tags: new[] {"Donations"}, Summary = "Find Donation by Id", Description = "return one donation object", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiParameter(name: "donationId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "ID of donation to return", Description = "ID of donation to return", Visibility = OpenApiVisibilityType.Important)]
-		[OpenApiParameter(name: "userId", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "ID of donation to return", Description = "ID of donation to return", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Donation), Summary = "successful operation", Description = "successful operation", Example = typeof(DummyDonationsExamples))]
 		public async Task<HttpResponseData> GetDonationsById([HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "donations/{donationId}")] HttpRequestData req, string donationId, FunctionContext executionContext)
 		{
-			string userId = HttpUtility.ParseQueryString(req.Url.Query).Get("userId");
 
 			Role[] roles = { Role.User };
 
@@ -76,11 +74,11 @@ namespace ProjectIkwambe.Controllers
 			{
 				HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
-				await response.WriteAsJsonAsync(await _donationService.GetDonationByIdAsync(donationId, userId));
+				await response.WriteAsJsonAsync(await _donationService.GetDonationByIdAsync(donationId));
 
 				return response;
 
-			},userId);
+			});
 		}
 
 		[Function(nameof(DonationHttpTrigger.MakeDonation))]
