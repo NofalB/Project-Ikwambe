@@ -10,6 +10,8 @@ namespace NUnitTestsRepositories
 {
     public class UnitTestCosmosWriteRepocs
     {
+        private Guid _testId;
+
         #region Mock List Data
         private List<Donation> _mockListDonations;
         private List<User> _mockListUsers;
@@ -48,6 +50,9 @@ namespace NUnitTestsRepositories
         [SetUp]
         public void Setup()
         {
+            // setup IDs
+            _testId = Guid.NewGuid();
+
             // setup repositories
             SetupRepos();
 
@@ -96,7 +101,7 @@ namespace NUnitTestsRepositories
 
             // users
             _mockListUsers = new List<User> {
-                new User(Guid.NewGuid(), "Kratos", "Jumbo", "bruh@gmail.com", "380",true),
+                new User(_testId, "Kratos", "Jumbo", "bruh@gmail.com", "380",true),
                 new User(Guid.NewGuid(), "Bam", "Test", "bruh@gmail.com", "Hello123",true)
             };
             _userReadMock.Setup(m => m.GetAll()).Returns(_mockListUsers.AsQueryable());
@@ -156,6 +161,22 @@ namespace NUnitTestsRepositories
                     _mockListWaterpumpProject.AsQueryable();
                 }
             ));
+
+            //Update User
+            _userWriteMock.Setup(x => x.Update(It.IsAny<User>())).Callback(new Action<User>(x =>
+            {
+
+                var userFound = _mockListUsers.Find(c => c.UserId == x.UserId);
+                _mockListUsers.Remove(userFound);
+                _mockListUsers.Add(x);
+            }));
+
+            //Delete User
+            _userWriteMock.Setup(x => x.Delete(It.IsAny<User>())).Callback(new Action<User>(x =>
+            {
+                _mockListUsers.Remove(x);
+            }
+            ));
         }
 
         [Test]
@@ -198,6 +219,34 @@ namespace NUnitTestsRepositories
             Assert.AreEqual(3, afterAddingUser.Count);
             Assert.AreEqual(3, afterAddingStory.Count);
             Assert.AreEqual(3, afterAddingWaterpumpProject.Count);
+        }
+
+
+        [Test]
+        public void Update_Should_User()
+        {
+            // Arrange
+            User testUser = new User(_testId, "Jumbo2", "Kratos3", "bruh@gmail.com4", "tEst123455", false);
+
+            //Act
+            _userWriteRepo.Update(testUser);
+
+            //Assert
+            Assert.AreEqual("Jumbo2", _mockListUsers.Find(u => u.UserId == testUser.UserId).FirstName);
+        }
+
+        [Test]
+        public void Delete_Should_Return_Decreased_MockLstDives()
+        {
+            // Arrange
+            var nrOfUsers = _mockListUsers.Count();
+            User testUser = _mockListUsers.First(u => u.UserId == _testId);
+
+            //Act
+            _userWriteRepo.Delete(testUser);
+
+            //Assert
+            Assert.AreEqual(_mockListUsers.Count, nrOfUsers-1);
         }
     }
 }
