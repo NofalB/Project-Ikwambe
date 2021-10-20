@@ -98,6 +98,10 @@ namespace Infrastructure.Services
 
         public async Task<Donation> AddDonation(DonationDTO donationDTO)
         {
+            if (donationDTO == null)
+            {
+                throw new NullReferenceException($"{nameof(DonationDTO)} cannot be null.");
+            }
             Donation donation = new Donation()
             {
                 DonationId = Guid.NewGuid(),
