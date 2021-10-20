@@ -143,12 +143,15 @@ namespace Infrastructure.Services
             BlobClient blobClient = containerClient.GetBlobClient(fileName);
 
             // Upload the file
-            await blobClient.UploadAsync(fileStream, new BlobHttpHeaders { ContentType = "image/png" });
+            await blobClient.UploadAsync(fileStream, new BlobHttpHeaders { ContentType = "image/jpg" });
 
-            //var imageUrl = GetServiceSasUriForBlob(blobClient);
+            //get the URL of the uploaded image
+            var blobUrl = blobClient.Uri.AbsoluteUri;
 
             var story = await GetStoryById(storyId);
-           // story.ImageURL = imageUrl;
+
+            //set the new url for the existing story
+            story.ImageURL = blobUrl;
 
             await UpdateStory(story);
         }

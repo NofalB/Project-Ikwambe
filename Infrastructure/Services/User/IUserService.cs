@@ -16,7 +16,7 @@ namespace Infrastructure.Services
 
         Task<User> AddUser(UserDTO userDTO);
 
-        Task<User> UpdateUser(User user, string userId);
+        Task<User> UpdateUser(UserDTO user, string userId);
 
         Task DeleteUserAsync(string userId);
 

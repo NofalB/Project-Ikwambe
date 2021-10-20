@@ -49,14 +49,14 @@ namespace ProjectIkwambe.Controllers
             string date = HttpUtility.ParseQueryString(req.Url.Query).Get("date");
 			Role[] roles = { Role.Admin };
 
-			/*return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) =>
-			{*/
+			return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) =>
+			{
 				HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 			
 				await response.WriteAsJsonAsync(_donationService.GetDonationByQueryOrGetAll(projectId, date));
 
 				return response;
-			//});
+			});
 		}
 
 		//get byId
@@ -72,15 +72,15 @@ namespace ProjectIkwambe.Controllers
 
 			Role[] roles = { Role.User };
 
-			/*return await RoleChecker.ExecuteForUser(roles, req,  executionContext, async (ClaimsPrincipal User)  =>
-			{*/
+			return await RoleChecker.ExecuteForUser(roles, req,  executionContext, async (ClaimsPrincipal User)  =>
+			{
 				HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
 				await response.WriteAsJsonAsync(await _donationService.GetDonationByIdAsync(donationId, userId));
 
 				return response;
 
-			//},userId);
+			},userId);
 		}
 
 		[Function(nameof(DonationHttpTrigger.MakeDonation))]
