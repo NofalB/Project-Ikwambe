@@ -8,6 +8,7 @@ using Infrastructure.Services;
 using Infrastructure.Repositories;
 using NUnit.Framework;
 using Moq;
+using MockQueryable.Moq;
 
 
 namespace NUnitTestsServices
@@ -15,7 +16,7 @@ namespace NUnitTestsServices
     public class UnitTestWaterpumpProject
     {
         private WaterpumpProjectService _waterpumpProjectSevice;
-        private IEnumerable<WaterpumpProject> _mockListWaterpumpProjects;
+        private List<WaterpumpProject> _mockListWaterpumpProjects;
         private Mock<ICosmosReadRepository<WaterpumpProject>> _waterpumpProjectReadRepositoryMock;
         private Mock<ICosmosWriteRepository<WaterpumpProject>> _waterpumpProjectWriteRepositoryMock;
 
@@ -30,7 +31,7 @@ namespace NUnitTestsServices
 
             _mockListWaterpumpProjects = (
                 new List<WaterpumpProject> {
-                    new WaterpumpProject() { ProjectId = Guid.NewGuid(), NameOfProject = "waterPump Ikwambe",
+                    new WaterpumpProject() { ProjectId = Guid.Parse("f4019522-fa64-4052-87d6-9a6cc52081df"), NameOfProject = "waterPump Ikwambe",
                     Coordinates = new Coordinates("ikwambe", -8.000, 36.833330), CurrentTotal = 0, TargetGoal = 25000, StartDate = DateTime.Now, EndDate = DateTime.Now , RatedPower = 20, FlowRate = 20, ProjectType = ProjectType.infrastructure},
                     new WaterpumpProject() { ProjectId = Guid.NewGuid(), NameOfProject = "waterPumpAlmere",
                     Coordinates = new Coordinates("ikwambe", -8.000, 36.833330), CurrentTotal = 123, TargetGoal = 40000, StartDate = DateTime.Now, EndDate = DateTime.Now, RatedPower = 100, FlowRate = 50, ProjectType = ProjectType.infrastructure},
@@ -40,22 +41,44 @@ namespace NUnitTestsServices
         }
 
         [Test]
-        public async Task GetAllWaterpumpProjects_should_return_all_MockWaterpumpProjectAsync()
+        public void GetAllWaterpumpProjects_should_return_all_MockWaterpumpProjectAsync()
         {
             //Arrange
-            _waterpumpProjectReadRepositoryMock.Setup(w => w.GetAll()).Returns((IQueryable<WaterpumpProject>)(List<WaterpumpProject>)_mockListWaterpumpProjects);
+            var mockWaterpumpProjects = _mockListWaterpumpProjects.AsQueryable().BuildMockDbSet();
+            _waterpumpProjectReadRepositoryMock.Setup(w => w.GetAll()).Returns(mockWaterpumpProjects.Object);
 
             //Act
-            IEnumerable<WaterpumpProject> waterpumpProjects = await _waterpumpProjectSevice.GetAllWaterpumpProjectsAsync();
+            var waterpumpProjects = _waterpumpProjectSevice.GetAllWaterpumpProjectsAsync().Result.ToList();
 
             //assert
             Assert.IsNotNull(waterpumpProjects);
             Assert.That(waterpumpProjects, Is.InstanceOf(typeof(IEnumerable<WaterpumpProject>)));
+            Assert.AreEqual(3, waterpumpProjects.Count);
 
             //check if get all is called
             _waterpumpProjectReadRepositoryMock.Verify(w => w.GetAll(), Times.Once);
+            //return Task.CompletedTask;
         }
-        
+
+        [Test]
+        public void GetWaterpumpById_should_return_one_MockWaterpumpProjectAsync()
+        {
+            string projectId = "f4019522 - fa64 - 4052 - 87d6 - 9a6cc52081df";
+            //Arrange
+            var mockWaterpumpProjects = _mockListWaterpumpProjects.AsQueryable().BuildMockDbSet();
+            _waterpumpProjectReadRepositoryMock.Setup(w => w.GetAll().Where(w=>w.ProjectId == Guid.Parse(projectId)))
+                .Returns(mockWaterpumpProjects.Object);
+            //act
+            var waterpumpProjects = _waterpumpProjectSevice.GetWaterPumpProjectById(projectId).Result;
+
+            //assert
+            Assert.IsNotNull(waterpumpProjects);
+            Assert.That(waterpumpProjects, Is.InstanceOf(typeof(IEnumerable<WaterpumpProject>)));
+            //Assert.AreEqual(1, waterpumpProjects.Count);
+
+            //_waterpumpProjectReadRepositoryMock.Verify(w=>w.)
+        }
+
         [TearDown]
         public void TestCleanUp()
         {
