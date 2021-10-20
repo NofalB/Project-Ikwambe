@@ -22,7 +22,7 @@ namespace Infrastructure.Services
             _waterpumpProjectWriteRepository = waterpumpProjectWriteRepository;
         }
 
-        public async Task<IEnumerable<WaterpumpProject>> GetAllWaterPumpProjects()
+        public async Task<IEnumerable<WaterpumpProject>> GetAllWaterpumpProjectsAsync()
         {
             return await _waterpumpProjectReadRepository.GetAll().ToListAsync();
         }
