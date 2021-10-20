@@ -1,5 +1,6 @@
 ﻿using Domain;
 using Domain.DTO;
+using HttpMultipartParser;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,6 +24,6 @@ namespace Infrastructure.Services
         Task DeleteStory(string storyId);
 
         List<Story> GetStoryByQuery(string author, string publishDate);
-        Task UploadImage(string storyId, Stream fileStream, string fileName);
+        Task UploadImage(string storyId, FilePart file);
     }
 }

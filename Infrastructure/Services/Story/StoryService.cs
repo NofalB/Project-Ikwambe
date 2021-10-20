@@ -4,6 +4,7 @@ using Azure.Storage.Blobs.Specialized;
 using Azure.Storage.Sas;
 using Domain;
 using Domain.DTO;
+using HttpMultipartParser;
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -137,57 +138,32 @@ namespace Infrastructure.Services
         }
 
 
-        public async Task UploadImage(string storyId, Stream fileStream, string fileName)
+        public async Task UploadImage(string storyId, FilePart file)
         {
-            // Get a reference to a blob
-            BlobClient blobClient = containerClient.GetBlobClient(fileName);
-
-            // Upload the file
-            await blobClient.UploadAsync(fileStream, new BlobHttpHeaders { ContentType = "image/jpg" });
-
-            //get the URL of the uploaded image
-            var blobUrl = blobClient.Uri.AbsoluteUri;
-
-            var story = await GetStoryById(storyId);
-
-            //set the new url for the existing story
-            story.ImageURL = blobUrl;
-
-            await UpdateStory(story);
-        }
-
-        //to be removed.
-        /*private string GetServiceSasUriForBlob(BlobClient blobClient, string storedPolicyName = null)
-        {
-            string imageUrl = "";
-
-            // Check whether this BlobClient object has been authorized with Shared Key.
-            if (blobClient.CanGenerateSasUri)
+            if (file.ContentType == "image/jpeg" || file.ContentType == "image/bmp" || file.ContentType == "image/png")
             {
-                // Create a SAS token that's valid for one hour.
-                BlobSasBuilder sasBuilder = new BlobSasBuilder()
-                {
-                    BlobContainerName = blobClient.GetParentBlobContainerClient().Name,
-                    BlobName = blobClient.Name,
-                    Resource = "b"
-                };
+                // Get a reference to a blob
+                BlobClient blobClient = containerClient.GetBlobClient(file.Name);
 
-                if (storedPolicyName == null)
-                {
-                    sasBuilder.ExpiresOn = DateTimeOffset.UtcNow.AddHours(1);
-                    sasBuilder.SetPermissions(BlobSasPermissions.Read |
-                        BlobSasPermissions.Write);
-                }
-                else
-                {
-                    sasBuilder.Identifier = storedPolicyName;
-                }
+                // Upload the file
+                await blobClient.UploadAsync(file.Data, new BlobHttpHeaders { ContentType = file.ContentType });
 
-                Uri sasUri = blobClient.GenerateSasUri(sasBuilder);
-                imageUrl = sasUri.AbsoluteUri;
+                //get the URL of the uploaded image
+                var blobUrl = blobClient.Uri.AbsoluteUri;
+
+                var story = await GetStoryById(storyId);
+
+                //set the new url for the existing story
+                story.ImageURL = blobUrl;
+
+                await UpdateStory(story);
+            }
+            else
+            {
+                throw new Exception("Invalid content type. Media type not supported. Upload a valid image of type jpeg,bmp or png.");
             }
 
-            return imageUrl;
-        }*/
+        }
+
     }
 }
