@@ -99,7 +99,7 @@ namespace ProjectIkwambe.Controllers
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Validation exception", Description = "Validation exception")]
         [UnauthorizedResponse]
         [ForbiddenResponse]
-        public async Task<HttpResponseData> UpdateStory([HttpTrigger(AuthorizationLevel.Anonymous, "PUT", Route = "stories{storyId}")] HttpRequestData req, string storyId, FunctionContext executionContext)
+        public async Task<HttpResponseData> UpdateStory([HttpTrigger(AuthorizationLevel.Anonymous, "PUT", Route = "stories/{storyId}")] HttpRequestData req, string storyId, FunctionContext executionContext)
         {
             //Role[] roles = { Role.Admin };
 
@@ -107,7 +107,7 @@ namespace ProjectIkwambe.Controllers
                 // Parse input
 
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                Story story = JsonConvert.DeserializeObject<Story>(requestBody);
+                StoryDTO story = JsonConvert.DeserializeObject<StoryDTO>(requestBody);
 
                 // Generate output
                 HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
