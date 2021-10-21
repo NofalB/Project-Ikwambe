@@ -15,52 +15,54 @@ namespace IntegrationTests
     public class IntegrationTestDonation
     {
         private HttpClient _httpClient { get; }
-        private string _token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6ImJiNzU5ZDFjLTFiM2YtNDlmMy1iNGYxLWY3OTE5MTAyYTZmZCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6InRlc3RFIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZWlkZW50aWZpZXIiOiJiYjc1OWQxYy0xYjNmLTQ5ZjMtYjRmMS1mNzkxOTEwMmE2ZmQiLCJuYmYiOjE2MzQ1NzAzNzUsImV4cCI6MTY4NjQxMDM3NSwiaWF0IjoxNjM0NTcwMzc1LCJpc3MiOiJEZWJ1Z0lzc3VlciIsImF1ZCI6IkRlYnVnQXVkaWVuY2UifQ.nvVcS52-ntRh1NwiBrMzLNYo6aLVhDSYPkf6fEBGOFA";
+
+        private string _userId;
+        private string _donationId;
+        private string _projectId;
+        private string _donationDate;
+
+        private string _falseUserId;
+        private string _falseProjectId;
+        private string _falseDonationId;
+        private string _falseDonationDate;
+
+        private string _userToken = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IjM2Yzk4NTMyLWY0ODktNDc5MC1hMDJjLTgxZTg4YTY4OTk1MCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6InVzZXIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjM2Yzk4NTMyLWY0ODktNDc5MC1hMDJjLTgxZTg4YTY4OTk1MCIsIm5iZiI6MTYzNDg1MzA0MiwiZXhwIjoxNjg2NjkzMDQyLCJpYXQiOjE2MzQ4NTMwNDIsImlzcyI6IkRlYnVnSXNzdWVyIiwiYXVkIjoiRGVidWdBdWRpZW5jZSJ9.XetnRbFBJwhvOJQauam80MF1t8hqxhXurBT3s7G0zJA";
+        private string _adminToken = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiIzNjJiZjIxMi1hNWJjLTQ5ZTQtOTRlYi01ZTVkM2ExZmJmODYiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJhZG1pbiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiMzYyYmYyMTItYTViYy00OWU0LTk0ZWItNWU1ZDNhMWZiZjg2IiwibmJmIjoxNjM0ODUzMDEwLCJleHAiOjE2ODY2OTMwMTAsImlhdCI6MTYzNDg1MzAxMCwiaXNzIjoiRGVidWdJc3N1ZXIiLCJhdWQiOiJEZWJ1Z0F1ZGllbmNlIn0.afTG3OzeVVOkRaMuNXXtQqpUu5OcoQQD3UmyrjFvPAk";
 
         public IntegrationTestDonation()
         {
             string hostname = Environment.GetEnvironmentVariable("functionHostName");
 
             if (hostname == null)
-                hostname = $"https://stichting-ikwambe.azurewebsites.net/";
+                hostname = $"http://localhost:7071/";
             _httpClient = new HttpClient();
             _httpClient.BaseAddress = new Uri(hostname);
 
-            _httpClient.DefaultRequestHeaders.Authorization = 
-                new AuthenticationHeaderValue("Bearer", _token);
+            _httpClient.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", _userToken);
+
+            _userId = "3fa85f64-5717-4562-b3fc-2c963f66afa6";
+            _donationId = "74018e11-3d5c-46e6-96f5-e400c4aa8366";
+            _projectId = "4ae756ac-b37f-4651-b718-9d6b916b7f1e";
+            _donationDate = "2021-10-21";
+
+            _falseUserId = "Invalid user ID";
+            _falseProjectId = "Invalid ProjectId";
+            _falseDonationId= "Invalid donation ID";
+            _falseDonationDate = "InvalidProjectId DonationDate";
         }
 
         #region Sucesssful Tests
         [Fact]
-        public void GetAllDonationsSuccess()
-        {
-            // setup
-            string userId = "bb759d1c-1b3f-49f3-b4f1-f7919102a6fd";
-
-            // run request
-            HttpResponseMessage response = _httpClient.GetAsync($"api/donations?userId={userId}").Result;
-
-            // process response
-            var responseData = response.Content.ReadAsStringAsync().Result;
-            var donations = JsonConvert.DeserializeObject<List<Donation>>(responseData);
-
-            // verify results
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.IsType<List<Donation>>(donations);
-        }
-
-        [Fact]
         public void FilterDonationsByProjectIdAndDonationDateSuccess()
         {
             // setup
-            string userId = "bb759d1c-1b3f-49f3-b4f1-f7919102a6fd";
-            string projectId = "3fa85f64-5717-4562-b3fc-2c963f66afa6";
-            string donationDate = "2021-10-16";
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _adminToken);
 
             // run request
-            HttpResponseMessage responseWithDonationDate = _httpClient.GetAsync($"api/donations?date={donationDate}&userId={userId}").Result;
-            HttpResponseMessage responseWithProjectId = _httpClient.GetAsync($"api/donations?projectId={projectId}&userId={userId}").Result;
-
+            HttpResponseMessage responseWithDonationDate = _httpClient.GetAsync($"api/donations?donationDate={_donationDate}").Result;
+            HttpResponseMessage responseWithProjectId = _httpClient.GetAsync($"api/donations?projectId={_projectId}").Result;
+            
             // process response
             var responseDataByProjectId = responseWithProjectId.Content.ReadAsStringAsync().Result;
             var donationsByProjectId = JsonConvert.DeserializeObject<List<Donation>>(responseDataByProjectId);
@@ -72,19 +74,15 @@ namespace IntegrationTests
             Assert.Equal(HttpStatusCode.OK, responseWithProjectId.StatusCode);
             Assert.Equal(HttpStatusCode.OK, responseWithDonationDate.StatusCode);
 
-            donationsByProjectId.ForEach(x => Assert.Matches(projectId, x.ProjectId.ToString()));
-            donationsByDate.ForEach(x => Assert.Matches(donationDate, x.DonationDate.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
+            donationsByProjectId.ForEach(x => Assert.Matches(_projectId, x.ProjectId.ToString()));
+            donationsByDate.ForEach(x => Assert.Matches(_donationDate, x.DonationDate.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
         }
 
         [Fact]
         public void GetDonationByDonationIdSuccess()
         {
-            // setup
-            string donationId = "89ae88a7-32be-49f2-b1c6-dea3c7097f32";
-            string userId = "bb759d1c-1b3f-49f3-b4f1-f7919102a6fd";
-
             // run request
-            HttpResponseMessage response = _httpClient.GetAsync($"api/donations/{donationId}?userId={userId}").Result;
+            HttpResponseMessage response = _httpClient.GetAsync($"api/donations/{_donationId}").Result;
 
             // process response
             var responseData = response.Content.ReadAsStringAsync().Result;
@@ -92,15 +90,34 @@ namespace IntegrationTests
 
             // verify results
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.Matches(donationId, donation.DonationId.ToString());
-            Assert.Matches(userId, donation.UserId.ToString());
+            Assert.Matches(_donationId, donation.DonationId.ToString());
+        }
+
+        [Fact]
+        public void GetAllDonationsByUserIdSuccess()
+        {
+            // setup
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _adminToken);
+            
+            // run request
+            HttpResponseMessage response = _httpClient.GetAsync($"api/donations/user/{_userId}").Result;
+
+            // process response
+            var responseData = response.Content.ReadAsStringAsync().Result;
+            var donations = JsonConvert.DeserializeObject<List<Donation>>(responseData);
+
+            // verify results
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.IsType<List<Donation>>(donations);
+            donations.ForEach(x => Assert.Matches(_userId, x.UserId.ToString()));
         }
 
         [Fact]
         public void CreateDonationSuccess()
         {
             // setup
-            DonationDTO donationDTO = new DonationDTO(Guid.NewGuid(), Guid.NewGuid(), "1Y7311651B552625V", 4000);
+            DonationDTO donationDTO = new DonationDTO(Guid.Parse(_userId), Guid.Parse(_projectId), "1Y7311651B552625V", 4000);
+            donationDTO.UserId = null;
             HttpContent donationData = new StringContent(JsonConvert.SerializeObject(donationDTO), Encoding.UTF8, "application/json");
 
             // run request
@@ -111,10 +128,9 @@ namespace IntegrationTests
             var donation = JsonConvert.DeserializeObject<Donation>(responseData);
 
             // verify results
-            Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
             Assert.IsType<Donation>(donation);
         }
-
         #endregion
 
 
@@ -123,12 +139,11 @@ namespace IntegrationTests
         public void FilterDonationsByProjectIdAndDonationDateFailure()
         {
             // setup
-            string projectId = "Invalid ProjectId";
-            string donationDate = "InvalidProjectId DonationDate";
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _adminToken);
 
             // run request
-            HttpResponseMessage responseByProjectId = _httpClient.GetAsync($"api/donations?projectId={projectId}").Result;
-            HttpResponseMessage responseByDonationDate = _httpClient.GetAsync($"api/donations?date={donationDate}").Result;
+            HttpResponseMessage responseByProjectId = _httpClient.GetAsync($"api/donations?projectId={_falseProjectId}").Result;
+            HttpResponseMessage responseByDonationDate = _httpClient.GetAsync($"api/donations?donationDate={_falseDonationDate}").Result;
 
             // verify results
             Assert.Equal(HttpStatusCode.BadRequest, responseByProjectId.StatusCode);
@@ -139,11 +154,10 @@ namespace IntegrationTests
         public void GetDonationByDonationIdFailure()
         {
             // setup
-            string donationId = "Invalid donation ID";
-            string userId = "Invalid user ID";
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _adminToken);
 
             // run request
-            HttpResponseMessage response = _httpClient.GetAsync($"api/donations/{donationId}?userId={userId}").Result;
+            HttpResponseMessage response = _httpClient.GetAsync($"api/donations/{_falseDonationId}").Result;
 
             // process response
             var responseData = response.Content.ReadAsStringAsync().Result;

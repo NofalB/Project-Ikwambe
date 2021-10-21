@@ -49,19 +49,14 @@ namespace Infrastructure.Services
             }
         }
 
-        public async Task<Donation> GetDonationByUserIdAsync(string userId)
+        public async Task<List<Donation>> GetDonationByUserIdAsync(string userId)
         {
             try
             {
                 Guid id = !string.IsNullOrEmpty(userId) ? Guid.Parse(userId) : throw new ArgumentNullException("No user Id was provided.");
 
-                var donation = await _donationReadRepository.GetAll().FirstOrDefaultAsync(d => d.UserId == id);
-
-                if (donation == null)
-                {
-                    throw new InvalidOperationException($"Donation does not exist. Incorrect user Id {userId} provided");
-                }
-                return donation;
+                var donations = await _donationReadRepository.GetAll().Where(d => d.UserId == id).ToListAsync();
+                return donations;
             }
             catch
             {

@@ -13,7 +13,7 @@ namespace Infrastructure.Services
 
         Task<Donation> AddDonation(DonationDTO donation);
 
-        Task<Donation> GetDonationByUserIdAsync(string userId);
+        Task<List<Donation>> GetDonationByUserIdAsync(string userId);
 
         Task<List<Donation>> GetDonationByQueryOrGetAllAsync(string projectId, string donationDate);
     }

@@ -113,7 +113,7 @@ namespace ProjectIkwambe.Controllers
 			{
 				HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
-				await response.WriteAsJsonAsync(_donationService.GetDonationByUserIdAsync(userId));
+				await response.WriteAsJsonAsync(await _donationService.GetDonationByUserIdAsync(userId));
 
 				return response;
 			}, userId);
