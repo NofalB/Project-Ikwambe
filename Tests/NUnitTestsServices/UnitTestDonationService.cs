@@ -1,5 +1,6 @@
 using AutoMapper;
 using Domain;
+using Domain.DTO;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
 using MockQueryable.Moq;
@@ -52,6 +53,22 @@ namespace NUnitTestsServices
 
             //Check that the GetAll method was called once
             _donationReadRepositoryMock.Verify(d => d.GetAll(), Times.Once);
+        }
+
+        [Test]
+        public void Insert_Donation_Should_Fail()
+        {
+            //Arrange
+            DonationDTO testDonation = new DonationDTO(Guid.Empty, Guid.Empty, "", 0);
+
+            try
+            {
+                Assert.Throws<NullReferenceException>(() => _donationService.AddDonation(null).GetAwaiter().GetResult());
+            }
+            catch (NullReferenceException ex)
+            {
+                Assert.AreEqual("DonationDTO cannot be null.", ex.Message);
+            }
         }
 
         [TearDown]

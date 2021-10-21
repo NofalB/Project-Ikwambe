@@ -29,41 +29,39 @@ namespace Infrastructure.Services
 
         public async Task<WaterpumpProject> GetWaterPumpProjectById(string projectId)
         {
-            Guid id = Guid.Parse(projectId);
-            var test = await _waterpumpProjectReadRepository.GetAll().ToListAsync();
-
-            var project = await _waterpumpProjectReadRepository.GetAll().FirstOrDefaultAsync(w => w.ProjectId == id);
-            
-            if(project == null)
+            try
             {
-                throw new ArgumentNullException("No Id Found");
-            }
+                Guid id = !string.IsNullOrEmpty(projectId) ? Guid.Parse(projectId) : throw new ArgumentNullException("No project ID was provided.");
+                var project = await _waterpumpProjectReadRepository.GetAll().FirstOrDefaultAsync(w => w.ProjectId == id);
 
-            return project;
+                if (project == null)
+                {
+                    throw new InvalidOperationException($"No project exists with the ID {projectId}");
+                }
+                return project;
+            }
+            catch
+            {
+                throw new InvalidOperationException("Invalid project ID provided.");
+            }
         }
 
         public async Task<WaterpumpProject> GetWaterpumpProjectByName(string projectName)
         {
+            projectName = !string.IsNullOrEmpty(projectName) ? projectName : throw new ArgumentNullException("No project Name was provided.");
             WaterpumpProject projectData = await _waterpumpProjectReadRepository.GetAll().FirstOrDefaultAsync(w => w.NameOfProject == projectName);
-            /*if(projectData == null)
+            if (projectData != null)
             {
                 throw new ArgumentNullException("No waterpump project found with the provided name");
-            }*/
+            }
             return projectData;
-        }
-
-        public async Task<WaterpumpProject> GetWaterPumpByProjectType(string projectType)
-        {
-            ProjectType pt = (ProjectType)Enum.Parse(typeof(ProjectType), projectType);
-
-            return await _waterpumpProjectReadRepository.GetAll().FirstOrDefaultAsync(p => p.ProjectType == pt);
         }
 
         public List<WaterpumpProject> GetWaterpumpProjectByQuery(string projectType, string projectName)
         {
             List<WaterpumpProject> resultList = _waterpumpProjectReadRepository.GetAll().ToList();
 
-            if (projectType != null)
+            if (!string.IsNullOrEmpty(projectType))
             {
                 ProjectType pt = (ProjectType)Enum.Parse(typeof(ProjectType), projectType);
 
@@ -79,7 +77,7 @@ namespace Infrastructure.Services
                     }
                 }).ToList();
             }
-            if (projectName != null)
+            if (!string.IsNullOrEmpty(projectName))
             {
                 resultList  = resultList.Where(p =>
                 {
@@ -96,35 +94,43 @@ namespace Infrastructure.Services
                 }).ToList();
             }
 
-            return resultList.Count != 0 ? resultList : throw new InvalidOperationException("Filter does not result to any objects");
+            return resultList.Count != 0 ? resultList : new List<WaterpumpProject>();
         }
         public async Task<WaterpumpProject> AddWaterpumpProject(WaterpumpProjectDTO waterpumpProjectDTO)
-        {            
-            if(await GetWaterpumpProjectByName(waterpumpProjectDTO.NameOfProject) == null)
+        {
+            if (waterpumpProjectDTO == null)
             {
+                throw new NullReferenceException($"{nameof(waterpumpProjectDTO)} cannot be null.");
+            }
+
+            if (await GetWaterpumpProjectByName(waterpumpProjectDTO.NameOfProject) == null)
+            {
+                waterpumpProjectDTO.StartDate = waterpumpProjectDTO.StartDate != default ? waterpumpProjectDTO.StartDate : throw new InvalidOperationException($"Start date is null.");
+                waterpumpProjectDTO.EndDate = waterpumpProjectDTO.EndDate != default ? waterpumpProjectDTO.EndDate : throw new InvalidOperationException($"End date is null.");
+
                 //compare dates.
-                if(DateTime.Compare(waterpumpProjectDTO.StartDate,waterpumpProjectDTO.EndDate) < 0)
+                if (DateTime.Compare(waterpumpProjectDTO.StartDate,waterpumpProjectDTO.EndDate) < 0)
                 {
                     WaterpumpProject wp = new WaterpumpProject()
                     {
                         ProjectId = Guid.NewGuid(),
-                        Description = waterpumpProjectDTO.Description,
-                        NameOfProject = waterpumpProjectDTO.NameOfProject /*!= null ? waterpumpProjectDTO.NameOfProject : throw new ArgumentException($"Invalid {nameof(waterpumpProjectDTO.NameOfProject)} provided")*/,
-                        RatedPower = waterpumpProjectDTO.RatedPower,
-                        FlowRate = waterpumpProjectDTO.FlowRate,
-                        Coordinates = waterpumpProjectDTO.Coordinates,
+                        Description = !string.IsNullOrEmpty(waterpumpProjectDTO.Description) ? waterpumpProjectDTO.Description : throw new ArgumentException($"Invalid {nameof(waterpumpProjectDTO.Description)} provided"),
+                        NameOfProject = !string.IsNullOrEmpty(waterpumpProjectDTO.NameOfProject) ? waterpumpProjectDTO.NameOfProject : throw new ArgumentException($"Invalid {nameof(waterpumpProjectDTO.NameOfProject)} provided"),
+                        RatedPower = waterpumpProjectDTO.RatedPower != 0 ? waterpumpProjectDTO.RatedPower : throw new ArgumentException($"Invalid {nameof(waterpumpProjectDTO.RatedPower)} provided"),
+                        FlowRate = waterpumpProjectDTO.FlowRate != 0 ? waterpumpProjectDTO.FlowRate : throw new ArgumentException($"Invalid {nameof(waterpumpProjectDTO.FlowRate)} provided"),
+                        Coordinates = waterpumpProjectDTO.Coordinates ?? throw new ArgumentException($"Invalid {nameof(waterpumpProjectDTO.Coordinates)} provided"),
                         CurrentTotal = 0,
-                        TargetGoal = waterpumpProjectDTO.TargetGoal,
-                        StartDate = waterpumpProjectDTO.StartDate /*!= default(DateTime) ? waterpumpProjectDTO.StartDate : throw new InvalidOperationException($"Invalid {nameof(waterpumpProjectDTO.StartDate)} provided.")*/,
-                        EndDate = waterpumpProjectDTO.EndDate /*!= default(DateTime) ? waterpumpProjectDTO.EndDate : throw new InvalidOperationException($"Invalid {nameof(waterpumpProjectDTO.EndDate)} provided.")*/,
+                        TargetGoal = waterpumpProjectDTO.TargetGoal != 0 ? waterpumpProjectDTO.TargetGoal : throw new ArgumentException($"Invalid {nameof(waterpumpProjectDTO.TargetGoal)} provided"),
+                        StartDate = waterpumpProjectDTO.StartDate,
+                        EndDate = waterpumpProjectDTO.EndDate,
                         ProjectType = waterpumpProjectDTO.ProjectType,
-                        PartitionKey = waterpumpProjectDTO.ProjectType.ToString() /*?? throw new ArgumentNullException($"Invalid value provided")*/
+                        PartitionKey = waterpumpProjectDTO.ProjectType.ToString()
                     };
                     return await _waterpumpProjectWriteRepository.AddAsync(wp);
                 }
                 else
                 {
-                    throw new InvalidOperationException("The start date provide much be no later than the end date provided.");
+                    throw new InvalidOperationException("The end date should be no later than start date.");
                 }
             }
             else
@@ -138,25 +144,22 @@ namespace Infrastructure.Services
             return await _waterpumpProjectWriteRepository.Update(waterpumProject);
         }
 
-        public async Task<WaterpumpProject> UpdateWaterPumpProject(WaterpumpProjectDTO waterpumProjectDTO, string projectId)
+        public async Task<WaterpumpProject> UpdateWaterPumpProject(WaterpumpProjectDTO waterpumpProjectDTO, string projectId)
         {
             WaterpumpProject project = await GetWaterPumpProjectById(projectId);
             if(project != null)
             {
-                if (DateTime.Compare(waterpumProjectDTO.StartDate, waterpumProjectDTO.EndDate) < 0)
+                if (DateTime.Compare(waterpumpProjectDTO.StartDate, waterpumpProjectDTO.EndDate) < 0)
                 {
-                    //update the info
-                    project.NameOfProject = waterpumProjectDTO.ToString();
-                    project.Description = waterpumProjectDTO.Description;
-                    project.NameOfProject = waterpumProjectDTO.NameOfProject;
-                    project.RatedPower = waterpumProjectDTO.RatedPower;
-                    project.FlowRate = waterpumProjectDTO.FlowRate;
-                    project.Coordinates = waterpumProjectDTO.Coordinates;
-                    project.TargetGoal = waterpumProjectDTO.TargetGoal;
-                    project.StartDate = waterpumProjectDTO.StartDate;
-                    project.EndDate = waterpumProjectDTO.EndDate;
-                    project.ProjectType = waterpumProjectDTO.ProjectType;
-                    project.PartitionKey = waterpumProjectDTO.ProjectType.ToString();
+                    project.Description = !string.IsNullOrEmpty(waterpumpProjectDTO.Description) ? waterpumpProjectDTO.Description : throw new ArgumentException($"Invalid {nameof(waterpumpProjectDTO.Description)} provided");
+                    project.NameOfProject = !string.IsNullOrEmpty(waterpumpProjectDTO.NameOfProject) ? waterpumpProjectDTO.NameOfProject : throw new ArgumentException($"Invalid {nameof(waterpumpProjectDTO.NameOfProject)} provided");
+                    project.RatedPower = waterpumpProjectDTO.RatedPower != 0 ? waterpumpProjectDTO.RatedPower : throw new ArgumentException($"Invalid {nameof(waterpumpProjectDTO.RatedPower)} provided");
+                    project.FlowRate = waterpumpProjectDTO.FlowRate != 0 ? waterpumpProjectDTO.FlowRate : throw new ArgumentException($"Invalid {nameof(waterpumpProjectDTO.FlowRate)} provided");
+                    project.Coordinates = waterpumpProjectDTO.Coordinates ?? throw new ArgumentException($"Invalid {nameof(waterpumpProjectDTO.Coordinates)} provided");
+                    project.TargetGoal = waterpumpProjectDTO.TargetGoal != 0 ? waterpumpProjectDTO.TargetGoal : throw new ArgumentException($"Invalid {nameof(waterpumpProjectDTO.TargetGoal)} provided");
+                    project.StartDate = waterpumpProjectDTO.StartDate;
+                    project.EndDate = waterpumpProjectDTO.EndDate;
+                    project.ProjectType = waterpumpProjectDTO.ProjectType;
 
                     return await _waterpumpProjectWriteRepository.Update(project);
                 }
@@ -168,8 +171,15 @@ namespace Infrastructure.Services
 
         public async Task DeleteWaterpumpProjectAsync(string projectId)
         {
-            WaterpumpProject waterPumpProject = await GetWaterPumpProjectById(projectId);
-            await _waterpumpProjectWriteRepository.Delete(waterPumpProject);
+            if (!string.IsNullOrEmpty(projectId))
+            {
+                WaterpumpProject waterPumpProject = await GetWaterPumpProjectById(projectId);
+                await _waterpumpProjectWriteRepository.Delete(waterPumpProject);
+            }
+            else
+            {
+                throw new ArgumentNullException("Project ID does not exist");
+            }
         }
     }
 }

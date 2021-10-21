@@ -18,14 +18,16 @@ namespace Infrastructure.Services.Transactions
         private readonly IPaypalClientService _paypalClientService;
         private readonly IDonationService _donationService;
         private readonly IWaterpumpProjectService _waterpumpProjectService;
+        private readonly IUserService _userService;
 
-        public TransactionService(ICosmosReadRepository<Transaction> transactionReadRepository, ICosmosWriteRepository<Transaction> transactionWriteRepository, IPaypalClientService paypalClientService, IDonationService donationService, IWaterpumpProjectService waterpumpProjectService)
+        public TransactionService(ICosmosReadRepository<Transaction> transactionReadRepository, ICosmosWriteRepository<Transaction> transactionWriteRepository, IPaypalClientService paypalClientService, IDonationService donationService, IWaterpumpProjectService waterpumpProjectService, IUserService userService)
         {
             _transactionReadRepository = transactionReadRepository;
             _transactionWriteRepository = transactionWriteRepository;
             _paypalClientService = paypalClientService;
             _donationService = donationService;
             _waterpumpProjectService = waterpumpProjectService;
+            _userService = userService;
         }
         public async Task<Transaction> AddTransaction(Transaction transaction)
         {
@@ -42,11 +44,6 @@ namespace Infrastructure.Services.Transactions
             return await _transactionWriteRepository.AddAsync(transaction);
         }
 
-        //public async Task<Transaction> DeleteTransaction(string transactionId)
-        //{
-        //    return await _transactionRepository.GetAll().FirstOrDefaultAsync(t => t.TransactionId == transactionId);
-        //}
-
         public async Task<IEnumerable<Transaction>> GetAllTransactions()
         {
             return await _transactionReadRepository.GetAll().ToListAsync();
@@ -57,7 +54,7 @@ namespace Infrastructure.Services.Transactions
             return await _transactionReadRepository.GetAll().FirstOrDefaultAsync(t => t.TransactionId == transactionId);
         }
 
-        public async Task CompleteTransaction(string transactionId,Guid userId,string projectId)
+        public async Task CompleteTransaction(string transactionId,string projectId, string userId)
         {
             var transaction=await _paypalClientService.GetTransaction(transactionId);
             var project = await _waterpumpProjectService.GetWaterPumpProjectById(projectId);
@@ -68,16 +65,16 @@ namespace Infrastructure.Services.Transactions
                     //this captures the funds after the payer buys or approves of the payment and sets the status as "Completed"
                     await _paypalClientService.CaptureTransaction(transactionId);
                     transaction = await _paypalClientService.GetTransaction(transactionId);
+                    transaction.ProjectId = Guid.Parse(projectId);
 
                     if (transaction.Status == "COMPLETED")
                     {
                         DonationDTO donationDTO = new DonationDTO()
                         {
-                            UserId = userId != Guid.Empty ? userId : Guid.Empty,
+                            UserId = Guid.Parse(userId) ,
                             ProjectId = Guid.Parse(projectId),
                             TransactionId = transactionId,
                             Amount = double.Parse(transaction.PurchaseUnits[0].Amount.Value),
-                            DonationDate = DateTime.Now,
                         };
                         await AddTransaction(transaction);
                         var donationDb = await _donationService.AddDonation(donationDTO);

@@ -77,7 +77,6 @@ namespace NUnitTestsRepositories
         [Test]
         public void GetAll_Should_Return_All_MockListData()
         {
-
             //Get all mock data
             _donationReadMock.Setup(m => m.GetAll()).Returns(_mockListDonations.AsQueryable());
             _userReadMock.Setup(m => m.GetAll()).Returns(_mockListUsers.AsQueryable());
@@ -95,6 +94,25 @@ namespace NUnitTestsRepositories
             Assert.AreEqual(2, users.Count);
             Assert.AreEqual(2, stories.Count);
             Assert.AreEqual(2, waterpumpProjectList.Count);
+        }
+
+        [TearDown]
+        public void TestCleanUp()
+        {
+            _donationReadMock = null;
+            _userReadMock = null;
+            _storyReadMock = null;
+            _waterpumpProjectReadMock = null;
+
+            _donationReadRepo = null;
+            _userReadRepo = null;
+            _storyReadRepo = null;
+            _waterpumpProjectReadRepo = null;
+
+            _mockListDonations = null;
+            _mockListUsers = null;
+            _mockListStories = null;
+            _mockListWaterpumpProject = null;
         }
     }
 }

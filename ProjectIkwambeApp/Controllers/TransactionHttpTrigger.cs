@@ -66,6 +66,8 @@ namespace ProjectIkwambe.Controllers
         public async Task<HttpResponseData> GetTransactionsPayPal([HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "transactions/paypal/{transactionId}")] HttpRequestData req, string transactionId, FunctionContext executionContext)
         {
             var transaction = await _paypalClientService.GetTransaction(transactionId);
+
+            // Generate output
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
             await response.WriteAsJsonAsync(transaction);
             return response;
@@ -81,7 +83,10 @@ namespace ProjectIkwambe.Controllers
 		{
             string currencyCode = HttpUtility.ParseQueryString(req.Url.Query).Get("currency");
             string value = HttpUtility.ParseQueryString(req.Url.Query).Get("value");
+
             var checkoutUrl =await _paypalClientService.GetCheckoutUrl(currencyCode, value);
+            
+            // Generate output
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
             await response.WriteAsJsonAsync(checkoutUrl);
             return response;
@@ -92,20 +97,23 @@ namespace ProjectIkwambe.Controllers
         [OpenApiOperation(operationId: "completeTransaction", tags: new[] { "PaypalTransactions" }, Summary = "Complete the transaction and create the donation.", Description = "This will capture the transaction, create a donation and update the project.", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiParameter(name: "transactionId", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "ID of transaction to return", Description = "Retrieves a specific transaction by ID", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiParameter(name: "projectId", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "ID of project to donate to", Description = "Donates to this project", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiParameter(name: "userId", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "ID of project to donate to", Description = "Donates to this project", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Invalid input", Description = "Invalid input")]
         public async Task<HttpResponseData> CompleteTransaction([HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "transactions/paypal/complete")] HttpRequestData req, FunctionContext executionContext)
         {
             string transactionId = HttpUtility.ParseQueryString(req.Url.Query).Get("transactionId");
             string projectId = HttpUtility.ParseQueryString(req.Url.Query).Get("projectId");
+            string userId = HttpUtility.ParseQueryString(req.Url.Query).Get("userId");
+
             //get this from user who logs in
             //project id we get from the query param
             //transaction id is got from the frontend when payment is made
-            Guid guid = new Guid();
-            await _transactionService.CompleteTransaction(transactionId,guid,projectId);
+            
+            await _transactionService.CompleteTransaction(transactionId,projectId,userId);
 
             // Generate output
             HttpResponseData response = req.CreateResponse(HttpStatusCode.Created);
-            
+            await response.WriteStringAsync("Transaction done successfully!");
             return response;
 
         }

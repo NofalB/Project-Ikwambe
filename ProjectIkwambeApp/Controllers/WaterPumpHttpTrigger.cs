@@ -59,7 +59,7 @@ namespace ProjectIkwambe.Controllers
         //get water pump information by ID
         [Function(nameof(WaterpumpHttpTrigger.GetWaterpumpById))]
         [OpenApiOperation(operationId: "getWaterpumpById", tags: new[] { "Waterpumps" }, Summary = "Find waterpump by ID", Description = "Returns a single waterpump.", Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiParameter(name: "waterpumpId", In = ParameterLocation.Path, Required = false, Type = typeof(string), Summary = "ID of waterpump to return", Description = "ID of waterpump to return", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiParameter(name: "waterpumpId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "ID of waterpump to return", Description = "ID of waterpump to return", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WaterpumpProject), Summary = "successful operation", Description = "successful operation", Example = typeof(DummyWaterpumpProjectExamples))]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid ID supplied", Description = "Invalid ID supplied")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "No waterpump project found", Description = "No waterpump project found with the provided ID")]
@@ -138,7 +138,7 @@ namespace ProjectIkwambe.Controllers
 
                 await _waterpumpProjectService.DeleteWaterpumpProjectAsync(waterpumpId);
                 response.StatusCode = HttpStatusCode.Accepted;
-
+                await response.WriteStringAsync("Project deleted successfully!",Encoding.UTF8);
                 return response;
 
             //});

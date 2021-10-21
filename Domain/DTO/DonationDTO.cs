@@ -29,7 +29,7 @@ namespace Domain.DTO
 
         public DonationDTO()
         {
-
+            DonationDate = DateTime.Now;
         }
 
         public DonationDTO(Guid userId, Guid projectId, string transactionId, double amount)
