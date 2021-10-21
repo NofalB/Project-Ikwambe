@@ -13,7 +13,7 @@ using MockQueryable.Moq;
 
 namespace NUnitTestsServices
 {
-    public class UnitTestWaterpumpProject
+    public class UnitTestWaterpumpProjectService
     {
         private WaterpumpProjectService _waterpumpProjectSevice;
         private List<WaterpumpProject> _mockListWaterpumpProjects;
@@ -63,7 +63,7 @@ namespace NUnitTestsServices
         [Test]
         public void GetWaterpumpById_should_return_one_MockWaterpumpProjectAsync()
         {
-            string projectId = "f4019522 - fa64 - 4052 - 87d6 - 9a6cc52081df";
+            string projectId = "f4019522-fa64-4052-87d6-9a6cc52081df";
             //Arrange
             var mockWaterpumpProjects = _mockListWaterpumpProjects.AsQueryable().BuildMockDbSet();
             _waterpumpProjectReadRepositoryMock.Setup(w => w.GetAll().Where(w=>w.ProjectId == Guid.Parse(projectId)))
