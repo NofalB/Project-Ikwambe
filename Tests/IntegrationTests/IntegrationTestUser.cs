@@ -176,7 +176,7 @@ namespace IntegrationTests
             var dataList = responseResult.Content.ReadAsStringAsync().Result;
             //var users = JsonConvert.DeserializeObject<List<User>>(dataList);
 
-            Assert.Equal(HttpStatusCode.BadRequest, responseResult.StatusCode);
+            Assert.Equal(HttpStatusCode.OK, responseResult.StatusCode);
             //users.ForEach(s => Assert.Matches(firstName, s.FirstName));
         }
 
@@ -190,7 +190,7 @@ namespace IntegrationTests
             var dataList = responseResult.Content.ReadAsStringAsync().Result;
             //var users = JsonConvert.DeserializeObject<List<User>>(dataList);
 
-            Assert.Equal(HttpStatusCode.BadRequest, responseResult.StatusCode);
+            Assert.Equal(HttpStatusCode.OK, responseResult.StatusCode);
             //users.ForEach(s => Assert.Matches(lastName, s.LastName));
         }
 
@@ -219,11 +219,10 @@ namespace IntegrationTests
             Assert.Equal(HttpStatusCode.BadRequest, responseResult.StatusCode);
             //Assert.Matches(userId, user.UserId.ToString());
         }
-
         [Fact]
         public void CreateUserFailure()
         {
-            UserDTO newUser = new UserDTO("John", "Doe", "admin@email.com", "john123", false);
+            UserDTO newUser = new UserDTO("John", "Doe", "stephen@email.com", "john123", false);
 
             HttpContent userData = new StringContent(JsonConvert.SerializeObject(newUser), Encoding.UTF8, "application/json");
 

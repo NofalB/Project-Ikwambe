@@ -105,8 +105,23 @@ namespace ProjectIkwambe.Controllers
 			//return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) => {
 				HttpResponseData response = req.CreateResponse(HttpStatusCode.Accepted);
 				await _userService.DeleteUserAsync(userId);
+				await response.WriteStringAsync("The user has been deleted");
 				return response;
 			//});
+		}
+
+		[Function(nameof(UserHttpTrigger.UpdateUserToAdmin))]
+		[OpenApiOperation(operationId: "updateUserRole", tags: new[] { "Users" }, Summary = "Update user to admin", Description = "This endpoint allow an admin to change the role of a user to have admin rights", Visibility = OpenApiVisibilityType.Important)]
+		[OpenApiParameter(name: "userId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "ID of user to return", Description = "ID of user to return", Visibility = OpenApiVisibilityType.Important)]
+		[OpenApiResponseWithBody(statusCode: HttpStatusCode.Accepted, contentType: "application/json", bodyType: typeof(User), Summary = "successfull operation", Description = "the user has been deleted successfully", Example = typeof(User))]
+		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid user ID supplied", Description = "The user ID is invalid ")]
+		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "user not found", Description = "user not found by the inserted ID,please check again")]
+		public async Task<HttpResponseData> UpdateUserToAdmin([HttpTrigger(AuthorizationLevel.Anonymous, "PUT", Route = "users/updateRole/{userId}")] HttpRequestData req, string userId, FunctionContext executionContext)
+        {
+			HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
+			await _userService.UpdateUserRoleToAdmin(userId);
+			await response.WriteStringAsync("The user has been given admin rights");
+			return response;
 		}
 	}
 }

@@ -88,9 +88,9 @@ namespace ProjectIkwambe.Controllers
             //return await RoleChecker.ExecuteForUser( roles, req, executionContext, async (ClaimsPrincipal User) => {
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                 WaterpumpProjectDTO waterpumpDTO = JsonConvert.DeserializeObject<WaterpumpProjectDTO>(requestBody);
-                HttpResponseData response = req.CreateResponse();
+                HttpResponseData response = req.CreateResponse(HttpStatusCode.Created);
                 await response.WriteAsJsonAsync(await _waterpumpProjectService.AddWaterpumpProject(waterpumpDTO));
-                response.StatusCode = HttpStatusCode.Created;
+                //response.StatusCode = HttpStatusCode.Created;
                 return response;
             //});
         }
@@ -138,7 +138,7 @@ namespace ProjectIkwambe.Controllers
 
                 await _waterpumpProjectService.DeleteWaterpumpProjectAsync(waterpumpId);
                 response.StatusCode = HttpStatusCode.Accepted;
-                await response.WriteStringAsync("Project deleted successfully!",Encoding.UTF8);
+                await response.WriteStringAsync("Project deleted successfully!", Encoding.UTF8);
                 return response;
 
             //});

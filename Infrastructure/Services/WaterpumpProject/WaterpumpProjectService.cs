@@ -52,7 +52,7 @@ namespace Infrastructure.Services
             WaterpumpProject projectData = await _waterpumpProjectReadRepository.GetAll().FirstOrDefaultAsync(w => w.NameOfProject == projectName);
             if (projectData != null)
             {
-                throw new ArgumentNullException("No waterpump project found with the provided name");
+                throw new ArgumentNullException($"The waterpump project with the name {projectName} already exist");
             }
             return projectData;
         }
