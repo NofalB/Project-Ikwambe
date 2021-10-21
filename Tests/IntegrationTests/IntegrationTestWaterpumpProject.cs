@@ -50,7 +50,6 @@ namespace IntegrationTests
         [Fact]
         public void FilterWaterpumpProjectByProjectTypeSuccess()
         {
-            //string projectName = "stephens project 101"; //this need to be changed later
             string projectType = "health_service";
 
             //request

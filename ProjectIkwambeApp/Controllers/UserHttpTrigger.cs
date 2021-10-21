@@ -43,11 +43,7 @@ namespace ProjectIkwambe.Controllers
 			string firstName = HttpUtility.ParseQueryString(req.Url.Query).Get("firstName");
 			string lastName = HttpUtility.ParseQueryString(req.Url.Query).Get("lasttName");
 			string subcription = HttpUtility.ParseQueryString(req.Url.Query).Get("subscription");
-
-			// Generate output
 			HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
-
-			//await response.WriteAsJsonAsync(await _userService.GetAllUsers());
 			await response.WriteAsJsonAsync(_userService.GetUserByQueryOrGetAll(firstName, lastName, subcription));
 
 			return response;
@@ -61,10 +57,8 @@ namespace ProjectIkwambe.Controllers
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "User not found", Description = "User not found")]
 		public async Task<HttpResponseData> GetUserById([HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "users/{userId}")] HttpRequestData req, string userId, FunctionContext executionContext)
 		{
-			// Generate output
 			HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 			await response.WriteAsJsonAsync(await _userService.GetUserById(userId));
-
 			return response;
 		}
 
@@ -75,10 +69,8 @@ namespace ProjectIkwambe.Controllers
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Invalid input", Description = "Invalid input")]
 		public async Task<HttpResponseData> AddUser([HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "users")] HttpRequestData req, FunctionContext executionContext)
 		{
-			// Parse input
 			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 			UserDTO userDTO = JsonConvert.DeserializeObject<UserDTO>(requestBody);
-			// Generate output
 			HttpResponseData response = req.CreateResponse();
 			await response.WriteAsJsonAsync(await _userService.AddUser(userDTO));
 			response.StatusCode = HttpStatusCode.Created;
@@ -93,10 +85,8 @@ namespace ProjectIkwambe.Controllers
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Invalid input", Description = "Invalid input")]
 		public async Task<HttpResponseData> UpdateUser([HttpTrigger(AuthorizationLevel.Anonymous, "PUT", Route = "users/{userId}")] HttpRequestData req, string userId, FunctionContext executionContext)
 		{
-			// Parse input
 			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 			UserDTO userDTO = JsonConvert.DeserializeObject<UserDTO>(requestBody);
-			// Generate output
 			HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 			await response.WriteAsJsonAsync(await _userService.UpdateUser(userDTO, userId));
 			return response;
@@ -112,7 +102,6 @@ namespace ProjectIkwambe.Controllers
 		public async Task<HttpResponseData> DeleteUser([HttpTrigger(AuthorizationLevel.Anonymous, "DELETE", Route = "users/{userId}")] HttpRequestData req, string userId, FunctionContext executionContext)
 		{
 			//Role[] roles = { Role.Admin };
-
 			//return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) => {
 				HttpResponseData response = req.CreateResponse(HttpStatusCode.Accepted);
 				await _userService.DeleteUserAsync(userId);

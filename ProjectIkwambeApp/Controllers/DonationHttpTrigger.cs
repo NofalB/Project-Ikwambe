@@ -37,14 +37,12 @@ namespace ProjectIkwambe.Controllers
 		[Function(nameof(DonationHttpTrigger.GetDonations))]
 		[Auth]
 		[OpenApiOperation(tags: new[] { "Donations" }, Summary = "Get all donations", Description = "This will retrieve all donations", Visibility = OpenApiVisibilityType.Important)]
-		//[OpenApiParameter(name: "userId", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "ID of user to return donations", Description = "Retrieves donations with this user ID", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiParameter(name: "projectId", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "ID of project to return donations", Description = "Retrieves donations with this project ID", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiParameter(name: "donationDate", In = ParameterLocation.Query, Required = false, Type = typeof(DateTime), Summary = " date", Description = "date", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Donation), Summary = "Successfully fetched donations", Description = "Donations successfully retrieved", Example = typeof(DummyDonationsExamples))]
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid donation ID", Description = "Invalid donation ID was provided")]
 		public async Task<HttpResponseData> GetDonations([HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "donations")] HttpRequestData req, FunctionContext executionContext)
 		{
-            //string userId = HttpUtility.ParseQueryString(req.Url.Query).Get("userId");
             string projectId = HttpUtility.ParseQueryString(req.Url.Query).Get("projectId");
             string date = HttpUtility.ParseQueryString(req.Url.Query).Get("date");
 			Role[] roles = { Role.Admin };
@@ -67,7 +65,6 @@ namespace ProjectIkwambe.Controllers
 		[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Donation), Summary = "successful operation", Description = "successful operation", Example = typeof(DummyDonationsExamples))]
 		public async Task<HttpResponseData> GetDonationsById([HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "donations/{donationId}")] HttpRequestData req, string donationId, FunctionContext executionContext)
 		{
-
 			Role[] roles = { Role.User };
 
 			return await RoleChecker.ExecuteForUser(roles, req,  executionContext, async (ClaimsPrincipal User)  =>
@@ -89,14 +86,10 @@ namespace ProjectIkwambe.Controllers
 		public async Task<HttpResponseData> MakeDonation([HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "donations")] HttpRequestData req, FunctionContext executionContext)
 		{
 			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-			
 			DonationDTO donationDTO = JsonConvert.DeserializeObject<DonationDTO>(requestBody);
-			// Generate output
 			HttpResponseData response = req.CreateResponse();
-
 			await response.WriteAsJsonAsync(await _donationService.AddDonation(donationDTO));
 			response.StatusCode = HttpStatusCode.Created;
-
 			return response;
 		}
 

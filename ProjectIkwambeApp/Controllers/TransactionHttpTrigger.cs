@@ -66,8 +66,6 @@ namespace ProjectIkwambe.Controllers
         public async Task<HttpResponseData> GetTransactionsPayPal([HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "transactions/paypal/{transactionId}")] HttpRequestData req, string transactionId, FunctionContext executionContext)
         {
             var transaction = await _paypalClientService.GetTransaction(transactionId);
-
-            // Generate output
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
             await response.WriteAsJsonAsync(transaction);
             return response;
@@ -83,10 +81,7 @@ namespace ProjectIkwambe.Controllers
 		{
             string currencyCode = HttpUtility.ParseQueryString(req.Url.Query).Get("currency");
             string value = HttpUtility.ParseQueryString(req.Url.Query).Get("value");
-
             var checkoutUrl =await _paypalClientService.GetCheckoutUrl(currencyCode, value);
-            
-            // Generate output
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
             await response.WriteAsJsonAsync(checkoutUrl);
             return response;
@@ -102,7 +97,6 @@ namespace ProjectIkwambe.Controllers
         {
             string transactionId = HttpUtility.ParseQueryString(req.Url.Query).Get("transactionId");
             string projectId = HttpUtility.ParseQueryString(req.Url.Query).Get("projectId");
-
             //get this from user who logs in
             //project id we get from the query param
             //transaction id is got from the frontend when payment is made
