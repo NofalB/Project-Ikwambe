@@ -34,7 +34,7 @@ namespace Infrastructure.Services
                 Guid id = !string.IsNullOrEmpty(projectId) ? Guid.Parse(projectId) : throw new ArgumentNullException("No project ID was provided.");
                 var project = await _waterpumpProjectReadRepository.GetAll().FirstOrDefaultAsync(w => w.ProjectId == id);
 
-                if (project != null)
+                if (project == null)
                 {
                     throw new InvalidOperationException($"No project exists with the ID {projectId}");
                 }

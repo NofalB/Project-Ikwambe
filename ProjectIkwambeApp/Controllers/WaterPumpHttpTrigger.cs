@@ -145,7 +145,7 @@ namespace ProjectIkwambe.Controllers
 
                 await _waterpumpProjectService.DeleteWaterpumpProjectAsync(waterpumpId);
                 response.StatusCode = HttpStatusCode.Accepted;
-
+                await response.WriteStringAsync("Project deleted successfully!",Encoding.UTF8);
                 return response;
 
             //});
