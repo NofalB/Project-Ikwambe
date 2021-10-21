@@ -23,5 +23,7 @@ namespace Infrastructure.Services
         List<User> GetUserByQueryOrGetAll(string firstname, string lastname, string subcribe);
 
         User UserCheck(string email, string password);
+
+        Task<User> UpdateUserRoleToAdmin(string userId);
     }
 }

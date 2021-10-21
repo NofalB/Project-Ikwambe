@@ -165,7 +165,7 @@ namespace Infrastructure.Services
             User userData = await GetUserById(userId);
             if (userData != null)
             {
-                //update user info
+                //update user to be an admin
                 userData.Role = Role.Admin;
 
                 return await _userWriteRepository.Update(userData);

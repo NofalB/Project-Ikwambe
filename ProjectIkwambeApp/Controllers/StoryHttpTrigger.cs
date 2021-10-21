@@ -87,7 +87,6 @@ namespace ProjectIkwambe.Controllers
                 return response;
             });
         }
-
         //edit story
         [Function(nameof(StoryHttpTrigger.UpdateStory))]
         [Auth]
@@ -131,7 +130,6 @@ namespace ProjectIkwambe.Controllers
         public async Task<HttpResponseData> DeleteStory([HttpTrigger(AuthorizationLevel.Anonymous, "DELETE", Route = "stories/{storyId}")] HttpRequestData req, string storyId, FunctionContext executionContext)
         {
             //Role[] roles = { Role.Admin };
-
             //return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) => {
                 HttpResponseData response = req.CreateResponse(HttpStatusCode.Accepted);
                 await _storyService.DeleteStory(storyId);
