@@ -42,11 +42,6 @@ namespace Infrastructure.Services.Transactions
             return await _transactionWriteRepository.AddAsync(transaction);
         }
 
-        //public async Task<Transaction> DeleteTransaction(string transactionId)
-        //{
-        //    return await _transactionRepository.GetAll().FirstOrDefaultAsync(t => t.TransactionId == transactionId);
-        //}
-
         public async Task<IEnumerable<Transaction>> GetAllTransactions()
         {
             return await _transactionReadRepository.GetAll().ToListAsync();
@@ -77,7 +72,6 @@ namespace Infrastructure.Services.Transactions
                             ProjectId = Guid.Parse(projectId),
                             TransactionId = transactionId,
                             Amount = double.Parse(transaction.PurchaseUnits[0].Amount.Value),
-                            DonationDate = DateTime.Now,
                         };
                         await AddTransaction(transaction);
                         var donationDb = await _donationService.AddDonation(donationDTO);

@@ -47,7 +47,7 @@ namespace ProjectIkwambe.ErrorHandlerMiddleware
                     FileNotFoundException => HttpStatusCode.BadRequest,
                     _ => HttpStatusCode.InternalServerError
                 },
-                Message = exception.Message
+                Message = exception.InnerException.Message
             };
 
             await response.WriteAsJsonAsync(responseData);
