@@ -76,15 +76,16 @@ namespace ProjectIkwambe.Controllers
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Invalid input", Description = "Invalid input")]
         public async Task<HttpResponseData> AddStory([HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "stories")] HttpRequestData req, FunctionContext executionContext)
         {
-            //Role[] roles = { Role.Admin };
+            Role[] roles = { Role.Admin };
 
-            //return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) => {
+            return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) =>
+            {
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                 StoryDTO storyDTO = JsonConvert.DeserializeObject<StoryDTO>(requestBody);
                 HttpResponseData response = req.CreateResponse(HttpStatusCode.Created);
                 await response.WriteAsJsonAsync(await _storyService.AddStory(storyDTO));
                 return response;
-            //});  
+            });
         }
 
         //edit story
@@ -134,6 +135,7 @@ namespace ProjectIkwambe.Controllers
             //return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) => {
                 HttpResponseData response = req.CreateResponse(HttpStatusCode.Accepted);
                 await _storyService.DeleteStory(storyId);
+                await response.WriteStringAsync($"Story with id {storyId} successfully deleted");
                 return response;
             //});
         }

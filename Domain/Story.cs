@@ -44,7 +44,7 @@ namespace Domain
 
         public Story()
         {
-        
+            
         }
 
         public Story(Guid storyId, string title, string imageUrl, DateTime publishDate, string summary, string description, string author)

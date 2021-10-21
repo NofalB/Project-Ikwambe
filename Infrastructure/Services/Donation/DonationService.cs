@@ -64,17 +64,7 @@ namespace Infrastructure.Services
             {
                 var waterpumpProject = await _waterpumpProjectService.GetWaterPumpProjectById(projectId) ?? throw new InvalidOperationException($"Project {projectId} does not exist.");
 
-                resultsList.AddRange(donations.Where(d =>
-                {
-                    try
-                    {
-                        return d.ProjectId == Guid.Parse(projectId);
-                    }
-                    catch
-                    {
-                        throw new InvalidOperationException("Invalid Project ID provided.");
-                    }
-                }));
+                resultsList = donations.Where(d => d.ProjectId == Guid.Parse(projectId)).ToList();
             }
             if(!string.IsNullOrEmpty(donationDate))
             {
