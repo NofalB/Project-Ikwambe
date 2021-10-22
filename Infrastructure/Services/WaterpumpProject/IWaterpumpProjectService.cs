@@ -10,14 +10,14 @@ namespace Infrastructure.Services
 {
     public interface IWaterpumpProjectService
     {
-        Task<IEnumerable<WaterpumpProject>> GetAllWaterPumpProjects();
+        Task<IEnumerable<WaterpumpProject>> GetAllWaterpumpProjectsAsync();
 
         Task<WaterpumpProject> GetWaterPumpProjectById(string projectId);
 
         Task<WaterpumpProject> AddWaterpumpProject(WaterpumpProjectDTO waterpumpProjectDTO);
 
         Task<WaterpumpProject> UpdateWaterPumpProject(WaterpumpProject waterpumpProject);
-        Task<WaterpumpProject> UpdateWaterPumpProject(WaterpumpProject waterpumpProject, string projectId);
+        Task<WaterpumpProject> UpdateWaterPumpProject(WaterpumpProjectDTO waterpumpProjectDTO, string projectId);
 
         Task DeleteWaterpumpProjectAsync(string projectId);
 

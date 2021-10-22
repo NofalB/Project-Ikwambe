@@ -8,14 +8,13 @@ namespace Infrastructure.Services
 {
     public interface IDonationService
     {
-        Task<IEnumerable<Donation>> GetAllDonationsAsync();
 
         Task<Donation> GetDonationByIdAsync(string donationId);
 
         Task<Donation> AddDonation(DonationDTO donation);
 
-        IQueryable<Donation> GetDonationByUserId(string userId);
+        Task<List<Donation>> GetDonationByUserIdAsync(string userId);
 
-        List<Donation> GetDonationByQueryOrGetAll(string projectId, string donationDate);
+        Task<List<Donation>> GetDonationByQueryOrGetAllAsync(string projectId, string donationDate);
     }
 }

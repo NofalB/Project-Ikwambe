@@ -16,12 +16,14 @@ namespace Infrastructure.Services
 
         Task<User> AddUser(UserDTO userDTO);
 
-        Task<User> UpdateUser(User user, string userId);
+        Task<User> UpdateUser(UserDTO user, string userId);
 
         Task DeleteUserAsync(string userId);
 
         List<User> GetUserByQueryOrGetAll(string firstname, string lastname, string subcribe);
 
         User UserCheck(string email, string password);
+
+        Task<User> UpdateUserRoleToAdmin(string userId);
     }
 }

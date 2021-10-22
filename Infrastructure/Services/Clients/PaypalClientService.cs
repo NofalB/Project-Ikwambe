@@ -30,6 +30,14 @@ namespace Infrastructure.Services.Transactions
 
         public async Task<CheckoutUrl> GetCheckoutUrl(string currencyCode, string value)
         {
+            value = !string.IsNullOrEmpty(value) ? value : throw new ArgumentNullException("No value was provided.");
+            currencyCode = !string.IsNullOrEmpty(currencyCode) ? currencyCode : throw new ArgumentNullException("No currencyCode was provided.");
+
+            var doubleValue = double.Parse(value);
+            if (doubleValue <= 0)
+            {
+                throw new InvalidOperationException($"The provided donation value can not be less than zero");
+            }
             var TransactionData = await _client.GetAsync(_client.BaseAddress+"createorder?currency=" + currencyCode + "&value=" + value);
             var TransactionDataResponseObj = await TransactionData.Content.ReadAsStringAsync();
             var TransactionDataObj = JsonConvert.DeserializeObject<CheckoutUrl>(TransactionDataResponseObj);
@@ -37,11 +45,13 @@ namespace Infrastructure.Services.Transactions
             return TransactionDataObj;
         }
 
-        public async Task<Transaction> GetTransaction(string orderId)
+        public async Task<Transaction> GetTransaction(string transactionId)
         {
-            var TransactionData = await _client.GetAsync(_client.BaseAddress + "getorder?orderId="+ orderId);
+            transactionId = !string.IsNullOrEmpty(transactionId) ? transactionId : throw new ArgumentNullException("No value was provided.");
+
+            var TransactionData = await _client.GetAsync(_client.BaseAddress + "getorder?orderId="+ transactionId);
             var TransactionDataResponseObj = await TransactionData.Content.ReadAsStringAsync();
-            var TransactionDataObj = JsonConvert.DeserializeObject<Transaction>(TransactionDataResponseObj);
+            var TransactionDataObj = JsonConvert.DeserializeObject<Transaction>(TransactionDataResponseObj) ?? throw new ArgumentNullException($"The transaction with the specified id {transactionId} does not exist"); ;
 
             return TransactionDataObj;
         }

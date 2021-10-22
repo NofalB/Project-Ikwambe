@@ -4,6 +4,7 @@ using Azure.Storage.Blobs.Specialized;
 using Azure.Storage.Sas;
 using Domain;
 using Domain.DTO;
+using HttpMultipartParser;
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -45,8 +46,21 @@ namespace Infrastructure.Services
 
         public async Task<Story> GetStoryById(string storyId)
         {
-            Guid id = Guid.Parse(storyId);
-            return await _storyReadRepository.GetAll().FirstOrDefaultAsync(s => s.StoryId == id);
+            try
+            {
+                Guid id = !string.IsNullOrEmpty(storyId) ? Guid.Parse(storyId) : throw new ArgumentNullException("No story ID was provided.");
+                var story = await _storyReadRepository.GetAll().FirstOrDefaultAsync(s => s.StoryId == id);
+
+                if (story == null)
+                {
+                    throw new InvalidOperationException($"No story exists with the ID {storyId}");
+                }
+                return story;
+            }
+            catch
+            {
+                throw new InvalidOperationException($"Invalid story Id {storyId} provided.");
+            }
         }
         private async Task<Story> GetStoryByTitle(string title)
         {
@@ -60,35 +74,24 @@ namespace Infrastructure.Services
 
             if(author != null)
             {
-                storyResultList.AddRange(story.Where(s =>
-                {
-                    try
-                    {
-                        return s.Author == author;
-                    }
-                    catch
-                    {
-                        throw new InvalidOperationException("Author provided either does not exist or ");
-                    }
-                }));
-                //story = story.Where(s => s.Author == author);
+                storyResultList = story.Where(s =>s.Author == author).ToList();
             }
             if(publishDate != null)
             {
-                DateTime publishDay;
+                DateTime publishDt;
 
-                if(!DateTime.TryParseExact(publishDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out publishDay))
+                if(!DateTime.TryParseExact(publishDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out publishDt))
                 {
                     throw new InvalidOperationException("Invalid date provided");
                 }
 
-                publishDay.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+                publishDt.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
 
-                storyResultList.AddRange(story.Where(s => s.PublishDate == publishDay.Date).ToList());
-                //DateTime time = DateTime.Parse(publishDate);
-                //publishDate += "T23:59:59";
-                //DateTime time_end = DateTime.Parse(publishDate);
-                //story = story.Where(s => s.PublishDate > time && s.PublishDate < time_end);
+                storyResultList = storyResultList.Count != 0 ?
+                    story.Where(d => d.PublishDate.Date == publishDt.Date && d.Author == author).ToList()
+                    : storyResultList = story.Where(d => d.PublishDate.Date == publishDt.Date).ToList();
+
+                return storyResultList.Count != 0 ? storyResultList : new List<Story>();
             }
 
             return storyResultList.Count !=0 ? storyResultList : story;
@@ -97,23 +100,29 @@ namespace Infrastructure.Services
 
         public async Task<Story> AddStory(StoryDTO storyDTO)
         {
-            if(await GetStoryByTitle(storyDTO.Title) == null)
+            if (storyDTO == null)
             {
-                Story story = new Story(
+                throw new NullReferenceException($"{nameof(storyDTO)} cannot be null.");
+            }
+
+            var story = await GetStoryByTitle(storyDTO.Title);
+
+            if (story != null)
+            {
+                throw new InvalidOperationException($"This story with title '{storyDTO.Title}' already exists.");
+            }
+
+            Story newStory = new Story(
                 Guid.NewGuid(),
                 storyDTO.Title,
-                storyDTO.ImageURL,
-                storyDTO.PublishDate,
-                storyDTO.Summary,
-                storyDTO.Description,
-                storyDTO.Author);
+                !string.IsNullOrEmpty(storyDTO.ImageURL) ? storyDTO.ImageURL : throw new InvalidOperationException($"Invalid {nameof(storyDTO.ImageURL)} provided."),
+                storyDTO.PublishDate != default(DateTime) ? storyDTO.PublishDate : DateTime.Now,
+                !string.IsNullOrEmpty(storyDTO.Summary) ? storyDTO.Summary : throw new InvalidOperationException($"Invalid {nameof(storyDTO.Summary)} provided."),
+                !string.IsNullOrEmpty(storyDTO.Description) ? storyDTO.Description : throw new InvalidOperationException($"Invalid {nameof(storyDTO.Description)} provided."),
+                !string.IsNullOrEmpty(storyDTO.Author) ? storyDTO.Author : throw new InvalidOperationException($"Invalid {nameof(storyDTO.Author)} provided.")
+            );
 
-                return await _storyWriteRepository.AddAsync(story);
-            }
-            else
-            {
-                throw new Exception("The story already exist");
-            }
+            return await _storyWriteRepository.AddAsync(newStory);
         }
 
         public async Task<Story> UpdateStory(Story story)
@@ -121,36 +130,61 @@ namespace Infrastructure.Services
             return await _storyWriteRepository.Update(story);
         }
 
-        public async Task<Story> UpdateStory(Story story, string storyId)
+        public async Task<Story> UpdateStory(StoryDTO storyDto, string storyId)
         {
-            if(await GetStoryById(storyId) == null)
+            var existingStory = await GetStoryById(storyId);
+            if (existingStory != null)
+            {
+                existingStory.Title = !string.IsNullOrEmpty(storyDto.Title) ? storyDto.Title : throw new InvalidOperationException($"Invalid {nameof(storyDto.Title)} provided.");
+                existingStory.ImageURL = !string.IsNullOrEmpty(storyDto.ImageURL) ? storyDto.ImageURL : throw new InvalidOperationException($"Invalid {nameof(storyDto.ImageURL)} provided.");
+                existingStory.PublishDate = storyDto.PublishDate != default(DateTime) ? storyDto.PublishDate : throw new InvalidOperationException($"Invalid {nameof(storyDto.PublishDate)} provided.");
+                existingStory.Summary = !string.IsNullOrEmpty(storyDto.Summary) ? storyDto.Summary : throw new InvalidOperationException($"Invalid {nameof(storyDto.Summary)} provided.");
+                existingStory.Description = !string.IsNullOrEmpty(storyDto.Description) ? storyDto.Description : throw new InvalidOperationException($"Invalid {nameof(storyDto.Description)} provided.");
+                existingStory.Author = !string.IsNullOrEmpty(storyDto.Author) ? storyDto.Author : throw new InvalidOperationException($"Invalid {nameof(storyDto.Author)} provided.");
+                //existingStory.PartitionKey = storyDto.Author;
+
+                return await _storyWriteRepository.Update(existingStory);
+            }
+            else
             {
                 throw new InvalidOperationException("The story ID provided does not exist");
             }
-            return await _storyWriteRepository.Update(story);
+
         }
 
         public async Task DeleteStory(string storyId)
         {
             Story story = await GetStoryById(storyId);
+            
             await _storyWriteRepository.Delete(story);
         }
 
 
-        public async Task UploadImage(string storyId, Stream fileStream, string fileName)
+        public async Task UploadImage(string storyId, FilePart file)
         {
-            // Get a reference to a blob
-            BlobClient blobClient = containerClient.GetBlobClient(fileName);
+            if (file.ContentType == "image/jpeg" || file.ContentType == "image/bmp" || file.ContentType == "image/png")
+            {
+                // Get a reference to a blob
+                BlobClient blobClient = containerClient.GetBlobClient(file.Name);
 
-            // Upload the file
-            await blobClient.UploadAsync(fileStream, new BlobHttpHeaders { ContentType = "image/png" });
+                // Upload the file
+                await blobClient.UploadAsync(file.Data, new BlobHttpHeaders { ContentType = file.ContentType });
 
-            //var imageUrl = GetServiceSasUriForBlob(blobClient);
+                //get the URL of the uploaded image
+                var blobUrl = blobClient.Uri.AbsoluteUri;
 
-            var story = await GetStoryById(storyId);
-           // story.ImageURL = imageUrl;
+                var story = await GetStoryById(storyId);
 
-            await UpdateStory(story);
+                //set the new url for the existing story
+                story.ImageURL = blobUrl;
+
+                await UpdateStory(story);
+            }
+            else
+            {
+                throw new InvalidOperationException("Invalid content type. Media type not supported. Upload a valid image of type jpeg,bmp or png.");
+            }
+
         }
 
     }

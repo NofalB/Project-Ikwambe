@@ -15,6 +15,6 @@ namespace Infrastructure.Services
         Task<Transaction> GetTransactionById(string transactionId);
 
         Task<Transaction> AddTransaction(Transaction transaction);
-        Task CompleteTransaction(string transactionId, Guid userId, string projectId);
+        Task CompleteTransaction(string transactionId, string projectId, string userId);
     }
 }

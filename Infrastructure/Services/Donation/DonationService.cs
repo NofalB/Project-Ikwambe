@@ -16,64 +16,67 @@ namespace Infrastructure.Services
     {
         private readonly ICosmosReadRepository<Donation> _donationReadRepository;
         private readonly ICosmosWriteRepository<Donation> _donationWriteRepository;
+        
+        private readonly IUserService _userService;
+        private readonly IWaterpumpProjectService _waterpumpProjectService;
 
-        public DonationService(ICosmosReadRepository<Donation> donationReadRepository, ICosmosWriteRepository<Donation> donationWriteRepository)
+        public DonationService(ICosmosReadRepository<Donation> donationReadRepository, ICosmosWriteRepository<Donation> donationWriteRepository,
+            IUserService userService, IWaterpumpProjectService waterpumpProjectService)
         {
             _donationReadRepository = donationReadRepository;
             _donationWriteRepository = donationWriteRepository;
-        }
-
-        public async Task<IEnumerable<Donation>> GetAllDonationsAsync()
-        {
-            //here a check. for user 
-            return await _donationReadRepository.GetAll().ToListAsync();
+            _userService = userService;
+            _waterpumpProjectService = waterpumpProjectService;
         }
 
         public async Task<Donation> GetDonationByIdAsync(string donationId)
         {
             try
             {
-                Guid id = Guid.Parse(donationId);
+                Guid id = !string.IsNullOrEmpty(donationId) ? Guid.Parse(donationId) : throw new ArgumentNullException("No donation ID was provided.");
 
                 var donation = await _donationReadRepository.GetAll().FirstOrDefaultAsync(d => d.DonationId == id);
 
                 if (donation == null)
                 {
-                    throw new ArgumentException("Donation does not exist. Incorrect donation ID or user ID provided");
+                    throw new InvalidOperationException($"Donation does not exist. Incorrect donation ID {donationId} provided");
                 }
                 return donation;
             }
             catch
             {
-                throw new InvalidOperationException("Invalid donation ID provided.");
+                throw new InvalidOperationException($"Invalid donation ID {donationId} provided.");
             }
         }
 
-        public IQueryable<Donation> GetDonationByUserId(string userId)
+        public async Task<List<Donation>> GetDonationByUserIdAsync(string userId)
         {
-            return _donationReadRepository.GetAll().Where(d=> d.UserId == Guid.Parse(userId));
+            try
+            {
+                Guid id = !string.IsNullOrEmpty(userId) ? Guid.Parse(userId) : throw new ArgumentNullException("No user Id was provided.");
+
+                var donations = await _donationReadRepository.GetAll().Where(d => d.UserId == id).ToListAsync();
+                return donations;
+            }
+            catch
+            {
+                throw new InvalidOperationException($"Invalid user Id {userId} provided.");
+            }
         }
 
-        public List<Donation> GetDonationByQueryOrGetAll(string projectId, string donationDate)
+        public async Task<List<Donation>> GetDonationByQueryOrGetAllAsync(string projectId, string donationDate)
         {
             List<Donation> resultsList = new List<Donation>();
             List<Donation> donations = _donationReadRepository.GetAll().ToList();
             
-            if (projectId != null)
+
+            if (!string.IsNullOrEmpty(projectId))
             {
-                resultsList.AddRange(donations.Where(d =>
-                {
-                    try
-                    {
-                        return d.ProjectId == Guid.Parse(projectId);
-                    }
-                    catch
-                    {
-                        throw new InvalidOperationException("Invalid Project ID provided.");
-                    }
-                }));
+                var waterpumpProject = await _waterpumpProjectService.GetWaterPumpProjectById(projectId) ?? throw new InvalidOperationException($"Project {projectId} does not exist.");
+
+                resultsList = donations.Where(d => d.ProjectId == Guid.Parse(projectId)).ToList();
             }
-            if(donationDate != null)
+            if(!string.IsNullOrEmpty(donationDate))
             {
                 DateTime donationDt;
 
@@ -82,9 +85,13 @@ namespace Infrastructure.Services
                 {
                     throw new InvalidOperationException("Invalid date provided.");
                 }
-                
                 donationDt.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
-                resultsList.AddRange(donations.Where(d => d.DonationDate.Date == donationDt.Date).ToList());
+
+                resultsList = resultsList.Count != 0 ? 
+                    donations.Where(d => d.DonationDate.Date == donationDt.Date && d.ProjectId.ToString() == projectId).ToList()
+                    : resultsList = donations.Where(d => d.DonationDate.Date == donationDt.Date).ToList();
+
+                return resultsList.Count != 0 ? resultsList : new List<Donation>();
             }
 
             return resultsList.Count != 0 ? resultsList : donations;
@@ -92,18 +99,38 @@ namespace Infrastructure.Services
 
         public async Task<Donation> AddDonation(DonationDTO donationDTO)
         {
-            Donation donation = new Donation()
+            if (donationDTO == null)
             {
-                DonationId = Guid.NewGuid(),
-                UserId = donationDTO.UserId,
-                ProjectId = donationDTO.ProjectId != Guid.Empty ? donationDTO.ProjectId : throw new InvalidOperationException($"Invalid {nameof(donationDTO.ProjectId)} provided."),
-                TransactionId = donationDTO.TransactionId ?? throw new ArgumentNullException($"Invalid {nameof(donationDTO.TransactionId)} provided"),
-                Amount = donationDTO.Amount != 0 ? donationDTO.Amount : throw new InvalidOperationException($"Invalid {nameof(donationDTO.Amount)} provided."),
-                DonationDate = donationDTO.DonationDate != default(DateTime) ? donationDTO.DonationDate : throw new InvalidOperationException($"Invalid {nameof(donationDTO.DonationDate)} provided."),
-                PartitionKey = donationDTO.ProjectId.ToString() ?? throw new ArgumentNullException($"Invalid {nameof(donationDTO.ProjectId)} provided")
-            };
+                throw new NullReferenceException($"{nameof(DonationDTO)} cannot be null.");
+            }
 
-            return await _donationWriteRepository.AddAsync(donation);
+            if (donationDTO.UserId != null)
+            {
+                var user = await _userService.GetUserById(donationDTO.UserId.ToString());
+                if (user.Role == Role.Admin)
+                {
+                    throw new InvalidOperationException("Admin user cannot make donations.");
+                }
+            }
+
+            if (donationDTO.ProjectId != Guid.Empty)
+            {
+                var waterpumpProject = await _waterpumpProjectService.GetWaterPumpProjectById(donationDTO.ProjectId.ToString()) ?? throw new InvalidOperationException($"Project {donationDTO.ProjectId} does not exist.");
+                
+                Donation donation = new Donation()
+                {
+                    DonationId = Guid.NewGuid(),
+                    UserId = donationDTO.UserId,
+                    ProjectId = donationDTO.ProjectId != Guid.Empty ? donationDTO.ProjectId : throw new InvalidOperationException($"Invalid {nameof(donationDTO.ProjectId)} provided."),
+                    TransactionId = donationDTO.TransactionId ?? throw new ArgumentNullException($"Invalid {nameof(donationDTO.TransactionId)} provided"),
+                    Amount = donationDTO.Amount != 0 ? donationDTO.Amount : throw new InvalidOperationException($"Invalid {nameof(donationDTO.Amount)} provided."),
+                    DonationDate = donationDTO.DonationDate != default(DateTime) ? donationDTO.DonationDate : throw new InvalidOperationException($"Invalid {nameof(donationDTO.DonationDate)} provided."),
+                    PartitionKey = donationDTO.ProjectId.ToString() ?? throw new ArgumentNullException($"Invalid {nameof(donationDTO.ProjectId)} provided")
+                };
+                return await _donationWriteRepository.AddAsync(donation);
+            }
+
+            throw new ArgumentNullException($"Invalid {nameof(donationDTO.ProjectId)} provided.");
         }
     }
 }

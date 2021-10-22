@@ -46,8 +46,17 @@ namespace ProjectIkwambe.Utils
             }
             catch (Exception e)
             {
-                HttpResponseData Response = Request.CreateResponse(HttpStatusCode.Unauthorized);
-                return Response;
+                HttpResponseData response = Request.CreateResponse(HttpStatusCode.Unauthorized);
+				
+				var responseData = new
+				{
+					Status = HttpStatusCode.Unauthorized,
+					Message = "User is not authorized to access resource."
+				};
+
+				await response.WriteAsJsonAsync(responseData);
+				response.StatusCode = HttpStatusCode.Unauthorized;
+				return response;
             }
         }
 
@@ -59,8 +68,18 @@ namespace ProjectIkwambe.Utils
 			}
 			catch (Exception e)
 			{
-				HttpResponseData Response = Request.CreateResponse(HttpStatusCode.BadRequest);
-				return Response;
+				HttpResponseData response = Request.CreateResponse(HttpStatusCode.BadRequest);
+
+				var responseData = new
+				{
+					Status = HttpStatusCode.BadRequest,
+					Message = e.GetBaseException().Message
+				};
+
+				await response.WriteAsJsonAsync(responseData);
+				response.StatusCode = HttpStatusCode.BadRequest;
+
+				return response;
 			}
 		}
 		

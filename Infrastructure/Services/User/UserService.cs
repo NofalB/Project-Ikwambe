@@ -28,12 +28,36 @@ namespace Infrastructure.Services
 
         public async Task<User> GetUserById(string userId)
         {
-            return await _userReadRepository.GetAll().FirstOrDefaultAsync(u => u.UserId == Guid.Parse(userId));
+            try
+            {
+                Guid id = !string.IsNullOrEmpty(userId) ? Guid.Parse(userId) : throw new ArgumentNullException("No user ID was provided.");
+
+                var user = await _userReadRepository.GetAll().FirstOrDefaultAsync(u => u.UserId == id);
+
+                if (user == null)
+                {
+                    throw new InvalidOperationException($"The User ID {userId} provided does not exist");
+                }
+                return user;
+            }
+            catch
+            {
+                throw new InvalidOperationException($"Invalid User ID {userId} provided.");
+            }
+
+            
         }
 
         private async Task<User> GetUserByEmail(string email)
         {
-            return await _userReadRepository.GetAll().FirstOrDefaultAsync(u => u.Email == email);
+            email=!string.IsNullOrEmpty(email) ? email : throw new ArgumentNullException("No email was provided.");
+            var user = await _userReadRepository.GetAll().FirstOrDefaultAsync(u => u.Email == email);
+            
+            if (user != null)
+            {
+                throw new InvalidOperationException($"The User Email {user.Email} provided already exist");
+            }
+            return user;
         }
 
         public User UserCheck(string email, string password)
@@ -41,7 +65,7 @@ namespace Infrastructure.Services
             User user = _userReadRepository.GetAll().FirstOrDefault(u => u.Email == email);
             if(user== null)
             {
-                throw new Exception("The email you have provided does not exist");
+                throw new InvalidOperationException("The email you have provided does not exist");
             }
             else
             {
@@ -51,19 +75,18 @@ namespace Infrastructure.Services
                 }
                 else
                 {
-                    throw new Exception("Please check your credentials");
+                    throw new InvalidOperationException("Please check your credentials");
                 }
             }
         }
 
         public List<User> GetUserByQueryOrGetAll(string firstname, string lastname, string subcribe)
         {
-            List<User> users = _userReadRepository.GetAll().ToList();
-            List<User> resultList = new List<User>();
+            List<User> resultList = _userReadRepository.GetAll().ToList();
 
             if (firstname != null)
             {
-                resultList.AddRange(users.Where(f =>
+                resultList = resultList.Where(f =>
                 {
                     try
                     {
@@ -73,12 +96,11 @@ namespace Infrastructure.Services
                     {
                         throw new InvalidOperationException($"No user with the firstname {firstname} has been found.");
                     }
-                }));
-                //user = user.Where(f => f.FirstName == firstname);
+                }).ToList();
             }
             if (lastname != null)
             {
-                resultList.AddRange(users.Where(l =>
+                resultList = resultList.Where(l =>
                 {
                     try
                     {
@@ -88,12 +110,11 @@ namespace Infrastructure.Services
                     {
                         throw new InvalidOperationException($"No user with the firstname {lastname} has been found.");
                     }
-                }));
-                //user = user.Where(l => l.LastName == lastname);
+                }).ToList();
             }
             if (subcribe != null)
             {
-                resultList.AddRange(users.Where(s =>
+                resultList = resultList.Where(s =>
                 {
                     try
                     {
@@ -103,50 +124,93 @@ namespace Infrastructure.Services
                     {
                         throw new InvalidOperationException("Please either use true or false");
                     }
-                }));
-                //user = user.Where(s => s.Subscription == bool.Parse(subcribe));
+                }).ToList();
             }
 
-            return resultList.Count != 0 ? resultList: users;
+            return resultList.Count != 0 ? resultList: new List<User>();
         }
 
         public async Task<User> AddUser(UserDTO userDTO)
         {
-            if(await GetUserByEmail(userDTO.Email) == null)
+            if (userDTO == null)
+            {
+                throw new NullReferenceException($"{nameof(userDTO)} cannot be null.");
+            }
+
+            if (await GetUserByEmail(userDTO.Email) == null)
             {
                 User user = new User()
-                { 
+                {
                     UserId = Guid.NewGuid(),
                     FirstName = !string.IsNullOrEmpty(userDTO.FirstName) ? userDTO.FirstName : throw new ArgumentNullException($"Invalid {nameof(userDTO.FirstName)} provided"),
                     LastName = !string.IsNullOrEmpty(userDTO.LastName) ? userDTO.LastName : throw new ArgumentNullException($"Invalid {nameof(userDTO.LastName)} provided"),
                     Email = !string.IsNullOrEmpty(userDTO.Email) ? userDTO.Email : throw new ArgumentNullException($"Invalid {nameof(userDTO.Email)} provided"),
                     Password = !string.IsNullOrEmpty(userDTO.Password) ? userDTO.Password : throw new ArgumentNullException($"Invalid {nameof(userDTO.Password)} provided"),
-                    Subscription = false,
+                    Subscription = !string.IsNullOrEmpty(userDTO.Subscription.ToString()) ? bool.Parse(userDTO.Subscription.ToString()) : throw new ArgumentNullException($"Invalid {nameof(userDTO.Subscription)} provided"),
                     Role = Role.User,
-                    PartitionKey =  userDTO.FirstName
-                    };
+                    PartitionKey = userDTO.Subscription.ToString()
+                };
 
                 return await _userWriteRepository.AddAsync(user);
             }
             else
             {
-                throw new Exception("The user email already exist");
+                throw new InvalidOperationException($"The user email {userDTO.Email} already exists");
             }
         }
 
-        public async Task<User> UpdateUser(User user, string userId)
+        public async Task<User> UpdateUserRoleToAdmin(string userId)
         {
-            if(await GetUserById(userId) == null)
+            var id = !string.IsNullOrEmpty(userId) ? userId : throw new ArgumentNullException($"{userId} cannot be null or empty string."); 
+            User userData = await GetUserById(userId);
+            if (userData != null)
             {
-                throw new InvalidOperationException("The user ID provided does not exist.");
+                //update user to be an admin
+                userData.Role = Role.Admin;
+
+                return await _userWriteRepository.Update(userData);
             }
-            return await _userWriteRepository.Update(user);
+            throw new InvalidOperationException($"The user ID {userId} provided is invalid.");
+
+        }
+
+
+        public async Task<User> UpdateUser(UserDTO userDTO, string userId)
+        {
+            if (userDTO == null)
+            {
+                throw new NullReferenceException($"{nameof(userDTO)} cannot be null.");
+            }
+
+            User userData = await GetUserById(userId);
+            if (userData != null)
+            {
+                //update user info
+                userData.FirstName = userDTO.FirstName;
+                userData.LastName = userDTO.LastName;
+                userData.Email = userDTO.Email;
+                userData.Password = userDTO.Password;
+                userData.Subscription = bool.Parse(userDTO.Subscription.ToString());
+
+                return await _userWriteRepository.Update(userData);
+            }
+            throw new InvalidOperationException("The user ID provided does not exist.");
+
         }
 
         public async Task DeleteUserAsync(string userId)
         {
-            User user = await GetUserById(userId);
-            await _userWriteRepository.Delete(user);
+            var id = !string.IsNullOrEmpty(userId) ? userId : throw new ArgumentNullException($"{userId} cannot be null or empty string.");
+            User user = await GetUserById(id);
+
+            if (user != null)
+            {
+                await _userWriteRepository.Delete(user);
+            }
+            else 
+            {
+                throw new InvalidOperationException($"The user ID {userId} provided is invalid.");
+            }
         }
     }
 }
