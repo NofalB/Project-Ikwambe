@@ -22,7 +22,6 @@ namespace IntegrationTests
         private string _falseTransactionId = "Invalid Transaction ID";
         private string _falseProjectId = "Invalid Project ID";
         private string _falseUserId = "Invalid User ID";
-
         #endregion
 
         public IntegrationTestTransaction()
@@ -104,7 +103,7 @@ namespace IntegrationTests
             Assert.Matches("Here is the link to make the payment:", checkoutUrl.Message);
         }
 
-        /*[Fact]
+        [Fact]
         public void CompleteTransactionSuccess()
         {
             // setup
@@ -120,7 +119,7 @@ namespace IntegrationTests
             // verify results
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
             Assert.Matches("Transaction done successfully!", responseData);
-        }*/
+        }
         #endregion
 
         #region Failed Tests

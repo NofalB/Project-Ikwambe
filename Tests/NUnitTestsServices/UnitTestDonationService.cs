@@ -47,7 +47,7 @@ namespace NUnitTestsServices
         }
 
         [Test]
-        public void GetAllDonations_Should_Return_All_MockDonationsAsync()
+        public void GetAllDonationsByUserId_Should_Return_Specific_MockDonationsAsync()
         {
             //Arrange
             var mockDonations = _mockListDonations.AsQueryable().BuildMockDbSet();
@@ -71,6 +71,8 @@ namespace NUnitTestsServices
             _donationReadRepositoryMock = null;
             _donationWriteRepositoryMock = null;
             _mockListDonations = null;
+            _userServiceMock = null;
+            _waterpumpProjectServiceMock = null;
         }
     }
 }
