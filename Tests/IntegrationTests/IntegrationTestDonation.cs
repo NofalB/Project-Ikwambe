@@ -16,15 +16,17 @@ namespace IntegrationTests
     {
         private HttpClient _httpClient { get; }
 
-        private string _userId;
-        private string _donationId;
-        private string _projectId;
-        private string _donationDate;
+        #region Test IDs
+        private string _userId = "3fa85f64-5717-4562-b3fc-2c963f66afa6";
+        private string _donationId = "74018e11-3d5c-46e6-96f5-e400c4aa8366";
+        private string _projectId = "4ae756ac-b37f-4651-b718-9d6b916b7f1e";
+        private string _donationDate = "2021-10-21";
 
-        private string _falseUserId;
-        private string _falseProjectId;
-        private string _falseDonationId;
-        private string _falseDonationDate;
+        private string _falseUserId = "Invalid user ID";
+        private string _falseProjectId = "Invalid ProjectId";
+        private string _falseDonationId = "Invalid donation ID";
+        private string _falseDonationDate = "InvalidProjectId DonationDate";
+        #endregion
 
         private string _userToken = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IjM2Yzk4NTMyLWY0ODktNDc5MC1hMDJjLTgxZTg4YTY4OTk1MCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6InVzZXIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjM2Yzk4NTMyLWY0ODktNDc5MC1hMDJjLTgxZTg4YTY4OTk1MCIsIm5iZiI6MTYzNDg1MzA0MiwiZXhwIjoxNjg2NjkzMDQyLCJpYXQiOjE2MzQ4NTMwNDIsImlzcyI6IkRlYnVnSXNzdWVyIiwiYXVkIjoiRGVidWdBdWRpZW5jZSJ9.XetnRbFBJwhvOJQauam80MF1t8hqxhXurBT3s7G0zJA";
         private string _adminToken = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiIzNjJiZjIxMi1hNWJjLTQ5ZTQtOTRlYi01ZTVkM2ExZmJmODYiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJhZG1pbiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiMzYyYmYyMTItYTViYy00OWU0LTk0ZWItNWU1ZDNhMWZiZjg2IiwibmJmIjoxNjM0ODUzMDEwLCJleHAiOjE2ODY2OTMwMTAsImlhdCI6MTYzNDg1MzAxMCwiaXNzIjoiRGVidWdJc3N1ZXIiLCJhdWQiOiJEZWJ1Z0F1ZGllbmNlIn0.afTG3OzeVVOkRaMuNXXtQqpUu5OcoQQD3UmyrjFvPAk";
@@ -40,16 +42,6 @@ namespace IntegrationTests
 
             _httpClient.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", _userToken);
-
-            _userId = "3fa85f64-5717-4562-b3fc-2c963f66afa6";
-            _donationId = "74018e11-3d5c-46e6-96f5-e400c4aa8366";
-            _projectId = "4ae756ac-b37f-4651-b718-9d6b916b7f1e";
-            _donationDate = "2021-10-21";
-
-            _falseUserId = "Invalid user ID";
-            _falseProjectId = "Invalid ProjectId";
-            _falseDonationId= "Invalid donation ID";
-            _falseDonationDate = "InvalidProjectId DonationDate";
         }
 
         #region Sucesssful Tests
@@ -128,7 +120,7 @@ namespace IntegrationTests
             var donation = JsonConvert.DeserializeObject<Donation>(responseData);
 
             // verify results
-             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+            Assert.Equal(HttpStatusCode.Created, response.StatusCode);
             Assert.IsType<Donation>(donation);
         }
         #endregion
@@ -166,6 +158,24 @@ namespace IntegrationTests
             // verify results
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
             Assert.Matches(donation.DonationId.ToString(), Guid.Empty.ToString());
+        }
+
+        [Fact]
+        public void GetAllDonationsByUserIdFailure()
+        {
+            // setup
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _adminToken);
+
+            // run request
+            HttpResponseMessage response = _httpClient.GetAsync($"api/donations/user/{_falseUserId}").Result;
+
+            // process response
+            var responseData = response.Content.ReadAsStringAsync().Result;
+            var donations = JsonConvert.DeserializeObject(responseData);
+
+            // verify results
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.NotNull(donations);
         }
 
         [Fact]
