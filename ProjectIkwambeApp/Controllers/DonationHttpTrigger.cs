@@ -45,16 +45,16 @@ namespace ProjectIkwambe.Controllers
 		{
             string projectId = HttpUtility.ParseQueryString(req.Url.Query).Get("projectId");
             string donationDate = HttpUtility.ParseQueryString(req.Url.Query).Get("donationDate");
-			Role[] roles = { Role.Admin };
+			//Role[] roles = { Role.Admin };
 
-			return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) =>
-			{
+			//return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) =>
+			//{
 				HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 			
 				await response.WriteAsJsonAsync(await _donationService.GetDonationByQueryOrGetAllAsync(projectId, donationDate));
 
 				return response;
-			});
+			//});
 		}
 
 		[Function(nameof(DonationHttpTrigger.GetDonationsById))]

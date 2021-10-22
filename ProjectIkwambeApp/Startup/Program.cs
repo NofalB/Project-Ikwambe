@@ -39,11 +39,7 @@ namespace ProjectIkwambe.Startup {
 			// DBContext
 			Services.AddDbContext<IkwambeContext>(option =>
             {
-                option.UseCosmos(
-                    Builder.Configuration["CosmosDb:Account"],
-                    Builder.Configuration["CosmosDb:Key"],
-                    Builder.Configuration["CosmosDb:DatabaseName"]
-                );
+                option.UseCosmos("https://projectikwambedb.documents.azure.com:443/", "0gHgOaqhe8NAjY0b02DurzqSZHiKI5NF9zQsRkAhqJsJmOIcPylMGZR44ZzmLSrbkhztzQeW8AKfu7BJnZ2nYQ==", "ProjectIkwambeDB");
             });
 
 			// Repositories
