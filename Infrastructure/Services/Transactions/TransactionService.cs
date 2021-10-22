@@ -51,7 +51,14 @@ namespace Infrastructure.Services.Transactions
 
         public async Task<Transaction> GetTransactionById(string transactionId)
         {
-            return await _transactionReadRepository.GetAll().FirstOrDefaultAsync(t => t.TransactionId == transactionId);
+            var transaction =  await _transactionReadRepository.GetAll().FirstOrDefaultAsync(t => t.TransactionId == transactionId);
+
+            if (transaction == null)
+            {
+                throw new InvalidOperationException($"No transaction exists with the ID {transactionId}");
+            }
+
+            return transaction;
         }
 
         public async Task CompleteTransaction(string transactionId,string projectId, string userId)
