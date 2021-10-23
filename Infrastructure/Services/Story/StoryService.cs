@@ -35,8 +35,8 @@ namespace Infrastructure.Services
             _storyWriteRepository = storyWriteRepository;
             _blobCredentialOptions = options.Value;
 
-            blobServiceClient = new BlobServiceClient(_blobCredentialOptions.ConnectionString);
-            containerClient = blobServiceClient.GetBlobContainerClient(_blobCredentialOptions.ContainerName);
+            blobServiceClient = new BlobServiceClient("DefaultEndpointsProtocol=https;AccountName=ikwambe2storage;AccountKey=5ebhRJYEmf2mNeNaV9ORpSr2M7TW+rGXUYIMMiprlHNp9SavfFn+peaIHxpMb+LyZ+YmfeWY/HGNM5E88R9rBw==;EndpointSuffix=core.windows.net");
+            containerClient = blobServiceClient.GetBlobContainerClient("ikwambe-container");
         }
 
         public async Task<IEnumerable<Story>> GetAllStories()
