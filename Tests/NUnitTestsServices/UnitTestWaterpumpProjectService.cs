@@ -60,25 +60,6 @@ namespace NUnitTestsServices
             //return Task.CompletedTask;
         }
 
-        [Test]
-        public void GetWaterpumpById_should_return_one_MockWaterpumpProjectAsync()
-        {
-            string projectId = "f4019522-fa64-4052-87d6-9a6cc52081df";
-            //Arrange
-            var mockWaterpumpProjects = _mockListWaterpumpProjects.AsQueryable().BuildMockDbSet();
-            _waterpumpProjectReadRepositoryMock.Setup(w => w.GetAll().Where(w=>w.ProjectId == Guid.Parse(projectId)))
-                .Returns(mockWaterpumpProjects.Object);
-            //act
-            var waterpumpProjects = _waterpumpProjectSevice.GetWaterPumpProjectById(projectId).Result;
-
-            //assert
-            Assert.IsNotNull(waterpumpProjects);
-            Assert.That(waterpumpProjects, Is.InstanceOf(typeof(IEnumerable<WaterpumpProject>)));
-            //Assert.AreEqual(1, waterpumpProjects.Count);
-
-            //_waterpumpProjectReadRepositoryMock.Verify(w=>w.)
-        }
-
         [TearDown]
         public void TestCleanUp()
         {
