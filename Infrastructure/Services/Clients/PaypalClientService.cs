@@ -16,7 +16,7 @@ namespace Infrastructure.Services.Transactions
         public PaypalClientService(HttpClient client)
         {
             _client = client;
-            _client.BaseAddress = new System.Uri("https://paypalmicroserviceikwambe.azurewebsites.net/api/");
+            _client.BaseAddress = new System.Uri(GetEnvironmentVariable("BaseAddress"));
         }
 
         public async Task<Transaction> CaptureTransaction(string orderId)
@@ -54,6 +54,12 @@ namespace Infrastructure.Services.Transactions
             var TransactionDataObj = JsonConvert.DeserializeObject<Transaction>(TransactionDataResponseObj) ?? throw new ArgumentNullException($"The transaction with the specified id {transactionId} does not exist"); ;
 
             return TransactionDataObj;
+        }
+
+        public static string GetEnvironmentVariable(string name)
+        {
+            return name + ": " +
+                System.Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.Process);
         }
     }
 }
