@@ -31,12 +31,12 @@ namespace Infrastructure.Services.Transactions
         }
         public async Task<Transaction> AddTransaction(Transaction transaction)
         {
-            transaction.PartitionKey = Guid.NewGuid().ToString();
+            transaction.PartitionKey = transaction.ProjectId.ToString();
 
             //Paypal payer name field returns null for full name and instead fills the given name and surname from purchase units, this fixes that
             transaction.Payer.Name.FullName = transaction.Payer.Name.GivenName;
             transaction.PurchaseUnits.ForEach(x => x.Shipping.ShippingId = Guid.NewGuid().ToString());
-            //couldnt set they [key] attribute so have to set my own
+            //couldnt set the [key] attribute so have to set my own
             transaction.Payer.Address.AddressId = Guid.NewGuid().ToString();
             transaction.PurchaseUnits.ForEach(x => x.Shipping.Address.AddressId = Guid.NewGuid().ToString());
             transaction.PurchaseUnits.ForEach(p => p.Payments.PaymentsId = Guid.NewGuid().ToString());
@@ -51,7 +51,14 @@ namespace Infrastructure.Services.Transactions
 
         public async Task<Transaction> GetTransactionById(string transactionId)
         {
-            return await _transactionReadRepository.GetAll().FirstOrDefaultAsync(t => t.TransactionId == transactionId);
+            var transaction =  await _transactionReadRepository.GetAll().FirstOrDefaultAsync(t => t.TransactionId == transactionId);
+
+            if (transaction == null)
+            {
+                throw new InvalidOperationException($"No transaction exists with the ID {transactionId}");
+            }
+
+            return transaction;
         }
 
         public async Task CompleteTransaction(string transactionId,string projectId, string userId)

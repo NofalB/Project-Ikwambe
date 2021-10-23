@@ -55,6 +55,7 @@ namespace ProjectIkwambe.Utils
 				};
 
 				await response.WriteAsJsonAsync(responseData);
+				response.StatusCode = HttpStatusCode.Unauthorized;
 				return response;
             }
         }
@@ -76,6 +77,8 @@ namespace ProjectIkwambe.Utils
 				};
 
 				await response.WriteAsJsonAsync(responseData);
+				response.StatusCode = HttpStatusCode.BadRequest;
+
 				return response;
 			}
 		}
