@@ -77,7 +77,7 @@ namespace IntegrationTests
         }
         public void FilterWaterpumpProjectByProjectNameSuccess()
         {
-            string projectName = "Test Project"; //this need to be changed later
+            string projectName = "Project Waterpump"; //this need to be changed later
 
             //request
             HttpResponseMessage responseWithProjectName = _httpClient.GetAsync($"api/waterpumps?projectName={projectName}").Result;
@@ -127,7 +127,7 @@ namespace IntegrationTests
             var responseWaterpumpData = responseMessage.Content.ReadAsStringAsync().Result;
             var waterpump = JsonConvert.DeserializeObject<WaterpumpProject>(responseWaterpumpData);
             //check results
-            Assert.Equal(HttpStatusCode.Created, responseMessage.StatusCode);
+            Assert.Equal(HttpStatusCode.OK, responseMessage.StatusCode);
             Assert.IsType<WaterpumpProject>(waterpump);
             //add the Id of the created project to this string.
             _createdProjectId = waterpump.ProjectId.ToString();

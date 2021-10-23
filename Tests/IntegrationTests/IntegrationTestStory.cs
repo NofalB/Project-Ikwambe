@@ -18,6 +18,8 @@ namespace IntegrationTests
         private HttpClient _httpClient { get; }
         private string _token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6ImJiNzU5ZDFjLTFiM2YtNDlmMy1iNGYxLWY3OTE5MTAyYTZmZCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6InRlc3RFIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZWlkZW50aWZpZXIiOiJiYjc1OWQxYy0xYjNmLTQ5ZjMtYjRmMS1mNzkxOTEwMmE2ZmQiLCJuYmYiOjE2MzQ1NzAzNzUsImV4cCI6MTY4NjQxMDM3NSwiaWF0IjoxNjM0NTcwMzc1LCJpc3MiOiJEZWJ1Z0lzc3VlciIsImF1ZCI6IkRlYnVnQXVkaWVuY2UifQ.nvVcS52-ntRh1NwiBrMzLNYo6aLVhDSYPkf6fEBGOFA";
 
+        //create token Id
+        private string story_Id;
 
         public IntegrationTestStory()
         {
@@ -62,16 +64,15 @@ namespace IntegrationTests
         [Fact]
         public void FilterByPublishDateSuccess()
         {
-            DateTime publishDate = DateTime.Parse("2021-10-22T11:31:14.343Z");
+            string Date = "21/10/2021";
 
-            HttpResponseMessage responseWithStoryAuthor = _httpClient.GetAsync($"api/stories?author={publishDate}").Result;
+            HttpResponseMessage responseWithStoryAuthor = _httpClient.GetAsync($"api/stories?publishDate=2021-10-21").Result;
 
             var resultByPublishDate = responseWithStoryAuthor.Content.ReadAsStringAsync().Result;
             var storyByPublishDate = JsonConvert.DeserializeObject<List<Story>>(resultByPublishDate);
             //check results
             Assert.Equal(HttpStatusCode.OK, responseWithStoryAuthor.StatusCode);
-            
-            storyByPublishDate.ForEach(s => Assert.Matches(publishDate.ToString(), s.PublishDate.ToString()));
+            storyByPublishDate.ForEach(s => Assert.Matches(Date.ToString(), s.PublishDate.ToString()));
         }
 
         [Fact]
@@ -88,6 +89,13 @@ namespace IntegrationTests
         }
 
         [Fact]
+        public void DoCreateEditAndDel()
+        {
+            CreateNewStorySuccess();
+            EditStorySuccess();
+            DeleteStorySuccess();
+        }
+
         public void CreateNewStorySuccess()
         {
             StoryDTO TestStoryData = new StoryDTO()
@@ -111,13 +119,12 @@ namespace IntegrationTests
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.IsType<Story>(story);
 
-
+            story_Id = story.StoryId.ToString();
         }
 
-        [Fact]
         public void EditStorySuccess()
         {
-            string storyId = "0c7e3765-84ba-494d-9607-3edec53d767b";
+            string storyId = story_Id;
 
             StoryDTO UpdateStoryData = new StoryDTO()
             {
@@ -141,17 +148,11 @@ namespace IntegrationTests
             Assert.IsType<Story>(story);
         }
 
-        [Fact]
         public void DeleteStorySuccess()
         {
-            string storyId = "0c7e3765-84ba-494d-9607-3edec53d767b";
+            string storyId = story_Id;
             HttpResponseMessage responseMessage = _httpClient.DeleteAsync($"api/stories/{storyId}").Result;
             Assert.Equal(HttpStatusCode.Accepted, responseMessage.StatusCode);
-        }
-
-        public void UploadImageToAnExistStorySuccess()
-        {
-
         }
 
         #endregion
@@ -263,10 +264,6 @@ namespace IntegrationTests
             Assert.Equal(HttpStatusCode.BadRequest, responseMessage.StatusCode);
         }
 
-        public void UploadImageToAnExistStoryFailure()
-        {
-
-        }
         #endregion
     }
 }

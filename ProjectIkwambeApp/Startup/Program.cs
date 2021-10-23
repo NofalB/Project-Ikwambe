@@ -24,6 +24,7 @@ namespace ProjectIkwambe.Startup {
 					Builder.UseNewtonsoftJson().UseMiddleware<JwtMiddleware>();
 					Builder.UseMiddleware<GlobalErrorHandler>();
 				})
+				.ConfigureOpenApi()
 				.ConfigureServices(Configure)
 				.Build();
 
@@ -31,15 +32,16 @@ namespace ProjectIkwambe.Startup {
 		}
 
 		static void Configure(HostBuilderContext Builder, IServiceCollection Services) {
-			Services.AddSingleton<IOpenApiHttpTriggerContext, OpenApiHttpTriggerContext>();
-			Services.AddSingleton<IOpenApiTriggerFunction, OpenApiTriggerFunction>();
+			//Services.AddSingleton<IOpenApiHttpTriggerContext, OpenApiHttpTriggerContext>();
+			//Services.AddSingleton<IOpenApiTriggerFunction, OpenApiTriggerFunction>();
 			//jwt security
 			Services.AddSingleton<ITokenService, TokenService>();
 
 			// DBContext
 			Services.AddDbContext<IkwambeContext>(option =>
             {
-                option.UseCosmos(
+				//option.UseCosmos("https://projectikwambedb.documents.azure.com:443/", "0gHgOaqhe8NAjY0b02DurzqSZHiKI5NF9zQsRkAhqJsJmOIcPylMGZR44ZzmLSrbkhztzQeW8AKfu7BJnZ2nYQ==", "ProjectIkwambeDB");
+				option.UseCosmos(
                     Builder.Configuration["CosmosDb:Account"],
                     Builder.Configuration["CosmosDb:Key"],
                     Builder.Configuration["CosmosDb:DatabaseName"]

@@ -71,9 +71,8 @@ namespace ProjectIkwambe.Controllers
 		{
 			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 			UserDTO userDTO = JsonConvert.DeserializeObject<UserDTO>(requestBody);
-			HttpResponseData response = req.CreateResponse();
+			HttpResponseData response = req.CreateResponse(HttpStatusCode.Created);
 			await response.WriteAsJsonAsync(await _userService.AddUser(userDTO));
-			response.StatusCode = HttpStatusCode.Created;
 			return response;
 		}
 
