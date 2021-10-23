@@ -19,7 +19,7 @@ namespace ProjectIkwambe.Configurations {
 			License = new OpenApiLicense() {
 				Name = "MIT",
 				Url = new Uri("http://opensource.org/licenses/MIT"),
-			}
+			},
 		};
 
 		public override OpenApiVersionType OpenApiVersion { get; set; } = OpenApiVersionType.V3;
