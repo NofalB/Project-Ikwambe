@@ -16,7 +16,8 @@ namespace IntegrationTests
     public class IntegrationTestStory
     {
         private HttpClient _httpClient { get; }
-        private string _token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6ImJiNzU5ZDFjLTFiM2YtNDlmMy1iNGYxLWY3OTE5MTAyYTZmZCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6InRlc3RFIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZWlkZW50aWZpZXIiOiJiYjc1OWQxYy0xYjNmLTQ5ZjMtYjRmMS1mNzkxOTEwMmE2ZmQiLCJuYmYiOjE2MzQ1NzAzNzUsImV4cCI6MTY4NjQxMDM3NSwiaWF0IjoxNjM0NTcwMzc1LCJpc3MiOiJEZWJ1Z0lzc3VlciIsImF1ZCI6IkRlYnVnQXVkaWVuY2UifQ.nvVcS52-ntRh1NwiBrMzLNYo6aLVhDSYPkf6fEBGOFA";
+        private string _userToken = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IjM2Yzk4NTMyLWY0ODktNDc5MC1hMDJjLTgxZTg4YTY4OTk1MCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6InVzZXIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjM2Yzk4NTMyLWY0ODktNDc5MC1hMDJjLTgxZTg4YTY4OTk1MCIsIm5iZiI6MTYzNDg1MzA0MiwiZXhwIjoxNjg2NjkzMDQyLCJpYXQiOjE2MzQ4NTMwNDIsImlzcyI6IkRlYnVnSXNzdWVyIiwiYXVkIjoiRGVidWdBdWRpZW5jZSJ9.XetnRbFBJwhvOJQauam80MF1t8hqxhXurBT3s7G0zJA";
+        private string _adminToken = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiIzNjJiZjIxMi1hNWJjLTQ5ZTQtOTRlYi01ZTVkM2ExZmJmODYiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJhZG1pbiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiMzYyYmYyMTItYTViYy00OWU0LTk0ZWItNWU1ZDNhMWZiZjg2IiwibmJmIjoxNjM0ODUzMDEwLCJleHAiOjE2ODY2OTMwMTAsImlhdCI6MTYzNDg1MzAxMCwiaXNzIjoiRGVidWdJc3N1ZXIiLCJhdWQiOiJEZWJ1Z0F1ZGllbmNlIn0.afTG3OzeVVOkRaMuNXXtQqpUu5OcoQQD3UmyrjFvPAk";
 
         //create token Id
         private string story_Id;
@@ -28,7 +29,7 @@ namespace IntegrationTests
                 hostname = $"http://localhost:{7071}";
             _httpClient = new HttpClient();
             _httpClient.BaseAddress = new Uri(hostname);
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _userToken);
         }
 
         #region Successful Tests
@@ -98,6 +99,8 @@ namespace IntegrationTests
 
         public void CreateNewStorySuccess()
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _adminToken);
+
             StoryDTO TestStoryData = new StoryDTO()
             {
                 Title = "This is a test story",
@@ -124,6 +127,8 @@ namespace IntegrationTests
 
         public void EditStorySuccess()
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _adminToken);
+
             string storyId = story_Id;
 
             StoryDTO UpdateStoryData = new StoryDTO()
@@ -150,6 +155,8 @@ namespace IntegrationTests
 
         public void DeleteStorySuccess()
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _adminToken);
+
             string storyId = story_Id;
             HttpResponseMessage responseMessage = _httpClient.DeleteAsync($"api/stories/{storyId}").Result;
             Assert.Equal(HttpStatusCode.Accepted, responseMessage.StatusCode);
@@ -167,11 +174,9 @@ namespace IntegrationTests
             HttpResponseMessage responseWithStoryAuthor = _httpClient.GetAsync($"api/stories?author={author}").Result;
 
             var resultByAuthor = responseWithStoryAuthor.Content.ReadAsStringAsync().Result;
-            //var storyByAuthor = JsonConvert.DeserializeObject<List<Story>>(resultByAuthor);
 
             //check results
             Assert.Equal(HttpStatusCode.OK, responseWithStoryAuthor.StatusCode);
-            //storyByAuthor.ForEach(s => Assert.Matches(author, s.Author.ToString()));
         }
 
         [Fact]
@@ -182,11 +187,8 @@ namespace IntegrationTests
             HttpResponseMessage responseWithStoryAuthor = _httpClient.GetAsync($"api/stories?author={publishDate}").Result;
 
             var resultByPublishDate = responseWithStoryAuthor.Content.ReadAsStringAsync().Result;
-            //var storyByPublishDate = JsonConvert.DeserializeObject<List<Story>>(resultByPublishDate);
             //check results
             Assert.Equal(HttpStatusCode.OK, responseWithStoryAuthor.StatusCode);
-
-            //storyByPublishDate.ForEach(s => Assert.Matches(publishDate, s.PublishDate.ToString()));
         }
 
         [Fact]
@@ -196,10 +198,8 @@ namespace IntegrationTests
             HttpResponseMessage responseResult = _httpClient.GetAsync($"api/stories/{storyId}").Result;
             //response
             var responseData = responseResult.Content.ReadAsStringAsync().Result;
-            //var story = JsonConvert.DeserializeObject<Story>(responseData);
             //check result
             Assert.Equal(HttpStatusCode.BadRequest, responseResult.StatusCode);
-            //Assert.Matches(storyId, story.StoryId.ToString());
         }
 
         [Fact]
@@ -220,11 +220,9 @@ namespace IntegrationTests
             HttpResponseMessage response = _httpClient.PostAsync($"api/stories", storyData).Result;
 
             var storyResponseData = response.Content.ReadAsStringAsync().Result;
-            //var story = JsonConvert.DeserializeObject<Story>(storyResponseData);
 
             //validate the resul
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-            //Assert.IsType<Story>(story);
 
 
         }
@@ -232,6 +230,8 @@ namespace IntegrationTests
         [Fact]
         public void EditStoryFailure()
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _adminToken);
+
             string storyId = "0c7e3765-84ba-494d-9607-3edec53d7671";
 
             StoryDTO UpdateStoryData = new StoryDTO()
@@ -249,16 +249,16 @@ namespace IntegrationTests
             HttpResponseMessage response = _httpClient.PutAsync($"api/stories/{storyId}", storyUpdateData).Result;
 
             var storyResponseData = response.Content.ReadAsStringAsync().Result;
-            //var story = JsonConvert.DeserializeObject<Story>(storyResponseData);
 
             //validate the resul
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-            //Assert.IsType<Story>(story);
         }
 
         [Fact]
         public void DeleteStoryFailure()
         {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _adminToken);
+
             string storyId = "0c7e3765-84ba-494d-9607-3edec53d7671";
             HttpResponseMessage responseMessage = _httpClient.DeleteAsync($"api/stories/{storyId}").Result;
             Assert.Equal(HttpStatusCode.BadRequest, responseMessage.StatusCode);

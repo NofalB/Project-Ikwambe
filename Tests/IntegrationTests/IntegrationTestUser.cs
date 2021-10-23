@@ -223,6 +223,7 @@ namespace IntegrationTests
         [Fact]
         public void CreateUserFailure()
         {
+
             UserDTO newUser = new UserDTO("John", "Doe", "stephen@email.com", "john123", false);
 
             HttpContent userData = new StringContent(JsonConvert.SerializeObject(newUser), Encoding.UTF8, "application/json");
