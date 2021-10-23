@@ -25,6 +25,7 @@ namespace ProjectIkwambe.Startup {
 					Builder.UseNewtonsoftJson().UseMiddleware<JwtMiddleware>();
 					Builder.UseMiddleware<GlobalErrorHandler>();
 				})
+				.ConfigureOpenApi()
 				.ConfigureServices(Configure)
 				.Build();
 
@@ -32,8 +33,11 @@ namespace ProjectIkwambe.Startup {
 		}
 
 		static void Configure(HostBuilderContext Builder, IServiceCollection Services) {
-			Services.AddSingleton<IOpenApiHttpTriggerContext, OpenApiHttpTriggerContext>();
-			Services.AddSingleton<IOpenApiTriggerFunction, OpenApiTriggerFunction>();
+            //Services.AddSingleton<IOpenApiHttpTriggerContext, OpenApiHttpTriggerContext>();
+            //Services.AddSingleton<IOpenApiTriggerFunction, OpenApiTriggerFunction>();
+
+
+
 			//jwt security
 			Services.AddSingleton<ITokenService, TokenService>();
 
