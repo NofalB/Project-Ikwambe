@@ -16,9 +16,10 @@ namespace IntegrationTests
     public class IntegrationTestWaterpumpProject
     {
         private HttpClient _httpClient { get; }
-        private string _token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6ImJiNzU5ZDFjLTFiM2YtNDlmMy1iNGYxLWY3OTE5MTAyYTZmZCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6InRlc3RFIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZWlkZW50aWZpZXIiOiJiYjc1OWQxYy0xYjNmLTQ5ZjMtYjRmMS1mNzkxOTEwMmE2ZmQiLCJuYmYiOjE2MzQ1NzAzNzUsImV4cCI6MTY4NjQxMDM3NSwiaWF0IjoxNjM0NTcwMzc1LCJpc3MiOiJEZWJ1Z0lzc3VlciIsImF1ZCI6IkRlYnVnQXVkaWVuY2UifQ.nvVcS52-ntRh1NwiBrMzLNYo6aLVhDSYPkf6fEBGOFA";
+        private string _userToken = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IjM2Yzk4NTMyLWY0ODktNDc5MC1hMDJjLTgxZTg4YTY4OTk1MCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6InVzZXIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjM2Yzk4NTMyLWY0ODktNDc5MC1hMDJjLTgxZTg4YTY4OTk1MCIsIm5iZiI6MTYzNDg1MzA0MiwiZXhwIjoxNjg2NjkzMDQyLCJpYXQiOjE2MzQ4NTMwNDIsImlzcyI6IkRlYnVnSXNzdWVyIiwiYXVkIjoiRGVidWdBdWRpZW5jZSJ9.XetnRbFBJwhvOJQauam80MF1t8hqxhXurBT3s7G0zJA";
+        private string _adminToken = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiIzNjJiZjIxMi1hNWJjLTQ5ZTQtOTRlYi01ZTVkM2ExZmJmODYiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJhZG1pbiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiMzYyYmYyMTItYTViYy00OWU0LTk0ZWItNWU1ZDNhMWZiZjg2IiwibmJmIjoxNjM0ODUzMDEwLCJleHAiOjE2ODY2OTMwMTAsImlhdCI6MTYzNDg1MzAxMCwiaXNzIjoiRGVidWdJc3N1ZXIiLCJhdWQiOiJEZWJ1Z0F1ZGllbmNlIn0.afTG3OzeVVOkRaMuNXXtQqpUu5OcoQQD3UmyrjFvPAk";
 
-        //this string will be used for deleting and edit test.
+        //this string id will be used for deleting and edit test.
         private string _createdProjectId;
 
         public IntegrationTestWaterpumpProject()
@@ -29,7 +30,7 @@ namespace IntegrationTests
                 hostname = $"http://localhost:{7071}";
             _httpClient = new HttpClient();
             _httpClient.BaseAddress = new Uri(hostname);
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _userToken);
         }
 
 
@@ -39,13 +40,12 @@ namespace IntegrationTests
         public void DoCreateAndGetByIdAndEditAndDeleteSuccess()
         {
             CreateWaterpumpProjectSuccess();
-            FilterWaterpumpProjectByProjectTypeSuccess();
-            FilterWaterpumpProjectByProjectNameSuccess();
             GetAWaterpumpProjectByIdSuccess();
             EditWaterpumpProjectSuccess();
             DeleteWaterpumpProjectSuccess();
         }
 
+        [Fact]
         public void GetAllWaterpumpProjectSuccess()
         {
             HttpResponseMessage responseResult = _httpClient.GetAsync("api/waterpumps").Result;
@@ -58,6 +58,7 @@ namespace IntegrationTests
             Assert.Equal(HttpStatusCode.OK, responseResult.StatusCode);
             Assert.IsType<List<WaterpumpProject>>(waterpumpProjects);
         }
+        [Fact]
         public void FilterWaterpumpProjectByProjectTypeSuccess()
         {
             string projectType = "health_service";
@@ -75,6 +76,8 @@ namespace IntegrationTests
                 w => Assert.Matches(projectType, w.ProjectType.ToString()
                 ));
         }
+
+        [Fact]
         public void FilterWaterpumpProjectByProjectNameSuccess()
         {
             string projectName = "Project Waterpump"; //this need to be changed later
@@ -107,6 +110,9 @@ namespace IntegrationTests
         }
         public void CreateWaterpumpProjectSuccess()
         {
+            // setup
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _adminToken);
+
             WaterpumpProjectDTO TestProjectData = new WaterpumpProjectDTO()
             {
                 NameOfProject = "Test Project",
@@ -134,6 +140,9 @@ namespace IntegrationTests
         }
         public void EditWaterpumpProjectSuccess()
         {
+            // setup
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _adminToken);
+
             string projectId = _createdProjectId;
 
             WaterpumpProject TestProjectData = new WaterpumpProject()
@@ -166,6 +175,9 @@ namespace IntegrationTests
         }
         public void DeleteWaterpumpProjectSuccess()
         {
+            // setup
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _adminToken);
+
             string projectId = _createdProjectId;
 
             HttpResponseMessage responseMessage = _httpClient.DeleteAsync($"api/waterpumps/{projectId}").Result;
@@ -223,9 +235,12 @@ namespace IntegrationTests
         [Fact]
         public void CreateWaterpumpProjectFailure()
         {
+            // setup
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _adminToken);
+
             WaterpumpProjectDTO TestProjectData = new WaterpumpProjectDTO()
             {
-                NameOfProject = "Test Project",
+                NameOfProject = "string",
                 Description = "Test Description",
                 Coordinates = new Coordinates("Test", -8.00, 036.833330),
                 TargetGoal = 100000,
@@ -248,6 +263,9 @@ namespace IntegrationTests
         [Fact]
         public void EditWaterpumpProjectFailure()
         {
+            // setup
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _adminToken);
+
             string projectId = "9ac7ee43-f464-46ca-85b9-b1549a258e51";
 
             WaterpumpProjectDTO TestProjectData = new WaterpumpProjectDTO()
@@ -278,6 +296,9 @@ namespace IntegrationTests
         [Fact]
         public void DeleteWaterpumpProjectFailure()
         {
+            // setup
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _adminToken);
+
             string projectId = "8c0379a4-8750-4221-a64e-f677da5efb64";
 
             HttpResponseMessage responseMessage = _httpClient.DeleteAsync($"api/waterpumps/{projectId}").Result;
