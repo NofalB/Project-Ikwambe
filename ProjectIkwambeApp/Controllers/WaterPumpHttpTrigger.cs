@@ -97,7 +97,7 @@ namespace ProjectIkwambe.Controllers
 
         //edit waterpump by id
         [Function(nameof(WaterpumpHttpTrigger.UpdateWaterpump))]
-        //[Auth]
+        [Auth]
         [OpenApiOperation(operationId: "updatWaterPump", tags: new[] { "Waterpumps" }, Summary = "Update an existing waterpump information", Description = "This updates an existing waterpump.", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiParameter(name: "waterpumpId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "ID of waterpump to return", Description = "ID of waterpump to return", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(WaterpumpProjectDTO), Required = true, Description = "waterpump object that needs to be change in the database")]
