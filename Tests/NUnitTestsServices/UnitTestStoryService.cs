@@ -11,29 +11,26 @@ using AutoMapper;
 using Domain;
 using Domain.DTO;
 using Azure.Storage.Blobs;
+using Microsoft.Extensions.Options;
 
 namespace NUnitTestsServices
 {
     public class UnitTestStoryService
     {
-        /*private StoryService _storyService;
+        private StoryService _storyService;
         private List<Story> _mockListStories;
         private Mock<ICosmosReadRepository<Story>> _storyReadRepositoryMock;
         private Mock<ICosmosWriteRepository<Story>> _storyWriteRepositoryMock;
+        private IOptions<BlobCredentialOptions> _options;
 
-
-        private BlobServiceClient blobServiceClient;
-        private BlobContainerClient containerClient;
-        private readonly BlobCredentialOptions _blobCredentialOptions;
     
-
         [SetUp]
         public void Setup()
         {
             _storyReadRepositoryMock = new Mock<ICosmosReadRepository<Story>>();
             _storyWriteRepositoryMock = new Mock<ICosmosWriteRepository<Story>>();
 
-            _storyService = new StoryService(_storyReadRepositoryMock.Object, _storyWriteRepositoryMock.Object, null);
+            _storyService = new StoryService(_storyReadRepositoryMock.Object, _storyWriteRepositoryMock.Object);
 
             //set up mock data
             _mockListStories = new List<Story>()
@@ -50,6 +47,7 @@ namespace NUnitTestsServices
             //arrange
             var mockStory = _mockListStories.AsQueryable().BuildMockDbSet();
             _storyReadRepositoryMock.Setup(s => s.GetAll()).Returns(mockStory.Object);
+            
             //act
             var stories = _storyService.GetAllStories().Result.ToList();
 
@@ -67,6 +65,6 @@ namespace NUnitTestsServices
             _storyReadRepositoryMock = null;
             _storyWriteRepositoryMock = null;
             _mockListStories = null;
-        }*/
+        }
     }
 }

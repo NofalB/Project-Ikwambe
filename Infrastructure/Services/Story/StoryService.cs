@@ -29,6 +29,13 @@ namespace Infrastructure.Services
         private readonly ICosmosWriteRepository<Story> _storyWriteRepository;
 
         public StoryService(ICosmosReadRepository<Story> storyReadRepository,
+            ICosmosWriteRepository<Story> storyWriteRepository)
+        {
+            _storyReadRepository = storyReadRepository;
+            _storyWriteRepository = storyWriteRepository;
+        }
+
+        public StoryService(ICosmosReadRepository<Story> storyReadRepository,
             ICosmosWriteRepository<Story> storyWriteRepository, IOptions<BlobCredentialOptions> options)
         {
             _storyReadRepository = storyReadRepository;
