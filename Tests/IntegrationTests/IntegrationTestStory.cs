@@ -1,33 +1,36 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Net.Http;
-//using System.Text;
-//using System.Threading.Tasks;
-//using Xunit;
-//using System.Net.Http.Headers;
-//using Domain;
-//using Domain.DTO;
-//using Newtonsoft.Json;
-//using System.Net;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using Xunit;
+using System.Net.Http.Headers;
+using Domain;
+using Domain.DTO;
+using Newtonsoft.Json;
+using System.Net;
 
-//namespace IntegrationTests
-//{
-//    public class IntegrationTestStory
-//    {
-//        private HttpClient _httpClient { get; }
-//        private string _token = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6ImJiNzU5ZDFjLTFiM2YtNDlmMy1iNGYxLWY3OTE5MTAyYTZmZCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6InRlc3RFIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZWlkZW50aWZpZXIiOiJiYjc1OWQxYy0xYjNmLTQ5ZjMtYjRmMS1mNzkxOTEwMmE2ZmQiLCJuYmYiOjE2MzQ1NzAzNzUsImV4cCI6MTY4NjQxMDM3NSwiaWF0IjoxNjM0NTcwMzc1LCJpc3MiOiJEZWJ1Z0lzc3VlciIsImF1ZCI6IkRlYnVnQXVkaWVuY2UifQ.nvVcS52-ntRh1NwiBrMzLNYo6aLVhDSYPkf6fEBGOFA";
+namespace IntegrationTests
+{
+    public class IntegrationTestStory
+    {
+        private HttpClient _httpClient { get; }
+        private string _userToken = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IjM2Yzk4NTMyLWY0ODktNDc5MC1hMDJjLTgxZTg4YTY4OTk1MCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6InVzZXIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjM2Yzk4NTMyLWY0ODktNDc5MC1hMDJjLTgxZTg4YTY4OTk1MCIsIm5iZiI6MTYzNDg1MzA0MiwiZXhwIjoxNjg2NjkzMDQyLCJpYXQiOjE2MzQ4NTMwNDIsImlzcyI6IkRlYnVnSXNzdWVyIiwiYXVkIjoiRGVidWdBdWRpZW5jZSJ9.XetnRbFBJwhvOJQauam80MF1t8hqxhXurBT3s7G0zJA";
+        private string _adminToken = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiIzNjJiZjIxMi1hNWJjLTQ5ZTQtOTRlYi01ZTVkM2ExZmJmODYiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJhZG1pbiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiMzYyYmYyMTItYTViYy00OWU0LTk0ZWItNWU1ZDNhMWZiZjg2IiwibmJmIjoxNjM0ODUzMDEwLCJleHAiOjE2ODY2OTMwMTAsImlhdCI6MTYzNDg1MzAxMCwiaXNzIjoiRGVidWdJc3N1ZXIiLCJhdWQiOiJEZWJ1Z0F1ZGllbmNlIn0.afTG3OzeVVOkRaMuNXXtQqpUu5OcoQQD3UmyrjFvPAk";
 
+        //create token Id
+        private string story_Id;
 
-//        public IntegrationTestStory()
-//        {
-//            string hostname = Environment.GetEnvironmentVariable("functionHostName");
-//            if (hostname == null)
-//                hostname = $"https://stichtingikwambe.azurewebsites.net/";
-//            _httpClient = new HttpClient();
-//            _httpClient.BaseAddress = new Uri(hostname);
-//            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
-//        }
+        public IntegrationTestStory()
+        {
+            string hostname = Environment.GetEnvironmentVariable("functionHostName");
+            if (hostname == null)
+                hostname = $"http://localhost:{7071}";
+            _httpClient = new HttpClient();
+            _httpClient.BaseAddress = new Uri(hostname);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _userToken);
+        }
 
 //        #region Successful Tests
 //        [Fact]
@@ -59,20 +62,19 @@
 //            storyByAuthor.ForEach(s => Assert.Matches(author, s.Author.ToString()));
 //        }
 
-//        [Fact]
-//        public void FilterByPublishDateSuccess()
-//        {
-//            DateTime publishDate = DateTime.Parse("2021-10-22T11:31:14.343Z");
+        [Fact]
+        public void FilterByPublishDateSuccess()
+        {
+            string Date = "21/10/2021";
 
-//            HttpResponseMessage responseWithStoryAuthor = _httpClient.GetAsync($"api/stories?author={publishDate}").Result;
+            HttpResponseMessage responseWithStoryAuthor = _httpClient.GetAsync($"api/stories?publishDate=2021-10-21").Result;
 
-//            var resultByPublishDate = responseWithStoryAuthor.Content.ReadAsStringAsync().Result;
-//            var storyByPublishDate = JsonConvert.DeserializeObject<List<Story>>(resultByPublishDate);
-//            //check results
-//            Assert.Equal(HttpStatusCode.OK, responseWithStoryAuthor.StatusCode);
-            
-//            storyByPublishDate.ForEach(s => Assert.Matches(publishDate.ToString(), s.PublishDate.ToString()));
-//        }
+            var resultByPublishDate = responseWithStoryAuthor.Content.ReadAsStringAsync().Result;
+            var storyByPublishDate = JsonConvert.DeserializeObject<List<Story>>(resultByPublishDate);
+            //check results
+            Assert.Equal(HttpStatusCode.OK, responseWithStoryAuthor.StatusCode);
+            storyByPublishDate.ForEach(s => Assert.Matches(Date.ToString(), s.PublishDate.ToString()));
+        }
 
 //        [Fact]
 //        public void GetStoryByIdSuccess()
@@ -87,18 +89,27 @@
 //            Assert.Matches(storyId, story.StoryId.ToString());
 //        }
 
-//        [Fact]
-//        public void CreateNewStorySuccess()
-//        {
-//            StoryDTO TestStoryData = new StoryDTO()
-//            {
-//                Title = "This is a test story",
-//                Summary = "This is the summary of the test story",
-//                Description = "This is Description of the test story",
-//                PublishDate = DateTime.Now,
-//                Author = "stephen",
-//                ImageURL = "Rubber Duckies"
-//            };
+        [Fact]
+        public void DoCreateEditAndDel()
+        {
+            CreateNewStorySuccess();
+            EditStorySuccess();
+            DeleteStorySuccess();
+        }
+
+        public void CreateNewStorySuccess()
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _adminToken);
+
+            StoryDTO TestStoryData = new StoryDTO()
+            {
+                Title = "This is a test story",
+                Summary = "This is the summary of the test story",
+                Description = "This is Description of the test story",
+                PublishDate = DateTime.Now,
+                Author = "stephen",
+                ImageURL = "Rubber Duckies"
+            };
 
 //            HttpContent storyData = new StringContent(JsonConvert.SerializeObject(TestStoryData), Encoding.UTF8, "application/json");
 //            //call the request
@@ -111,23 +122,24 @@
 //            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 //            Assert.IsType<Story>(story);
 
+            story_Id = story.StoryId.ToString();
+        }
 
-//        }
+        public void EditStorySuccess()
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _adminToken);
 
-//        [Fact]
-//        public void EditStorySuccess()
-//        {
-//            string storyId = "0c7e3765-84ba-494d-9607-3edec53d767b";
+            string storyId = story_Id;
 
-//            StoryDTO UpdateStoryData = new StoryDTO()
-//            {
-//                Title = "This is a update test story",
-//                Summary = "This is the summary of the test story",
-//                Description = "This is Description of the test story",
-//                PublishDate = DateTime.Now,
-//                Author = "stephen",
-//                ImageURL = "Rubber Duckies"
-//            };
+            StoryDTO UpdateStoryData = new StoryDTO()
+            {
+                Title = "This is a update test story",
+                Summary = "This is the summary of the test story",
+                Description = "This is Description of the test story",
+                PublishDate = DateTime.Now,
+                Author = "stephen",
+                ImageURL = "Rubber Duckies"
+            };
 
 //            HttpContent storyUpdateData = new StringContent(JsonConvert.SerializeObject(UpdateStoryData), Encoding.UTF8, "application/json");
 //            //call the request
@@ -141,20 +153,16 @@
 //            Assert.IsType<Story>(story);
 //        }
 
-//        [Fact]
-//        public void DeleteStorySuccess()
-//        {
-//            string storyId = "0c7e3765-84ba-494d-9607-3edec53d767b";
-//            HttpResponseMessage responseMessage = _httpClient.DeleteAsync($"api/stories/{storyId}").Result;
-//            Assert.Equal(HttpStatusCode.Accepted, responseMessage.StatusCode);
-//        }
+        public void DeleteStorySuccess()
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _adminToken);
 
-//        public void UploadImageToAnExistStorySuccess()
-//        {
+            string storyId = story_Id;
+            HttpResponseMessage responseMessage = _httpClient.DeleteAsync($"api/stories/{storyId}").Result;
+            Assert.Equal(HttpStatusCode.Accepted, responseMessage.StatusCode);
+        }
 
-//        }
-
-//        #endregion
+        #endregion
 
 //        #region Failed Test
 
@@ -165,13 +173,11 @@
 
 //            HttpResponseMessage responseWithStoryAuthor = _httpClient.GetAsync($"api/stories?author={author}").Result;
 
-//            var resultByAuthor = responseWithStoryAuthor.Content.ReadAsStringAsync().Result;
-//            //var storyByAuthor = JsonConvert.DeserializeObject<List<Story>>(resultByAuthor);
+            var resultByAuthor = responseWithStoryAuthor.Content.ReadAsStringAsync().Result;
 
-//            //check results
-//            Assert.Equal(HttpStatusCode.OK, responseWithStoryAuthor.StatusCode);
-//            //storyByAuthor.ForEach(s => Assert.Matches(author, s.Author.ToString()));
-//        }
+            //check results
+            Assert.Equal(HttpStatusCode.OK, responseWithStoryAuthor.StatusCode);
+        }
 
 //        [Fact]
 //        public void FilterByPublishDateFailure()
@@ -180,26 +186,21 @@
 
 //            HttpResponseMessage responseWithStoryAuthor = _httpClient.GetAsync($"api/stories?author={publishDate}").Result;
 
-//            var resultByPublishDate = responseWithStoryAuthor.Content.ReadAsStringAsync().Result;
-//            //var storyByPublishDate = JsonConvert.DeserializeObject<List<Story>>(resultByPublishDate);
-//            //check results
-//            Assert.Equal(HttpStatusCode.OK, responseWithStoryAuthor.StatusCode);
+            var resultByPublishDate = responseWithStoryAuthor.Content.ReadAsStringAsync().Result;
+            //check results
+            Assert.Equal(HttpStatusCode.OK, responseWithStoryAuthor.StatusCode);
+        }
 
-//            //storyByPublishDate.ForEach(s => Assert.Matches(publishDate, s.PublishDate.ToString()));
-//        }
-
-//        [Fact]
-//        public void GetStoryByIdFailure()
-//        {
-//            string storyId = "fbf38ffa-d7f6-477b-9400-51182ad14372";
-//            HttpResponseMessage responseResult = _httpClient.GetAsync($"api/stories/{storyId}").Result;
-//            //response
-//            var responseData = responseResult.Content.ReadAsStringAsync().Result;
-//            //var story = JsonConvert.DeserializeObject<Story>(responseData);
-//            //check result
-//            Assert.Equal(HttpStatusCode.BadRequest, responseResult.StatusCode);
-//            //Assert.Matches(storyId, story.StoryId.ToString());
-//        }
+        [Fact]
+        public void GetStoryByIdFailure()
+        {
+            string storyId = "fbf38ffa-d7f6-477b-9400-51182ad14372";
+            HttpResponseMessage responseResult = _httpClient.GetAsync($"api/stories/{storyId}").Result;
+            //response
+            var responseData = responseResult.Content.ReadAsStringAsync().Result;
+            //check result
+            Assert.Equal(HttpStatusCode.BadRequest, responseResult.StatusCode);
+        }
 
 //        [Fact]
 //        public void CreateNewStoryFailure()
@@ -218,20 +219,20 @@
 //            //call the request
 //            HttpResponseMessage response = _httpClient.PostAsync($"api/stories", storyData).Result;
 
-//            var storyResponseData = response.Content.ReadAsStringAsync().Result;
-//            //var story = JsonConvert.DeserializeObject<Story>(storyResponseData);
+            var storyResponseData = response.Content.ReadAsStringAsync().Result;
 
-//            //validate the resul
-//            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-//            //Assert.IsType<Story>(story);
+            //validate the resul
+            Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
 
 
 //        }
 
-//        [Fact]
-//        public void EditStoryFailure()
-//        {
-//            string storyId = "0c7e3765-84ba-494d-9607-3edec53d7671";
+        [Fact]
+        public void EditStoryFailure()
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _adminToken);
+
+            string storyId = "0c7e3765-84ba-494d-9607-3edec53d7671";
 
 //            StoryDTO UpdateStoryData = new StoryDTO()
 //            {
@@ -247,26 +248,26 @@
 //            //call the request
 //            HttpResponseMessage response = _httpClient.PutAsync($"api/stories/{storyId}", storyUpdateData).Result;
 
-//            var storyResponseData = response.Content.ReadAsStringAsync().Result;
-//            //var story = JsonConvert.DeserializeObject<Story>(storyResponseData);
+            var storyResponseData = response.Content.ReadAsStringAsync().Result;
 
-//            //validate the resul
-//            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-//            //Assert.IsType<Story>(story);
-//        }
+            //validate the resul
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
 
-//        [Fact]
-//        public void DeleteStoryFailure()
-//        {
-//            string storyId = "0c7e3765-84ba-494d-9607-3edec53d7671";
-//            HttpResponseMessage responseMessage = _httpClient.DeleteAsync($"api/stories/{storyId}").Result;
-//            Assert.Equal(HttpStatusCode.BadRequest, responseMessage.StatusCode);
-//        }
+        [Fact]
+        public void DeleteStoryFailure()
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _adminToken);
 
-//        public void UploadImageToAnExistStoryFailure()
-//        {
+            string storyId = "0c7e3765-84ba-494d-9607-3edec53d7671";
+            HttpResponseMessage responseMessage = _httpClient.DeleteAsync($"api/stories/{storyId}").Result;
+            Assert.Equal(HttpStatusCode.BadRequest, responseMessage.StatusCode);
+        }
 
-//        }
-//        #endregion
-//    }
-//}
+        public void UploadImageToAnExistStoryFailure()
+        {
+
+        }
+        #endregion
+    }
+}

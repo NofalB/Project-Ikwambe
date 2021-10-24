@@ -73,7 +73,7 @@ namespace ProjectIkwambe.Controllers
 
         //add water pumps
         [Function(nameof(WaterpumpHttpTrigger.AddWaterpumps))]
-        //[Auth]
+        [Auth]
         [OpenApiOperation(operationId: "addWaterPumps", tags: new[] { "Waterpumps" }, Summary = "Add a new waterpump to the database", Description = "This add waterpump information to the database.", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(WaterpumpProjectDTO), Required = true, Description = "waterpump object that needs to be added to the database")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(WaterpumpProjectDTO), Summary = "New waterpump details added", Description = "New waterpump details added to the database", Example = typeof(DummyWaterpumpProjectExample))]
@@ -83,20 +83,20 @@ namespace ProjectIkwambe.Controllers
         [ForbiddenResponse]
         public async Task<HttpResponseData> AddWaterpumps([HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "waterpumps")] HttpRequestData req, FunctionContext executionContext)
         {
-            //Role[] roles = { Role.Admin };
-            //return await RoleChecker.ExecuteForUser( roles, req, executionContext, async (ClaimsPrincipal User) => {
+            Role[] roles = { Role.Admin };
+            return await RoleChecker.ExecuteForUser( roles, req, executionContext, async (ClaimsPrincipal User) => {
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                 WaterpumpProjectDTO waterpumpDTO = JsonConvert.DeserializeObject<WaterpumpProjectDTO>(requestBody);
                 HttpResponseData response = req.CreateResponse(HttpStatusCode.Created);
                 await response.WriteAsJsonAsync(await _waterpumpProjectService.AddWaterpumpProject(waterpumpDTO));
                 //response.StatusCode = HttpStatusCode.Created;
                 return response;
-            //});
+            });
         }
 
         //edit waterpump by id
         [Function(nameof(WaterpumpHttpTrigger.UpdateWaterpump))]
-        //[Auth]
+        [Auth]
         [OpenApiOperation(operationId: "updatWaterPump", tags: new[] { "Waterpumps" }, Summary = "Update an existing waterpump information", Description = "This updates an existing waterpump.", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiParameter(name: "waterpumpId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "ID of waterpump to return", Description = "ID of waterpump to return", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(WaterpumpProjectDTO), Required = true, Description = "waterpump object that needs to be change in the database")]
@@ -108,15 +108,14 @@ namespace ProjectIkwambe.Controllers
         [ForbiddenResponse]
         public async Task<HttpResponseData> UpdateWaterpump([HttpTrigger(AuthorizationLevel.Anonymous, "PUT", Route = "waterpumps/{waterpumpId}")] HttpRequestData req, string waterpumpId, FunctionContext executionContext)
         {
-            //Role[] roles = { Role.Admin };
-            //return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) => {
-                //take the input
+            Role[] roles = { Role.Admin };
+            return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) => {
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                 WaterpumpProjectDTO waterPumpProjectDTO = JsonConvert.DeserializeObject<WaterpumpProjectDTO>(requestBody);
                 HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
                 await response.WriteAsJsonAsync(await _waterpumpProjectService.UpdateWaterPumpProject(waterPumpProjectDTO, waterpumpId));
                 return response;
-            //});
+            });
         }
 
         //delete waterpump by id
@@ -131,8 +130,8 @@ namespace ProjectIkwambe.Controllers
         [ForbiddenResponse]
         public async Task<HttpResponseData> DeleteWaterpump([HttpTrigger(AuthorizationLevel.Anonymous, "DELETE", Route = "waterpumps/{waterpumpId}")] HttpRequestData req, string waterpumpId, FunctionContext executionContext)
         {
-            //Role[] roles = { Role.Admin };
-            //return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) => {
+            Role[] roles = { Role.Admin };
+            return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) => {
                 HttpResponseData response = req.CreateResponse();
 
                 await _waterpumpProjectService.DeleteWaterpumpProjectAsync(waterpumpId);
@@ -140,7 +139,7 @@ namespace ProjectIkwambe.Controllers
                 await response.WriteStringAsync("Project deleted successfully!", Encoding.UTF8);
                 return response;
 
-            //});
+            });
         }
     }
 }

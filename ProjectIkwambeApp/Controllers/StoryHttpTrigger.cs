@@ -63,7 +63,6 @@ namespace ProjectIkwambe.Controllers
         {
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
             await response.WriteAsJsonAsync(await _storyService.GetStoryById(storyId));
-
             return response;
         }
 
@@ -76,18 +75,18 @@ namespace ProjectIkwambe.Controllers
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Invalid input", Description = "Invalid input")]
         public async Task<HttpResponseData> AddStory([HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "stories")] HttpRequestData req, FunctionContext executionContext)
         {
-            //Role[] roles = { Role.Admin };
-
-           // return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) =>
-            //{
+            Role[] roles = { Role.Admin };
+            return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) =>
+            {
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                 StoryDTO storyDTO = JsonConvert.DeserializeObject<StoryDTO>(requestBody);
                 HttpResponseData response = req.CreateResponse(HttpStatusCode.Created);
                 await response.WriteAsJsonAsync(await _storyService.AddStory(storyDTO));
                 return response;
-           // });
+            });
         }
-        //edit story
+        
+        //update story
         [Function(nameof(StoryHttpTrigger.UpdateStory))]
         [Auth]
         [OpenApiOperation(operationId: "updateStory", tags: new[] { "Stories" }, Summary = "Update an existing story", Description = "This updates an existing story.", Visibility = OpenApiVisibilityType.Important)]
@@ -101,19 +100,17 @@ namespace ProjectIkwambe.Controllers
         [ForbiddenResponse]
         public async Task<HttpResponseData> UpdateStory([HttpTrigger(AuthorizationLevel.Anonymous, "PUT", Route = "stories/{storyId}")] HttpRequestData req, string storyId, FunctionContext executionContext)
         {
-            //Role[] roles = { Role.Admin };
+            Role[] roles = { Role.Admin };
 
-            //return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) => {
+            return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) => {
                 // Parse input
-
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                 StoryDTO story = JsonConvert.DeserializeObject<StoryDTO>(requestBody);
-
                 // Generate output
                 HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
                 await response.WriteAsJsonAsync(await _storyService.UpdateStory(story, storyId));
                 return response;
-            //});
+            });
         }
 
         //delete story
@@ -129,13 +126,13 @@ namespace ProjectIkwambe.Controllers
         [ForbiddenResponse]
         public async Task<HttpResponseData> DeleteStory([HttpTrigger(AuthorizationLevel.Anonymous, "DELETE", Route = "stories/{storyId}")] HttpRequestData req, string storyId, FunctionContext executionContext)
         {
-            //Role[] roles = { Role.Admin };
-            //return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) => {
+            Role[] roles = { Role.Admin };
+            return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) => {
                 HttpResponseData response = req.CreateResponse(HttpStatusCode.Accepted);
                 await _storyService.DeleteStory(storyId);
                 await response.WriteStringAsync($"Story with id {storyId} successfully deleted");
                 return response;
-            //});
+            });
         }
 
         [Function(nameof(StoryHttpTrigger.UploadStoryImage))]
@@ -146,21 +143,16 @@ namespace ProjectIkwambe.Controllers
         [ForbiddenResponse]
         public async Task<HttpResponseData> UploadStoryImage([HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "upload/{storyId}")] HttpRequestData req, string storyId, FunctionContext executionContext)
         {
-            //Role[] roles = { Role.Admin };
-
-            //return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) => {
+            Role[] roles = { Role.Admin };
+            return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) => {
                 // get form-body        
                 var parsedFormBody = MultipartFormDataParser.ParseAsync(req.Body);
                 var file = parsedFormBody.Result.Files[0];                
-
                 HttpResponseData response = req.CreateResponse(HttpStatusCode.Created);
-
                 await _storyService.UploadImage(storyId, file);
-
                 await response.WriteStringAsync("Uploaded image file");
-
                 return response;
-            //});
+            });
         }
     }
 }

@@ -15,6 +15,7 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using ProjectIkwambe.Attributes;
 using ProjectIkwambe.Utils;
 
 namespace ProjectIkwambe.Controllers
@@ -31,6 +32,7 @@ namespace ProjectIkwambe.Controllers
 		}
 
 		[Function(nameof(UserHttpTrigger.GetUsers))]
+		[Auth]
 		[OpenApiOperation(operationId: "getUsers", tags: new[] { "Users" }, Summary = "Get all users", Description = "Returns a list of users.", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiParameter(name: "firstName", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "The firstname of the user", Description = "The firstname data from the database using the firstname provided", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiParameter(name: "lasttName", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "The lastname of the user", Description = "The lastname data from the database using the lastname provided", Visibility = OpenApiVisibilityType.Important)]
@@ -38,28 +40,40 @@ namespace ProjectIkwambe.Controllers
 		[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(User), Summary = "successful operation", Description = "successful operation", Example = typeof(DummyUserExamples))]
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Check connection", Description = "Check connection")]
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "User not found", Description = "User not found")]
+		[UnauthorizedResponse]
+		[ForbiddenResponse]
 		public async Task<HttpResponseData> GetUsers([HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "users")] HttpRequestData req, FunctionContext executionContext)
 		{
 			string firstName = HttpUtility.ParseQueryString(req.Url.Query).Get("firstName");
 			string lastName = HttpUtility.ParseQueryString(req.Url.Query).Get("lasttName");
 			string subcription = HttpUtility.ParseQueryString(req.Url.Query).Get("subscription");
-			HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
-			await response.WriteAsJsonAsync(_userService.GetUserByQueryOrGetAll(firstName, lastName, subcription));
 
-			return response;
+			Role[] roles = { Role.Admin };
+			return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) => {
+				HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
+				await response.WriteAsJsonAsync(_userService.GetUserByQueryOrGetAll(firstName, lastName, subcription));
+				return response;
+			});
+			
 		}
 
 		[Function(nameof(UserHttpTrigger.GetUserById))]
+		[Auth]
 		[OpenApiOperation(operationId: "getUserById", tags: new[] { "Users" }, Summary = "Find user by ID", Description = "Returns a single user.", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiParameter(name: "userId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "ID of user to return", Description = "ID of user to return", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(User), Summary = "successful operation", Description = "successful operation", Example = typeof(DummyUserExamples))]
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid user ID supplied", Description = "Invalid ID supplied")]
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "User not found", Description = "User not found")]
+		[UnauthorizedResponse]
+		[ForbiddenResponse]
 		public async Task<HttpResponseData> GetUserById([HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "users/{userId}")] HttpRequestData req, string userId, FunctionContext executionContext)
 		{
-			HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
-			await response.WriteAsJsonAsync(await _userService.GetUserById(userId));
-			return response;
+			Role[] roles = { Role.User, Role.Admin };
+			return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) => {
+				HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
+				await response.WriteAsJsonAsync(await _userService.GetUserById(userId));
+				return response;
+			});
 		}
 
 		[Function(nameof(UserHttpTrigger.AddUser))]
@@ -71,57 +85,73 @@ namespace ProjectIkwambe.Controllers
 		{
 			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 			UserDTO userDTO = JsonConvert.DeserializeObject<UserDTO>(requestBody);
-			HttpResponseData response = req.CreateResponse();
+			HttpResponseData response = req.CreateResponse(HttpStatusCode.Created);
 			await response.WriteAsJsonAsync(await _userService.AddUser(userDTO));
-			response.StatusCode = HttpStatusCode.Created;
 			return response;
 		}
 
 		[Function(nameof(UserHttpTrigger.UpdateUser))]
+		[Auth]
 		[OpenApiOperation(operationId: "updateUser", tags: new[] { "Users" }, Summary = "update an existing user in the system", Description = "Updates an existing user by user id", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiParameter(name: "userId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "ID of user to return", Description = "ID of user to return", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(UserDTO), Required = true, Description = "User object that needs to be updated in the system")]
 		[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(User), Summary = "User details updated", Description = "The user has been sucessfully updated", Example = typeof(DummyUserExample))]
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Invalid input", Description = "Invalid input")]
+		[UnauthorizedResponse]
+		[ForbiddenResponse]
 		public async Task<HttpResponseData> UpdateUser([HttpTrigger(AuthorizationLevel.Anonymous, "PUT", Route = "users/{userId}")] HttpRequestData req, string userId, FunctionContext executionContext)
 		{
-			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-			UserDTO userDTO = JsonConvert.DeserializeObject<UserDTO>(requestBody);
-			HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
-			await response.WriteAsJsonAsync(await _userService.UpdateUser(userDTO, userId));
-			return response;
+			Role[] roles = { Role.User, Role.Admin };
+
+			return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) => {
+				string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+				UserDTO userDTO = JsonConvert.DeserializeObject<UserDTO>(requestBody);
+				HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
+				await response.WriteAsJsonAsync(await _userService.UpdateUser(userDTO, userId));
+				return response;
+
+			});
 		}
 
 		
 		[Function(nameof(UserHttpTrigger.DeleteUser))]
+		[Auth]
 		[OpenApiOperation(operationId: "deleteUser", tags: new[] { "Users" }, Summary = "Delete user by ID", Description = "Delete an existing user by ID", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiParameter(name: "userId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "ID of user to return", Description = "ID of user to return", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiResponseWithBody(statusCode: HttpStatusCode.Accepted, contentType: "application/json", bodyType: typeof(User), Summary = "successfull operation", Description = "the user has been deleted successfully", Example = typeof(User))]
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid user ID supplied", Description = "The user ID is invalid ")]
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "user not found", Description = "user not found by the inserted ID,please check again")]
+		[UnauthorizedResponse]
+		[ForbiddenResponse]
 		public async Task<HttpResponseData> DeleteUser([HttpTrigger(AuthorizationLevel.Anonymous, "DELETE", Route = "users/{userId}")] HttpRequestData req, string userId, FunctionContext executionContext)
 		{
-			//Role[] roles = { Role.Admin };
-			//return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) => {
+			Role[] roles = { Role.Admin };
+			return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) => {
 				HttpResponseData response = req.CreateResponse(HttpStatusCode.Accepted);
 				await _userService.DeleteUserAsync(userId);
 				await response.WriteStringAsync("The user has been deleted");
 				return response;
-			//});
+			});
 		}
 
 		[Function(nameof(UserHttpTrigger.UpdateUserToAdmin))]
+		[Auth]
 		[OpenApiOperation(operationId: "updateUserRole", tags: new[] { "Users" }, Summary = "Update user to admin", Description = "This endpoint allow an admin to change the role of a user to have admin rights", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiParameter(name: "userId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "ID of user to return", Description = "ID of user to return", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiResponseWithBody(statusCode: HttpStatusCode.Accepted, contentType: "application/json", bodyType: typeof(User), Summary = "successfull operation", Description = "the user has been deleted successfully", Example = typeof(User))]
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid user ID supplied", Description = "The user ID is invalid ")]
 		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Summary = "user not found", Description = "user not found by the inserted ID,please check again")]
+		[UnauthorizedResponse]
+		[ForbiddenResponse]
 		public async Task<HttpResponseData> UpdateUserToAdmin([HttpTrigger(AuthorizationLevel.Anonymous, "PUT", Route = "users/updateRole/{userId}")] HttpRequestData req, string userId, FunctionContext executionContext)
         {
-			HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
-			await _userService.UpdateUserRoleToAdmin(userId);
-			await response.WriteStringAsync("The user has been given admin rights");
-			return response;
+			Role[] roles = { Role.Admin };
+			return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) => {
+				HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
+				await _userService.UpdateUserRoleToAdmin(userId);
+				await response.WriteStringAsync("The user has been given admin rights");
+				return response;
+			});
 		}
 	}
 }
