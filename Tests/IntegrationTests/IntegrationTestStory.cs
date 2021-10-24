@@ -222,7 +222,7 @@ namespace IntegrationTests
             var storyResponseData = response.Content.ReadAsStringAsync().Result;
 
             //validate the resul
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
 
 
         }
