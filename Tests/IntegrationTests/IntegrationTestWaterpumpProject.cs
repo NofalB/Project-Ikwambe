@@ -1,15 +1,15 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Net.Http;
-//using System.Text;
-//using System.Threading.Tasks;
-//using Xunit;
-//using System.Net.Http.Headers;
-//using Domain;
-//using Domain.DTO;
-//using Newtonsoft.Json;
-//using System.Net;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using Xunit;
+using System.Net.Http.Headers;
+using Domain;
+using Domain.DTO;
+using Newtonsoft.Json;
+using System.Net;
 
 namespace IntegrationTests
 {
@@ -22,9 +22,9 @@ namespace IntegrationTests
         //this string id will be used for deleting and edit test.
         private string _createdProjectId;
 
-//        public IntegrationTestWaterpumpProject()
-//        {
-//            string hostname = Environment.GetEnvironmentVariable("functionHostName");
+        public IntegrationTestWaterpumpProject()
+        {
+            string hostname = Environment.GetEnvironmentVariable("functionHostName");
 
             if (hostname == null)
                 hostname = $"http://localhost:{7071}";
@@ -34,7 +34,7 @@ namespace IntegrationTests
         }
 
 
-//        #region Succesful tests
+        #region Succesful tests
 
         [Fact]
         public void DoCreateAndGetByIdAndEditAndDeleteSuccess()
@@ -50,9 +50,9 @@ namespace IntegrationTests
         {
             HttpResponseMessage responseResult = _httpClient.GetAsync("api/waterpumps").Result;
 
-//            //responses
-//            var data = responseResult.Content.ReadAsStringAsync().Result;
-//            var waterpumpProjects = JsonConvert.DeserializeObject<List<WaterpumpProject>>(data);
+            //responses
+            var data = responseResult.Content.ReadAsStringAsync().Result;
+            var waterpumpProjects = JsonConvert.DeserializeObject<List<WaterpumpProject>>(data);
 
             //check results
             Assert.Equal(HttpStatusCode.OK, responseResult.StatusCode);
@@ -63,12 +63,12 @@ namespace IntegrationTests
         {
             string projectType = "health_service";
 
-//            //request
-//            HttpResponseMessage responseWithProjectType = _httpClient.GetAsync($"api/waterpumps?projecttype={projectType}").Result;
+            //request
+            HttpResponseMessage responseWithProjectType = _httpClient.GetAsync($"api/waterpumps?projecttype={projectType}").Result;
 
-//            //get response
-//            var resultProjectByProjectType = responseWithProjectType.Content.ReadAsStringAsync().Result;
-//            var waterpumpProjectByType = JsonConvert.DeserializeObject<List<WaterpumpProject>>(resultProjectByProjectType);
+            //get response
+            var resultProjectByProjectType = responseWithProjectType.Content.ReadAsStringAsync().Result;
+            var waterpumpProjectByType = JsonConvert.DeserializeObject<List<WaterpumpProject>>(resultProjectByProjectType);
 
             //check results
             Assert.Equal(HttpStatusCode.OK, responseWithProjectType.StatusCode);
@@ -82,27 +82,27 @@ namespace IntegrationTests
         {
             string projectName = "Project Waterpump"; //this need to be changed later
 
-//            //request
-//            HttpResponseMessage responseWithProjectName = _httpClient.GetAsync($"api/waterpumps?projectName={projectName}").Result;
+            //request
+            HttpResponseMessage responseWithProjectName = _httpClient.GetAsync($"api/waterpumps?projectName={projectName}").Result;
 
-//            //get response
-//            var resultProjectByName = responseWithProjectName.Content.ReadAsStringAsync().Result;
-//            var waterpumpProjectByName = JsonConvert.DeserializeObject<List<WaterpumpProject>>(resultProjectByName);
+            //get response
+            var resultProjectByName = responseWithProjectName.Content.ReadAsStringAsync().Result;
+            var waterpumpProjectByName = JsonConvert.DeserializeObject<List<WaterpumpProject>>(resultProjectByName);
 
-//            //check results
-//            Assert.Equal(HttpStatusCode.OK, responseWithProjectName.StatusCode);
-//            waterpumpProjectByName.ForEach(
-//                w => Assert.Matches(projectName, w.NameOfProject));
-//        }
-//        public void GetAWaterpumpProjectByIdSuccess()
-//        {
-//            string projectId = _createdProjectId;
+            //check results
+            Assert.Equal(HttpStatusCode.OK, responseWithProjectName.StatusCode);
+            waterpumpProjectByName.ForEach(
+                w => Assert.Matches(projectName, w.NameOfProject));
+        }
+        public void GetAWaterpumpProjectByIdSuccess()
+        {
+            string projectId = _createdProjectId;
 
-//            HttpResponseMessage responseResult = _httpClient.GetAsync($"api/waterpumps/{projectId}").Result;
+            HttpResponseMessage responseResult = _httpClient.GetAsync($"api/waterpumps/{projectId}").Result;
 
-//            //response
-//            var responseData = responseResult.Content.ReadAsStringAsync().Result;
-//            var waterpumpProject = JsonConvert.DeserializeObject<WaterpumpProject>(responseData);
+            //response
+            var responseData = responseResult.Content.ReadAsStringAsync().Result;
+            var waterpumpProject = JsonConvert.DeserializeObject<WaterpumpProject>(responseData);
 
             //check result
             Assert.Equal(HttpStatusCode.OK, responseResult.StatusCode);
@@ -145,29 +145,29 @@ namespace IntegrationTests
 
             string projectId = _createdProjectId;
 
-//            WaterpumpProject TestProjectData = new WaterpumpProject()
-//            {
-//                NameOfProject = "Update Test Project1111",
-//                Description = "Test Description has been updated",
-//                Coordinates = new Coordinates("Test", -8.00, 36.833330),
-//                CurrentTotal = 0,
-//                TargetGoal = 100000,
-//                StartDate = DateTime.Now,
-//                EndDate = DateTime.Now.AddDays(2),
-//                RatedPower = 1200,
-//                FlowRate = 16001212,
-//                ProjectType = ProjectType.health_service,
-//                PartitionKey = ProjectType.health_service.ToString()
-//            };
+            WaterpumpProject TestProjectData = new WaterpumpProject()
+            {
+                NameOfProject = "Update Test Project1111",
+                Description = "Test Description has been updated",
+                Coordinates = new Coordinates("Test", -8.00, 36.833330),
+                CurrentTotal = 0,
+                TargetGoal = 100000,
+                StartDate = DateTime.Now,
+                EndDate = DateTime.Now.AddDays(2),
+                RatedPower = 1200,
+                FlowRate = 16001212,
+                ProjectType = ProjectType.health_service,
+                PartitionKey = ProjectType.health_service.ToString()
+            };
 
-//            HttpContent waterpumpProjectData = new StringContent(JsonConvert.SerializeObject(TestProjectData), Encoding.UTF8, "application/json");
+            HttpContent waterpumpProjectData = new StringContent(JsonConvert.SerializeObject(TestProjectData), Encoding.UTF8, "application/json");
 
-//            // make a request
-//            HttpResponseMessage responseMessage = _httpClient.PutAsync($"api/waterpumps/{projectId}", waterpumpProjectData).Result;
+            // make a request
+            HttpResponseMessage responseMessage = _httpClient.PutAsync($"api/waterpumps/{projectId}", waterpumpProjectData).Result;
 
-//            //process the request
-//            var responseWaterpumpData = responseMessage.Content.ReadAsStringAsync().Result;
-//            var waterpump = JsonConvert.DeserializeObject<WaterpumpProject>(responseWaterpumpData);
+            //process the request
+            var responseWaterpumpData = responseMessage.Content.ReadAsStringAsync().Result;
+            var waterpump = JsonConvert.DeserializeObject<WaterpumpProject>(responseWaterpumpData);
 
             //check results
             Assert.Equal(HttpStatusCode.OK, responseMessage.StatusCode);
@@ -180,41 +180,41 @@ namespace IntegrationTests
 
             string projectId = _createdProjectId;
 
-//            HttpResponseMessage responseMessage = _httpClient.DeleteAsync($"api/waterpumps/{projectId}").Result;
+            HttpResponseMessage responseMessage = _httpClient.DeleteAsync($"api/waterpumps/{projectId}").Result;
 
-//            Assert.Equal(HttpStatusCode.Accepted, responseMessage.StatusCode);
-//        }
-//        #endregion
+            Assert.Equal(HttpStatusCode.Accepted, responseMessage.StatusCode);
+        }
+        #endregion
 
 
-//        #region Failed tests
-//        [Fact]
-//        public void FilterWaterpumpProjectByProjectTypeFailed()
-//        {
-//            string projectType = "23452345";
+        #region Failed tests
+        [Fact]
+        public void FilterWaterpumpProjectByProjectTypeFailed()
+        {
+            string projectType = "23452345";
 
-//            //request
-//            HttpResponseMessage responseWithProjectType = _httpClient.GetAsync($"api/waterpumps?projecttype={projectType}").Result;
+            //request
+            HttpResponseMessage responseWithProjectType = _httpClient.GetAsync($"api/waterpumps?projecttype={projectType}").Result;
 
-//            //get response
-//            var resultProjectByProjectType = responseWithProjectType.Content.ReadAsStringAsync().Result;
-//            //var waterpumpProjectByType = JsonConvert.DeserializeObject<WaterpumpProject>(resultProjectByProjectType);
+            //get response
+            var resultProjectByProjectType = responseWithProjectType.Content.ReadAsStringAsync().Result;
+            //var waterpumpProjectByType = JsonConvert.DeserializeObject<WaterpumpProject>(resultProjectByProjectType);
 
-//            //check results
-//            Assert.Equal(HttpStatusCode.OK, responseWithProjectType.StatusCode);
-//            //Assert.Empty((System.Collections.IEnumerable)waterpumpProjectByType);
-//        }
-//        [Fact]
-//        public void FilterWaterpumpProjectByProjectNameFailure()
-//        {
-//            string projectName = "absss"; //this need to be changed later
+            //check results
+            Assert.Equal(HttpStatusCode.OK, responseWithProjectType.StatusCode);
+            //Assert.Empty((System.Collections.IEnumerable)waterpumpProjectByType);
+        }
+        [Fact]
+        public void FilterWaterpumpProjectByProjectNameFailure()
+        {
+            string projectName = "absss"; //this need to be changed later
 
-//            //request
-//            HttpResponseMessage responseWithProjectName = _httpClient.GetAsync($"api/waterpumps?projectName={projectName}").Result;
+            //request
+            HttpResponseMessage responseWithProjectName = _httpClient.GetAsync($"api/waterpumps?projectName={projectName}").Result;
 
-//            //get response
-//            var resultProjectByName = responseWithProjectName.Content.ReadAsStringAsync().Result;
-//            var waterpumpProjectByName = JsonConvert.DeserializeObject<List<WaterpumpProject>>(resultProjectByName).ToList();
+            //get response
+            var resultProjectByName = responseWithProjectName.Content.ReadAsStringAsync().Result;
+            var waterpumpProjectByName = JsonConvert.DeserializeObject<List<WaterpumpProject>>(resultProjectByName).ToList();
 
             //check results
             Assert.Equal(HttpStatusCode.OK, responseWithProjectName.StatusCode);
@@ -268,26 +268,26 @@ namespace IntegrationTests
 
             string projectId = "9ac7ee43-f464-46ca-85b9-b1549a258e51";
 
-//            WaterpumpProjectDTO TestProjectData = new WaterpumpProjectDTO()
-//            {
-//                NameOfProject = "Update Test Project",
-//                Description = "Test Description has been updated",
-//                Coordinates = new Coordinates("Test", -8.00, 36.833330),
-//                TargetGoal = 100000,
-//                StartDate = DateTime.Now.AddDays(2),
-//                EndDate = DateTime.Now,
-//                RatedPower = 1200,
-//                ProjectType = ProjectType.health_service
-//            };
+            WaterpumpProjectDTO TestProjectData = new WaterpumpProjectDTO()
+            {
+                NameOfProject = "Update Test Project",
+                Description = "Test Description has been updated",
+                Coordinates = new Coordinates("Test", -8.00, 36.833330),
+                TargetGoal = 100000,
+                StartDate = DateTime.Now.AddDays(2),
+                EndDate = DateTime.Now,
+                RatedPower = 1200,
+                ProjectType = ProjectType.health_service
+            };
 
-//            HttpContent waterpumpProjectData = new StringContent(JsonConvert.SerializeObject(TestProjectData), Encoding.UTF8, "application/json");
+            HttpContent waterpumpProjectData = new StringContent(JsonConvert.SerializeObject(TestProjectData), Encoding.UTF8, "application/json");
 
-//            // make a request
-//            HttpResponseMessage responseMessage = _httpClient.PutAsync($"api/waterpumps/{projectId}", waterpumpProjectData).Result;
+            // make a request
+            HttpResponseMessage responseMessage = _httpClient.PutAsync($"api/waterpumps/{projectId}", waterpumpProjectData).Result;
 
-//            //process the request
-//            var responseWaterpumpData = responseMessage.Content.ReadAsStringAsync().Result;
-//            //var waterpump = JsonConvert.DeserializeObject<WaterpumpProject>(responseWaterpumpData);
+            //process the request
+            var responseWaterpumpData = responseMessage.Content.ReadAsStringAsync().Result;
+            //var waterpump = JsonConvert.DeserializeObject<WaterpumpProject>(responseWaterpumpData);
 
             //check results
             Assert.Equal(HttpStatusCode.BadRequest, responseMessage.StatusCode);
@@ -301,10 +301,10 @@ namespace IntegrationTests
 
             string projectId = "8c0379a4-8750-4221-a64e-f677da5efb64";
 
-//            HttpResponseMessage responseMessage = _httpClient.DeleteAsync($"api/waterpumps/{projectId}").Result;
+            HttpResponseMessage responseMessage = _httpClient.DeleteAsync($"api/waterpumps/{projectId}").Result;
 
-//            Assert.Equal(HttpStatusCode.BadRequest, responseMessage.StatusCode);
-//        }
-//        #endregion
-//    }
-//}
+            Assert.Equal(HttpStatusCode.BadRequest, responseMessage.StatusCode);
+        }
+        #endregion
+    }
+}
