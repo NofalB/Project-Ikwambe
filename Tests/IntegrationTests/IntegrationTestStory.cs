@@ -10,6 +10,7 @@ using Domain;
 using Domain.DTO;
 using Newtonsoft.Json;
 using System.Net;
+using System.Globalization;
 
 namespace IntegrationTests
 {
