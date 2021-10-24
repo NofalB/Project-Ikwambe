@@ -42,12 +42,13 @@ namespace ProjectIkwambe.ErrorHandlerMiddleware
                 Status = exception.GetBaseException() switch
                 {
                     ArgumentNullException => HttpStatusCode.BadRequest,
+                    ArgumentException => HttpStatusCode.BadRequest,
                     InvalidOperationException => HttpStatusCode.BadRequest,
                     NullReferenceException => HttpStatusCode.BadRequest,
                     FileNotFoundException => HttpStatusCode.BadRequest,
                     _ => HttpStatusCode.InternalServerError
                 },
-                Message = exception.InnerException !=null ? exception.InnerException.Message : exception.Message
+                Message = exception.InnerException != null ? exception.InnerException.Message : exception.Message
             };
 
             await response.WriteAsJsonAsync(responseData);

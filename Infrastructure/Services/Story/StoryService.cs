@@ -29,14 +29,21 @@ namespace Infrastructure.Services
         private readonly ICosmosWriteRepository<Story> _storyWriteRepository;
 
         public StoryService(ICosmosReadRepository<Story> storyReadRepository,
+            ICosmosWriteRepository<Story> storyWriteRepository)
+        {
+            _storyReadRepository = storyReadRepository;
+            _storyWriteRepository = storyWriteRepository;
+        }
+
+        public StoryService(ICosmosReadRepository<Story> storyReadRepository,
             ICosmosWriteRepository<Story> storyWriteRepository, IOptions<BlobCredentialOptions> options)
         {
             _storyReadRepository = storyReadRepository;
             _storyWriteRepository = storyWriteRepository;
             _blobCredentialOptions = options.Value;
 
-            blobServiceClient = new BlobServiceClient(_blobCredentialOptions.ConnectionString);
-            containerClient = blobServiceClient.GetBlobContainerClient(_blobCredentialOptions.ContainerName);
+            blobServiceClient = new BlobServiceClient("DefaultEndpointsProtocol=https;AccountName=ikwambe2storage;AccountKey=5ebhRJYEmf2mNeNaV9ORpSr2M7TW+rGXUYIMMiprlHNp9SavfFn+peaIHxpMb+LyZ+YmfeWY/HGNM5E88R9rBw==;EndpointSuffix=core.windows.net");
+            containerClient = blobServiceClient.GetBlobContainerClient("ikwambe-container");
         }
 
         public async Task<IEnumerable<Story>> GetAllStories()

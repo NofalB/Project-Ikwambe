@@ -14,12 +14,12 @@ namespace ProjectIkwambe.Configurations {
 			Contact = new OpenApiContact() {
 				Name = "Project Ikwambe Group 3",
 				Email = "projectIkwambe@email.com",
-				//Url = new Uri("https://github.com/Azure/azure-functions-openapi-extension/issues"),
+				Url = new Uri("https://stichtingikwambe.azurewebsites.net/api/"),
 			},
 			License = new OpenApiLicense() {
 				Name = "MIT",
 				Url = new Uri("http://opensource.org/licenses/MIT"),
-			}
+			},
 		};
 
 		public override OpenApiVersionType OpenApiVersion { get; set; } = OpenApiVersionType.V3;

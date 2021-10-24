@@ -31,7 +31,7 @@ namespace Infrastructure.Services.Transactions
         }
         public async Task<Transaction> AddTransaction(Transaction transaction)
         {
-            transaction.PartitionKey = transaction.ProjectId.ToString();
+            transaction.PartitionKey = transaction.TransactionId;
 
             //Paypal payer name field returns null for full name and instead fills the given name and surname from purchase units, this fixes that
             transaction.Payer.Name.FullName = transaction.Payer.Name.GivenName;

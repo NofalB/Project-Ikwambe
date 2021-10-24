@@ -29,7 +29,7 @@ namespace IntegrationTests
             string hostname = Environment.GetEnvironmentVariable("functionHostName");
 
             if (hostname == null)
-                hostname = $"http://localhost:7071/";
+                hostname = $"https://stichtingikwambe.azurewebsites.net/";
             _httpClient = new HttpClient();
             _httpClient.BaseAddress = new Uri(hostname);
         }
@@ -107,7 +107,7 @@ namespace IntegrationTests
         public void CompleteTransactionSuccess()
         {
             // setup
-            string newTransactionId = "86L89484FF477982S";
+            string newTransactionId = "7H726527DP790725L";
 
             // run request
             HttpResponseMessage response = _httpClient.GetAsync($"api/transactions/paypal/complete?" +

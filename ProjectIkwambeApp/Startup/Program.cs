@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ProjectIkwambe.ErrorHandlerMiddleware;
 using ProjectIkwambe.Security;
+using System;
 
 namespace ProjectIkwambe.Startup {
 	public class Program {
@@ -32,21 +33,20 @@ namespace ProjectIkwambe.Startup {
 		}
 
 		static void Configure(HostBuilderContext Builder, IServiceCollection Services) {
-			//Services.AddSingleton<IOpenApiHttpTriggerContext, OpenApiHttpTriggerContext>();
-			//Services.AddSingleton<IOpenApiTriggerFunction, OpenApiTriggerFunction>();
+            //Services.AddSingleton<IOpenApiHttpTriggerContext, OpenApiHttpTriggerContext>();
+            //Services.AddSingleton<IOpenApiTriggerFunction, OpenApiTriggerFunction>();
+
+
+
 			//jwt security
 			Services.AddSingleton<ITokenService, TokenService>();
 
 			// DBContext
 			Services.AddDbContext<IkwambeContext>(option =>
             {
-				//option.UseCosmos("https://projectikwambedb.documents.azure.com:443/", "0gHgOaqhe8NAjY0b02DurzqSZHiKI5NF9zQsRkAhqJsJmOIcPylMGZR44ZzmLSrbkhztzQeW8AKfu7BJnZ2nYQ==", "ProjectIkwambeDB");
-				option.UseCosmos(
-                    Builder.Configuration["CosmosDb:Account"],
-                    Builder.Configuration["CosmosDb:Key"],
-                    Builder.Configuration["CosmosDb:DatabaseName"]
-                );
-            });
+                option.UseCosmos("https://projectikwambedb.documents.azure.com:443/", "0gHgOaqhe8NAjY0b02DurzqSZHiKI5NF9zQsRkAhqJsJmOIcPylMGZR44ZzmLSrbkhztzQeW8AKfu7BJnZ2nYQ==", "ProjectIkwambeDB");
+
+			});
 
 			// Repositories
 			Services.AddTransient(typeof(ICosmosReadRepository<>), typeof(CosmosReadRepository<>));
@@ -61,13 +61,19 @@ namespace ProjectIkwambe.Startup {
 			Services.AddScoped<ITransactionService, TransactionService>();
 			Services.AddScoped<IPaypalClientService, PaypalClientService>();
 
-			Services.AddHttpClient<PaypalClientService>(c => c.BaseAddress = new System.Uri("https://paypalmicroserviceikwambe.azurewebsites.net/api/"));
+			Services.AddHttpClient<PaypalClientService>();
 
 			Services.AddOptions<BlobCredentialOptions>()
 			   .Configure<IConfiguration>((settings, configuration) =>
 			   {
 				   configuration.GetSection(nameof(BlobCredentialOptions)).Bind(settings);
 			   });
+		}
+
+		public static string GetEnvironmentVariable(string name)
+		{
+			return name + ": " +
+				System.Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.Process);
 		}
 	}
 }

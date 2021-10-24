@@ -10,6 +10,7 @@ using Domain;
 using Domain.DTO;
 using Newtonsoft.Json;
 using System.Net;
+using System.Globalization;
 
 namespace IntegrationTests
 {
@@ -38,7 +39,7 @@ namespace IntegrationTests
         {
             HttpResponseMessage responseResult = _httpClient.GetAsync("api/stories").Result;
 
-            //responses
+              //responses
             var data = responseResult.Content.ReadAsStringAsync().Result;
             var stories = JsonConvert.DeserializeObject<List<Story>>(data);
 
@@ -65,7 +66,7 @@ namespace IntegrationTests
         [Fact]
         public void FilterByPublishDateSuccess()
         {
-            string Date = "21/10/2021";
+            string Date = "2021-10-21";
 
             HttpResponseMessage responseWithStoryAuthor = _httpClient.GetAsync($"api/stories?publishDate=2021-10-21").Result;
 
@@ -73,7 +74,7 @@ namespace IntegrationTests
             var storyByPublishDate = JsonConvert.DeserializeObject<List<Story>>(resultByPublishDate);
             //check results
             Assert.Equal(HttpStatusCode.OK, responseWithStoryAuthor.StatusCode);
-            storyByPublishDate.ForEach(s => Assert.Matches(Date.ToString(), s.PublishDate.ToString()));
+            storyByPublishDate.ForEach(s => Assert.Matches(Date, s.PublishDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
         }
 
         [Fact]
@@ -222,7 +223,7 @@ namespace IntegrationTests
             var storyResponseData = response.Content.ReadAsStringAsync().Result;
 
             //validate the resul
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
 
 
         }
@@ -264,6 +265,10 @@ namespace IntegrationTests
             Assert.Equal(HttpStatusCode.BadRequest, responseMessage.StatusCode);
         }
 
+        public void UploadImageToAnExistStoryFailure()
+        {
+
+        }
         #endregion
     }
 }
