@@ -32,35 +32,35 @@ namespace IntegrationTests
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _userToken);
         }
 
-//        #region Successful Tests
-//        [Fact]
-//        public void GetAllStorySuccess()
-//        {
-//            HttpResponseMessage responseResult = _httpClient.GetAsync("api/stories").Result;
+        #region Successful Tests
+        [Fact]
+        public void GetAllStorySuccess()
+        {
+            HttpResponseMessage responseResult = _httpClient.GetAsync("api/stories").Result;
 
-//            //responses
-//            var data = responseResult.Content.ReadAsStringAsync().Result;
-//            var stories = JsonConvert.DeserializeObject<List<Story>>(data);
+              //responses
+            var data = responseResult.Content.ReadAsStringAsync().Result;
+            var stories = JsonConvert.DeserializeObject<List<Story>>(data);
 
-//            //check results
-//            Assert.Equal(HttpStatusCode.OK, responseResult.StatusCode);
-//            Assert.IsType<List<Story>>(stories);
-//        }
+            //check results
+            Assert.Equal(HttpStatusCode.OK, responseResult.StatusCode);
+            Assert.IsType<List<Story>>(stories);
+        }
 
-//        [Fact]
-//        public void FilterStoryByAuthorSuccess()
-//        {
-//            string author = "string";
+        [Fact]
+        public void FilterStoryByAuthorSuccess()
+        {
+            string author = "string";
 
-//            HttpResponseMessage responseWithStoryAuthor = _httpClient.GetAsync($"api/stories?author={author}").Result;
+            HttpResponseMessage responseWithStoryAuthor = _httpClient.GetAsync($"api/stories?author={author}").Result;
 
-//            var resultByAuthor = responseWithStoryAuthor.Content.ReadAsStringAsync().Result;
-//            var storyByAuthor = JsonConvert.DeserializeObject<List<Story>>(resultByAuthor);
+            var resultByAuthor = responseWithStoryAuthor.Content.ReadAsStringAsync().Result;
+            var storyByAuthor = JsonConvert.DeserializeObject<List<Story>>(resultByAuthor);
 
-//            //check results
-//            Assert.Equal(HttpStatusCode.OK, responseWithStoryAuthor.StatusCode);
-//            storyByAuthor.ForEach(s => Assert.Matches(author, s.Author.ToString()));
-//        }
+            //check results
+            Assert.Equal(HttpStatusCode.OK, responseWithStoryAuthor.StatusCode);
+            storyByAuthor.ForEach(s => Assert.Matches(author, s.Author.ToString()));
+        }
 
         [Fact]
         public void FilterByPublishDateSuccess()
@@ -76,18 +76,18 @@ namespace IntegrationTests
             storyByPublishDate.ForEach(s => Assert.Matches(Date.ToString(), s.PublishDate.ToString()));
         }
 
-//        [Fact]
-//        public void GetStoryByIdSuccess()
-//        {
-//            string storyId = "fbf38ffa-d7f6-477b-9400-51182ad14376";
-//            HttpResponseMessage responseResult = _httpClient.GetAsync($"api/stories/{storyId}").Result;
-//            //response
-//            var responseData = responseResult.Content.ReadAsStringAsync().Result;
-//            var story = JsonConvert.DeserializeObject<Story>(responseData);
-//            //check result
-//            Assert.Equal(HttpStatusCode.OK, responseResult.StatusCode);
-//            Assert.Matches(storyId, story.StoryId.ToString());
-//        }
+        [Fact]
+        public void GetStoryByIdSuccess()
+        {
+            string storyId = "fbf38ffa-d7f6-477b-9400-51182ad14376";
+            HttpResponseMessage responseResult = _httpClient.GetAsync($"api/stories/{storyId}").Result;
+            //response
+            var responseData = responseResult.Content.ReadAsStringAsync().Result;
+            var story = JsonConvert.DeserializeObject<Story>(responseData);
+            //check result
+            Assert.Equal(HttpStatusCode.OK, responseResult.StatusCode);
+            Assert.Matches(storyId, story.StoryId.ToString());
+        }
 
         [Fact]
         public void DoCreateEditAndDel()
@@ -111,16 +111,16 @@ namespace IntegrationTests
                 ImageURL = "Rubber Duckies"
             };
 
-//            HttpContent storyData = new StringContent(JsonConvert.SerializeObject(TestStoryData), Encoding.UTF8, "application/json");
-//            //call the request
-//            HttpResponseMessage response = _httpClient.PostAsync($"api/stories", storyData).Result;
+            HttpContent storyData = new StringContent(JsonConvert.SerializeObject(TestStoryData), Encoding.UTF8, "application/json");
+            //call the request
+            HttpResponseMessage response = _httpClient.PostAsync($"api/stories", storyData).Result;
 
-//            var storyResponseData = response.Content.ReadAsStringAsync().Result;
-//            var story = JsonConvert.DeserializeObject<Story>(storyResponseData);
+            var storyResponseData = response.Content.ReadAsStringAsync().Result;
+            var story = JsonConvert.DeserializeObject<Story>(storyResponseData);
 
-//            //validate the resul
-//            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-//            Assert.IsType<Story>(story);
+            //validate the resul
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.IsType<Story>(story);
 
             story_Id = story.StoryId.ToString();
         }
@@ -141,17 +141,17 @@ namespace IntegrationTests
                 ImageURL = "Rubber Duckies"
             };
 
-//            HttpContent storyUpdateData = new StringContent(JsonConvert.SerializeObject(UpdateStoryData), Encoding.UTF8, "application/json");
-//            //call the request
-//            HttpResponseMessage response = _httpClient.PutAsync($"api/stories/{storyId}", storyUpdateData).Result;
+            HttpContent storyUpdateData = new StringContent(JsonConvert.SerializeObject(UpdateStoryData), Encoding.UTF8, "application/json");
+            //call the request
+            HttpResponseMessage response = _httpClient.PutAsync($"api/stories/{storyId}", storyUpdateData).Result;
 
-//            var storyResponseData = response.Content.ReadAsStringAsync().Result;
-//            var story = JsonConvert.DeserializeObject<Story>(storyResponseData);
+            var storyResponseData = response.Content.ReadAsStringAsync().Result;
+            var story = JsonConvert.DeserializeObject<Story>(storyResponseData);
 
-//            //validate the resul
-//            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-//            Assert.IsType<Story>(story);
-//        }
+            //validate the resul
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.IsType<Story>(story);
+        }
 
         public void DeleteStorySuccess()
         {
@@ -164,14 +164,14 @@ namespace IntegrationTests
 
         #endregion
 
-//        #region Failed Test
+        #region Failed Test
 
-//        [Fact]
-//        public void FilterStoryByAuthorFailure()
-//        {
-//            string author = "string";
+        [Fact]
+        public void FilterStoryByAuthorFailure()
+        {
+            string author = "string";
 
-//            HttpResponseMessage responseWithStoryAuthor = _httpClient.GetAsync($"api/stories?author={author}").Result;
+            HttpResponseMessage responseWithStoryAuthor = _httpClient.GetAsync($"api/stories?author={author}").Result;
 
             var resultByAuthor = responseWithStoryAuthor.Content.ReadAsStringAsync().Result;
 
@@ -179,12 +179,12 @@ namespace IntegrationTests
             Assert.Equal(HttpStatusCode.OK, responseWithStoryAuthor.StatusCode);
         }
 
-//        [Fact]
-//        public void FilterByPublishDateFailure()
-//        {
-//            DateTime publishDate = DateTime.Parse("2021-12-21");
+        [Fact]
+        public void FilterByPublishDateFailure()
+        {
+            DateTime publishDate = DateTime.Parse("2021-12-21");
 
-//            HttpResponseMessage responseWithStoryAuthor = _httpClient.GetAsync($"api/stories?author={publishDate}").Result;
+            HttpResponseMessage responseWithStoryAuthor = _httpClient.GetAsync($"api/stories?author={publishDate}").Result;
 
             var resultByPublishDate = responseWithStoryAuthor.Content.ReadAsStringAsync().Result;
             //check results
@@ -202,22 +202,22 @@ namespace IntegrationTests
             Assert.Equal(HttpStatusCode.BadRequest, responseResult.StatusCode);
         }
 
-//        [Fact]
-//        public void CreateNewStoryFailure()
-//        {
-//            StoryDTO TestStoryData = new StoryDTO()
-//            {
-//                Title = "=",
-//                Summary = 00000.ToString(),
-//                Description = "This is Description of the test story",
-//                PublishDate = DateTime.Now,
-//                Author = "",
-//                ImageURL = "Rubber Duckies"
-//            };
+        [Fact]
+        public void CreateNewStoryFailure()
+        {
+            StoryDTO TestStoryData = new StoryDTO()
+            {
+                Title = "=",
+                Summary = 00000.ToString(),
+                Description = "This is Description of the test story",
+                PublishDate = DateTime.Now,
+                Author = "",
+                ImageURL = "Rubber Duckies"
+            };
 
-//            HttpContent storyData = new StringContent(JsonConvert.SerializeObject(TestStoryData), Encoding.UTF8, "application/json");
-//            //call the request
-//            HttpResponseMessage response = _httpClient.PostAsync($"api/stories", storyData).Result;
+            HttpContent storyData = new StringContent(JsonConvert.SerializeObject(TestStoryData), Encoding.UTF8, "application/json");
+            //call the request
+            HttpResponseMessage response = _httpClient.PostAsync($"api/stories", storyData).Result;
 
             var storyResponseData = response.Content.ReadAsStringAsync().Result;
 
@@ -225,7 +225,7 @@ namespace IntegrationTests
             Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
 
 
-//        }
+        }
 
         [Fact]
         public void EditStoryFailure()
@@ -234,19 +234,19 @@ namespace IntegrationTests
 
             string storyId = "0c7e3765-84ba-494d-9607-3edec53d7671";
 
-//            StoryDTO UpdateStoryData = new StoryDTO()
-//            {
-//                Title = "This is a update test story",
-//                Summary = "This is the summary of the test story",
-//                Description = "This is Description of the test story",
-//                PublishDate = DateTime.Now,
-//                Author = "stephen",
-//                ImageURL = "Rubber Duckies"
-//            };
+            StoryDTO UpdateStoryData = new StoryDTO()
+            {
+                Title = "This is a update test story",
+                Summary = "This is the summary of the test story",
+                Description = "This is Description of the test story",
+                PublishDate = DateTime.Now,
+                Author = "stephen",
+                ImageURL = "Rubber Duckies"
+            };
 
-//            HttpContent storyUpdateData = new StringContent(JsonConvert.SerializeObject(UpdateStoryData), Encoding.UTF8, "application/json");
-//            //call the request
-//            HttpResponseMessage response = _httpClient.PutAsync($"api/stories/{storyId}", storyUpdateData).Result;
+            HttpContent storyUpdateData = new StringContent(JsonConvert.SerializeObject(UpdateStoryData), Encoding.UTF8, "application/json");
+            //call the request
+            HttpResponseMessage response = _httpClient.PutAsync($"api/stories/{storyId}", storyUpdateData).Result;
 
             var storyResponseData = response.Content.ReadAsStringAsync().Result;
 
