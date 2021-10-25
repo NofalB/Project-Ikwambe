@@ -45,7 +45,7 @@ namespace ProjectIkwambe.Startup {
 			// DBContext
 			Services.AddDbContext<IkwambeContext>(option =>
             {
-                option.UseCosmos(Environment.GetEnvironmentVariable("CosmosDb:Account", EnvironmentVariableTarget.Process), "0gHgOaqhe8NAjY0b02DurzqSZHiKI5NF9zQsRkAhqJsJmOIcPylMGZR44ZzmLSrbkhztzQeW8AKfu7BJnZ2nYQ==", "ProjectIkwambeDB");
+                option.UseCosmos(Environment.GetEnvironmentVariable("CosmosDb:Account", EnvironmentVariableTarget.Process), Environment.GetEnvironmentVariable("CosmosDb:Key", EnvironmentVariableTarget.Process), Environment.GetEnvironmentVariable("CosmosDb:DatabaseName", EnvironmentVariableTarget.Process));
 
 			});
 

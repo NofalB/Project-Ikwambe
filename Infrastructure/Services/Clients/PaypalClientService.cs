@@ -16,7 +16,7 @@ namespace Infrastructure.Services.Transactions
         public PaypalClientService(HttpClient client)
         {
             _client = client;
-            _client.BaseAddress = new System.Uri("https://paypalmicroserviceikwambe.azurewebsites.net/api/");
+            _client.BaseAddress = new System.Uri(Environment.GetEnvironmentVariable("BaseAddress", EnvironmentVariableTarget.Process));
         }
 
         public async Task<Transaction> CaptureTransaction(string orderId)
