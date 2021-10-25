@@ -18,6 +18,7 @@ using System;
 
 namespace ProjectIkwambe.Startup {
 	public class Program {
+
 		public static void Main() {
 			IHost host = new HostBuilder()
 				//.ConfigureFunctionsWorkerDefaults(worker => worker.UseNewtonsoftJson())
@@ -44,7 +45,7 @@ namespace ProjectIkwambe.Startup {
 			// DBContext
 			Services.AddDbContext<IkwambeContext>(option =>
             {
-                option.UseCosmos("https://projectikwambedb.documents.azure.com:443/", "0gHgOaqhe8NAjY0b02DurzqSZHiKI5NF9zQsRkAhqJsJmOIcPylMGZR44ZzmLSrbkhztzQeW8AKfu7BJnZ2nYQ==", "ProjectIkwambeDB");
+                option.UseCosmos(Environment.GetEnvironmentVariable("CosmosDb:Account", EnvironmentVariableTarget.Process), Environment.GetEnvironmentVariable("CosmosDb:Key", EnvironmentVariableTarget.Process), Environment.GetEnvironmentVariable("CosmosDb:DatabaseName", EnvironmentVariableTarget.Process));
 
 			});
 
@@ -70,11 +71,6 @@ namespace ProjectIkwambe.Startup {
 			   });
 		}
 
-		public static string GetEnvironmentVariable(string name)
-		{
-			return name + ": " +
-				System.Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.Process);
-		}
 	}
 }
 
