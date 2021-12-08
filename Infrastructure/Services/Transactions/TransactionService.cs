@@ -90,6 +90,8 @@ namespace Infrastructure.Services.Transactions
                         if (donationCheck != null)
                         {
                             project.CurrentTotal += donationDb.Amount;
+                            //check with the guys about this.
+                            //project.TotalNumbOfDonators += 1;
                             await _waterpumpProjectService.UpdateWaterPumpProject(project);
                         }
                     }

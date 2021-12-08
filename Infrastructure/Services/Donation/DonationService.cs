@@ -132,5 +132,19 @@ namespace Infrastructure.Services
 
             throw new ArgumentNullException($"Invalid {nameof(donationDTO.ProjectId)} provided.");
         }
+
+        //update and add 1 for every new donation to the specific project.
+        //still need to call this method somewhere.
+        private async Task UpdateTotalPeopleDonated(string projectId)
+        {
+            var waterpumpProject = await _waterpumpProjectService.GetWaterPumpProjectById(projectId);
+                //?? throw new InvalidOperationException($"Project {donationDTO.ProjectId} does not exist.");
+            if(waterpumpProject != null)
+            {
+                waterpumpProject.TotalNumbOfDonators =+ 1;
+                await _waterpumpProjectService.UpdateWaterPumpProject(waterpumpProject);
+            }
+            throw new InvalidOperationException("The project ID provided does not exist.");
+        }
     }
 }
