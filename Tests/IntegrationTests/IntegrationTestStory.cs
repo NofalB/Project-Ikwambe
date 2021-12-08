@@ -39,7 +39,7 @@ namespace IntegrationTests
         {
             HttpResponseMessage responseResult = _httpClient.GetAsync("api/stories").Result;
 
-            //responses
+              //responses
             var data = responseResult.Content.ReadAsStringAsync().Result;
             var stories = JsonConvert.DeserializeObject<List<Story>>(data);
 
@@ -265,6 +265,10 @@ namespace IntegrationTests
             Assert.Equal(HttpStatusCode.BadRequest, responseMessage.StatusCode);
         }
 
+        public void UploadImageToAnExistStoryFailure()
+        {
+
+        }
         #endregion
     }
 }

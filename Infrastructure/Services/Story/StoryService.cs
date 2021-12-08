@@ -42,8 +42,8 @@ namespace Infrastructure.Services
             _storyWriteRepository = storyWriteRepository;
             _blobCredentialOptions = options.Value;
 
-            blobServiceClient = new BlobServiceClient(_blobCredentialOptions.ConnectionString);
-            containerClient = blobServiceClient.GetBlobContainerClient(_blobCredentialOptions.ContainerName);
+            blobServiceClient = new BlobServiceClient(Environment.GetEnvironmentVariable("BlobCredentialOptions:ConnectionString", EnvironmentVariableTarget.Process));
+            containerClient = blobServiceClient.GetBlobContainerClient(Environment.GetEnvironmentVariable("BlobCredentialOptions:ContainerName", EnvironmentVariableTarget.Process));
         }
 
         public async Task<IEnumerable<Story>> GetAllStories()
