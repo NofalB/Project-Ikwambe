@@ -91,7 +91,7 @@ namespace Infrastructure.Services.Transactions
                         {
                             project.CurrentTotal += donationDb.Amount;
                             //check with the guys about this.
-                            //project.TotalNumbOfDonators += 1;
+                            project.TotalNumbOfDonators += 1;
                             await _waterpumpProjectService.UpdateWaterPumpProject(project);
                         }
                     }
