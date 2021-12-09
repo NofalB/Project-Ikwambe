@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -81,7 +82,7 @@ namespace Infrastructure.Services.Transactions
                             UserId = Guid.Parse(userId) ,
                             ProjectId = Guid.Parse(projectId),
                             TransactionId = transactionId,
-                            Amount = double.Parse(transaction.PurchaseUnits[0].Amount.Value),
+                            Amount = double.Parse(transaction.PurchaseUnits[0].Amount.Value, CultureInfo.InvariantCulture),
                         };
                         await AddTransaction(transaction);
                         var donationDb = await _donationService.AddDonation(donationDTO);
