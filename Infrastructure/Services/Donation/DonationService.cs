@@ -116,7 +116,7 @@ namespace Infrastructure.Services
             if (donationDTO.ProjectId != Guid.Empty)
             {
                 var waterpumpProject = await _waterpumpProjectService.GetWaterPumpProjectById(donationDTO.ProjectId.ToString()) ?? throw new InvalidOperationException($"Project {donationDTO.ProjectId} does not exist.");
-                
+
                 Donation donation = new Donation()
                 {
                     DonationId = Guid.NewGuid(),
@@ -124,6 +124,8 @@ namespace Infrastructure.Services
                     ProjectId = donationDTO.ProjectId != Guid.Empty ? donationDTO.ProjectId : throw new InvalidOperationException($"Invalid {nameof(donationDTO.ProjectId)} provided."),
                     TransactionId = donationDTO.TransactionId ?? throw new ArgumentNullException($"Invalid {nameof(donationDTO.TransactionId)} provided"),
                     Amount = donationDTO.Amount != 0 ? donationDTO.Amount : throw new InvalidOperationException($"Invalid {nameof(donationDTO.Amount)} provided."),
+                    Comment = donationDTO.Comment,
+                    Name = donationDTO.Name,
                     DonationDate = donationDTO.DonationDate != default(DateTime) ? donationDTO.DonationDate : throw new InvalidOperationException($"Invalid {nameof(donationDTO.DonationDate)} provided."),
                     PartitionKey = donationDTO.ProjectId.ToString() ?? throw new ArgumentNullException($"Invalid {nameof(donationDTO.ProjectId)} provided")
                 };
@@ -131,20 +133,6 @@ namespace Infrastructure.Services
             }
 
             throw new ArgumentNullException($"Invalid {nameof(donationDTO.ProjectId)} provided.");
-        }
-
-        //update and add 1 for every new donation to the specific project.
-        //still need to call this method somewhere.
-        private async Task UpdateTotalPeopleDonated(string projectId)
-        {
-            var waterpumpProject = await _waterpumpProjectService.GetWaterPumpProjectById(projectId);
-                //?? throw new InvalidOperationException($"Project {donationDTO.ProjectId} does not exist.");
-            if(waterpumpProject != null)
-            {
-                waterpumpProject.TotalNumbOfDonators =+ 1;
-                await _waterpumpProjectService.UpdateWaterPumpProject(waterpumpProject);
-            }
-            throw new InvalidOperationException("The project ID provided does not exist.");
         }
     }
 }
