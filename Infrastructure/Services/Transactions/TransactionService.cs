@@ -66,6 +66,14 @@ namespace Infrastructure.Services.Transactions
         {
             var transaction=await _paypalClientService.GetTransaction(transactionId);
             var project = await _waterpumpProjectService.GetWaterPumpProjectById(projectId);
+            
+            //check if the userid is given or not. if user is not provided set it to null, if provided convert to Guid.
+            Guid? userNumb = null;
+            if (!string.IsNullOrEmpty(userId))
+            {
+                userNumb = Guid.Parse(userId);
+            }
+
             if (project != null)
             {
                 if (transaction.Status == "APPROVED")
@@ -79,7 +87,7 @@ namespace Infrastructure.Services.Transactions
                     {
                         DonationDTO donationDTO = new DonationDTO()
                         {
-                            UserId = Guid.Parse(userId) ,
+                            UserId = userNumb,
                             ProjectId = Guid.Parse(projectId),
                             TransactionId = transactionId,
                             Amount = double.Parse(transaction.PurchaseUnits[0].Amount.Value, CultureInfo.InvariantCulture),
