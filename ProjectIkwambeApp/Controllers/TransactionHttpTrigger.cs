@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using Domain;
+using Domain.DTO;
 using Infrastructure.Services;
 using Infrastructure.Services.Clients;
 using Microsoft.Azure.Functions.Worker;
@@ -118,6 +119,24 @@ namespace ProjectIkwambe.Controllers
 
         }
 
+
+        [Function(nameof(TransactionHttpTrigger.CompleteTransaction1))]
+        [OpenApiOperation(operationId: "completeTransaction1", tags: new[] { "PaypalTransactions" }, Summary = "Complete the transaction and create the donation.", Description = "This will capture the transaction, create a donation and update the project.", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(DonationDTO), Required = true, Description = "Donation object for donation details")]
+        [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Invalid input", Description = "Invalid input")]
+        public async Task<HttpResponseData> CompleteTransaction1([HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "transactions/paypal/complete1")] HttpRequestData req, FunctionContext executionContext)
+        {
+            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+
+            DonationDTO donationDTO = JsonConvert.DeserializeObject<DonationDTO>(requestBody);
+
+            await _transactionService.CompleteTransaction1(donationDTO);
+            // Generate output
+            HttpResponseData response = req.CreateResponse(HttpStatusCode.Created);
+            await response.WriteStringAsync("Transaction done successfully!");
+            return response;
+
+        }
     }
 }
 

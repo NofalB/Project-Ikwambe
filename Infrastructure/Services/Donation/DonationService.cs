@@ -123,16 +123,37 @@ namespace Infrastructure.Services
                     UserId = donationDTO.UserId,
                     ProjectId = donationDTO.ProjectId != Guid.Empty ? donationDTO.ProjectId : throw new InvalidOperationException($"Invalid {nameof(donationDTO.ProjectId)} provided."),
                     TransactionId = donationDTO.TransactionId ?? throw new ArgumentNullException($"Invalid {nameof(donationDTO.TransactionId)} provided"),
+                    //issue here when user can add their own donation.
                     Amount = donationDTO.Amount != 0 ? donationDTO.Amount : throw new InvalidOperationException($"Invalid {nameof(donationDTO.Amount)} provided."),
                     Comment = donationDTO.Comment,
                     Name = donationDTO.Name,
                     DonationDate = donationDTO.DonationDate != default(DateTime) ? donationDTO.DonationDate : throw new InvalidOperationException($"Invalid {nameof(donationDTO.DonationDate)} provided."),
                     PartitionKey = donationDTO.ProjectId.ToString() ?? throw new ArgumentNullException($"Invalid {nameof(donationDTO.ProjectId)} provided")
                 };
+
+                //the updates
+                Console.WriteLine(donation.DonationId);
+                await UpdateProject(donation);
+                //the updates
                 return await _donationWriteRepository.AddAsync(donation);
             }
 
             throw new ArgumentNullException($"Invalid {nameof(donationDTO.ProjectId)} provided.");
+        }
+
+        //update and add 1 for every new donation to the specific project.
+        //still need to call this method somewhere.
+        private async Task UpdateProject(Donation donation)
+        {
+            var waterpumpProject = await _waterpumpProjectService.GetWaterPumpProjectById(donation.ProjectId.ToString());
+            //?? throw new InvalidOperationException($"Project {donationDTO.ProjectId} does not exist.");
+            if (waterpumpProject != null)
+            {
+                waterpumpProject.CurrentTotal += donation.Amount;
+                waterpumpProject.TotalNumbOfDonators += 1;
+                await _waterpumpProjectService.UpdateWaterPumpProject(waterpumpProject);
+            }
+            //throw new InvalidOperationException("The project ID provided does not exist.");
         }
     }
 }

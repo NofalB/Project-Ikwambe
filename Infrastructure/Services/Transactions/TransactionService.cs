@@ -64,7 +64,7 @@ namespace Infrastructure.Services.Transactions
 
         public async Task CompleteTransaction(string transactionId,string projectId, string userId)
         {
-            var transaction=await _paypalClientService.GetTransaction(transactionId);
+            var transaction = await _paypalClientService.GetTransaction(transactionId);
             var project = await _waterpumpProjectService.GetWaterPumpProjectById(projectId);
             
             //check if the userid is given or not. if user is not provided set it to null, if provided convert to Guid.
@@ -106,9 +106,56 @@ namespace Infrastructure.Services.Transactions
                     }
                 }
             }
-            
-            
         }
 
+
+        public async Task CompleteTransaction1(DonationDTO donationDTO)
+        {
+            var transaction = await _paypalClientService.GetTransaction(donationDTO.TransactionId);
+            var project = await _waterpumpProjectService.GetWaterPumpProjectById(donationDTO.ProjectId.ToString());
+
+            //check if the userid is given or not. if user is not provided set it to null, if provided convert to Guid.
+            Guid? userNumb = null;
+            if (!string.IsNullOrEmpty(donationDTO.UserId.ToString()))
+            {
+                userNumb = Guid.Parse(donationDTO.ToString());
+            }
+
+            if (project != null)
+            {
+                if (transaction.Status == "APPROVED")
+                {
+                    //this captures the funds after the payer buys or approves of the payment and sets the status as "Completed"
+                    await _paypalClientService.CaptureTransaction(donationDTO.TransactionId);
+                    transaction = await _paypalClientService.GetTransaction(donationDTO.TransactionId);
+                    transaction.ProjectId = Guid.Parse(donationDTO.ProjectId.ToString());
+
+                    if (transaction.Status == "COMPLETED")
+                    {
+                        DonationDTO NewDonationDTO = new DonationDTO()
+                        {
+                            UserId = userNumb,
+                            ProjectId = Guid.Parse(donationDTO.ProjectId.ToString()),
+                            TransactionId = donationDTO.TransactionId,
+                            Amount = double.Parse(transaction.PurchaseUnits[0].Amount.Value, CultureInfo.InvariantCulture),
+                            Comment = donationDTO.Comment,
+                            Name = donationDTO.Name
+                        };
+                        await AddTransaction(transaction);
+                        await _donationService.AddDonation(NewDonationDTO);
+                        //var donationDb = await _donationService.AddDonation(NewDonationDTO);
+
+                        /*var donationCheck = await _donationService.GetDonationByIdAsync(donationDb.DonationId.ToString());
+                        if (donationCheck != null)
+                        {
+                            project.CurrentTotal += donationDb.Amount;
+                            //check with the guys about this.
+                            project.TotalNumbOfDonators += 1;
+                            await _waterpumpProjectService.UpdateWaterPumpProject(project);
+                        }*/
+                    }
+                }
+            }
+        }
     }
 }
