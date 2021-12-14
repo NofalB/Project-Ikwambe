@@ -97,8 +97,8 @@ namespace NUnitTestsRepositories
         {
             // donations
             _mockListDonations = new List<Donation> {
-                new Donation(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "1Y7311651B552625V", 4000),
-                new Donation(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "2Y7311651B552625W", 599)
+                new Donation(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "1Y7311651B552625V", 4000, "Ronald McDonald", "I hope this small donation helps"),
+                new Donation(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "2Y7311651B552625W", 599, "Ronald McDonald", "I hope this small donation helps")
             };
             _donationReadMock.Setup(m => m.GetAll()).Returns(_mockListDonations.AsQueryable());
 
@@ -222,7 +222,7 @@ namespace NUnitTestsRepositories
         public void Insert_Should_Return_Increased_Entities_MockListsData()
         {
             // Arrange
-            Donation testDonation = new Donation(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "1Y7311651B552625V", 200);
+            Donation testDonation = new Donation(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "1Y7311651B552625V", 200, "Ronald McDonald", "I hope this small donation helps");
             User testUser = new User(Guid.NewGuid(), "Jumbo", "Kratos", "bruh@gmail.com", "tEst12345", false);
             Story testStory = new Story() { StoryId = Guid.NewGuid(), Title = "story of story1", ImageURL = "owf4fzify7by.jpg", PublishDate = DateTime.Now, Summary = "this is the story", Description = "this should be a long description", Author = "hamza" };
             WaterpumpProject testWaterpumpProject = new WaterpumpProject()

@@ -20,7 +20,7 @@ namespace IntegrationTests
         private string _userId = "3fa85f64-5717-4562-b3fc-2c963f66afa6";
         private string _donationId = "74018e11-3d5c-46e6-96f5-e400c4aa8366";
         private string _projectId = "4ae756ac-b37f-4651-b718-9d6b916b7f1e";
-        private string _donationDate = "2021-10-21";
+        private string _donationDate = "2021-10-22";
 
         private string _falseUserId = "Invalid user ID";
         private string _falseProjectId = "Invalid ProjectId";
@@ -108,7 +108,7 @@ namespace IntegrationTests
         public void CreateDonationSuccess()
         {
             // setup
-            DonationDTO donationDTO = new DonationDTO(Guid.Parse(_userId), Guid.Parse(_projectId), "1Y7311651B552625V", 4000);
+            DonationDTO donationDTO = new DonationDTO(Guid.Parse(_userId), Guid.Parse(_projectId), "1Y7311651B552625V", 4000, "Ronald McDonald", "I hope this small donation helps");
             donationDTO.UserId = null;
             HttpContent donationData = new StringContent(JsonConvert.SerializeObject(donationDTO), Encoding.UTF8, "application/json");
 
@@ -182,7 +182,7 @@ namespace IntegrationTests
         public void CreateDonationFailure()
         {
             // setup
-            DonationDTO donationDTO = new DonationDTO(Guid.Empty, Guid.Empty, "", 0);
+            DonationDTO donationDTO = new DonationDTO(Guid.Empty, Guid.Empty, "", 0, "", "");
             HttpContent donationData = new StringContent(JsonConvert.SerializeObject(donationDTO), Encoding.UTF8, "application/json");
             
             // run request
