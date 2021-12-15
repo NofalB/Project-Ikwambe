@@ -21,8 +21,8 @@ namespace Domain.DTO
         [OpenApiProperty(Description = "Gets or sets the transaction ID.")]
         public string TransactionId { get; set; }
 
-        [OpenApiProperty(Description = "Gets or sets the amount.")]
-        public double Amount { get; set; }
+        /*[OpenApiProperty(Description = "Gets or sets the amount.")]
+        public double Amount { get; set; }*/
 
         //update for the front end
         [OpenApiProperty(Description = "Gets or sets the input comment of the donor.")]
@@ -32,23 +32,23 @@ namespace Domain.DTO
         public string Name { get; set; }
         //update for the front end
 
-        [OpenApiProperty(Description = "Gets or sets the date the donation was made.")]
-        public DateTime DonationDate { get; set; }
+        /*[OpenApiProperty(Description = "Gets or sets the date the donation was made.")]
+        public DateTime DonationDate { get; set; }*/
 
         public DonationDTO()
         {
-            DonationDate = DateTime.Now;
+            //DonationDate = DateTime.Now;
         }
 
-        public DonationDTO(Guid userId, Guid projectId, string transactionId, double amount, string comment, string name)
+        public DonationDTO(Guid userId, Guid projectId, string transactionId, /*double amount,*/ string comment, string name)
         {
             UserId = userId;
             ProjectId = projectId;
             TransactionId = transactionId;
-            Amount = amount;
+            //Amount = amount;
             Comment = comment;
             Name = name;
-            DonationDate = DateTime.Now;
+            //DonationDate = DateTime.Now;
         }
     }
     public class DummyDonationDTOExample : OpenApiExample<DonationDTO>
@@ -68,9 +68,9 @@ namespace Domain.DTO
         public override IOpenApiExample<List<DonationDTO>> Build(NamingStrategy NamingStrategy = null)
         {
             Examples.Add(OpenApiExampleResolver.Resolve("DonationDTOs", new List<DonationDTO> {
-                    new DonationDTO(Guid.NewGuid(), Guid.NewGuid(), "1Y7311651B552625V", 4000, "Donation from my family", "Franklin George"),
-                    new DonationDTO(Guid.NewGuid(), Guid.NewGuid(), "1Y7311651B552625V", 599, "Donation from my family", "Franklin George"),
-                    new DonationDTO(Guid.NewGuid(), Guid.NewGuid(), "1Y7311651B552625V", 200, "Donation from my family", "Franklin George")
+                    new DonationDTO(Guid.NewGuid(), Guid.NewGuid(), "1Y7311651B552625V", /*4000,*/ "Donation from my family", "Franklin George"),
+                    new DonationDTO(Guid.NewGuid(), Guid.NewGuid(), "1Y7311651B552625V", /*599,*/ "Donation from my family", "Franklin George"),
+                    new DonationDTO(Guid.NewGuid(), Guid.NewGuid(), "1Y7311651B552625V", /*200,*/ "Donation from my family", "Franklin George")
                 }));
 
             return this;

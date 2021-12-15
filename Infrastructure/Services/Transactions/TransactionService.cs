@@ -90,7 +90,7 @@ namespace Infrastructure.Services.Transactions
                             UserId = userNumb,
                             ProjectId = Guid.Parse(projectId),
                             TransactionId = transactionId,
-                            Amount = double.Parse(transaction.PurchaseUnits[0].Amount.Value, CultureInfo.InvariantCulture),
+                            //Amount = double.Parse(transaction.PurchaseUnits[0].Amount.Value, CultureInfo.InvariantCulture),
                         };
                         await AddTransaction(transaction);
                         var donationDb = await _donationService.AddDonation(donationDTO);
@@ -137,7 +137,7 @@ namespace Infrastructure.Services.Transactions
                             UserId = userNumb,
                             ProjectId = Guid.Parse(donationDTO.ProjectId.ToString()),
                             TransactionId = donationDTO.TransactionId,
-                            Amount = double.Parse(transaction.PurchaseUnits[0].Amount.Value, CultureInfo.InvariantCulture),
+                            //Amount = double.Parse(transaction.PurchaseUnits[0].Amount.Value, CultureInfo.InvariantCulture),
                             Comment = donationDTO.Comment,
                             Name = donationDTO.Name
                         };

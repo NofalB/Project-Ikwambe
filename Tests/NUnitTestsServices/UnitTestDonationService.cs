@@ -3,6 +3,7 @@ using Domain;
 using Domain.DTO;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
+using Infrastructure.Services.Clients;
 using MockQueryable.Moq;
 using Moq;
 using NUnit.Framework;
@@ -23,6 +24,7 @@ namespace NUnitTestsServices
         private Mock<IWaterpumpProjectService> _waterpumpProjectServiceMock;
         private Mock<ICosmosReadRepository<Donation>> _donationReadRepositoryMock;
         private Mock<ICosmosWriteRepository<Donation>> _donationWriteRepositoryMock;
+        private Mock<IPaypalClientService> _paypalClientServiceMock;
 
         [SetUp]
         public void Setup()
@@ -35,7 +37,7 @@ namespace NUnitTestsServices
             _donationReadRepositoryMock = new Mock<ICosmosReadRepository<Donation>>();
             _donationWriteRepositoryMock = new Mock<ICosmosWriteRepository<Donation>>();
 
-            _donationService = new DonationService(_donationReadRepositoryMock.Object, _donationWriteRepositoryMock.Object,
+            _donationService = new DonationService(_donationReadRepositoryMock.Object, _donationWriteRepositoryMock.Object, _paypalClientServiceMock.Object,
                 _userServiceMock.Object, _waterpumpProjectServiceMock.Object);
 
             // set up mock donation data
