@@ -8,6 +8,8 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Extensions.OpenApi;
 using Microsoft.Azure.Functions.Worker.Extensions.OpenApi.Extensions;
 using Microsoft.Azure.Functions.Worker.Extensions.OpenApi.Functions;
+using Microsoft.Azure.KeyVault;
+using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +23,6 @@ namespace ProjectIkwambe.Startup {
 
 		public static void Main() {
 			IHost host = new HostBuilder()
-				//.ConfigureFunctionsWorkerDefaults(worker => worker.UseNewtonsoftJson())
 				.ConfigureFunctionsWorkerDefaults((IFunctionsWorkerApplicationBuilder Builder) => {
 					Builder.UseNewtonsoftJson().UseMiddleware<JwtMiddleware>();
 					Builder.UseMiddleware<GlobalErrorHandler>();
@@ -34,25 +35,22 @@ namespace ProjectIkwambe.Startup {
 		}
 
 		static void Configure(HostBuilderContext Builder, IServiceCollection Services) {
-            //Services.AddSingleton<IOpenApiHttpTriggerContext, OpenApiHttpTriggerContext>();
-            //Services.AddSingleton<IOpenApiTriggerFunction, OpenApiTriggerFunction>();
-
-
-
 			//jwt security
 			Services.AddSingleton<ITokenService, TokenService>();
 
 			// DBContext
 			Services.AddDbContext<IkwambeContext>(option =>
             {
-                option.UseCosmos(Environment.GetEnvironmentVariable("CosmosDb:Account", EnvironmentVariableTarget.Process), Environment.GetEnvironmentVariable("CosmosDb:Key", EnvironmentVariableTarget.Process), Environment.GetEnvironmentVariable("CosmosDb:DatabaseName", EnvironmentVariableTarget.Process));
-
+                option.UseCosmos(
+					Environment.GetEnvironmentVariable("CosmosDb:Account", EnvironmentVariableTarget.Process),
+					GetCosmosDbKey(),
+					Environment.GetEnvironmentVariable("CosmosDb:DatabaseName", EnvironmentVariableTarget.Process)
+				);
 			});
 
 			// Repositories
 			Services.AddTransient(typeof(ICosmosReadRepository<>), typeof(CosmosReadRepository<>));
 			Services.AddTransient(typeof(ICosmosWriteRepository<>), typeof(CosmosWriteRepository<>));
-
 
             // Services
             Services.AddScoped<IDonationService, DonationService>();
@@ -69,6 +67,17 @@ namespace ProjectIkwambe.Startup {
 			   {
 				   configuration.GetSection(nameof(BlobCredentialOptions)).Bind(settings);
 			   });
+		}
+
+		private static string GetCosmosDbKey()
+        {
+			AzureServiceTokenProvider azureServiceTokenProvider = new AzureServiceTokenProvider();
+			var keyVaultClient = new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(azureServiceTokenProvider.KeyVaultTokenCallback));
+
+			var cosmosDbKey = keyVaultClient.GetSecretAsync(
+				Environment.GetEnvironmentVariable("KeyVaultUri") + "CosmosDbkey").GetAwaiter().GetResult().Value;
+
+			return cosmosDbKey;
 		}
 
 	}

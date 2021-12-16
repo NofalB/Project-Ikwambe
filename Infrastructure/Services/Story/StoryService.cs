@@ -6,6 +6,7 @@ using Domain;
 using Domain.DTO;
 using HttpMultipartParser;
 using Infrastructure.Repositories;
+using Infrastructure.Services.KeyVault;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System;
@@ -25,6 +26,8 @@ namespace Infrastructure.Services
         private BlobContainerClient containerClient;
         private readonly BlobCredentialOptions _blobCredentialOptions;
 
+        private KeyVaultService keyVaultService;
+
         private readonly ICosmosReadRepository<Story> _storyReadRepository;
         private readonly ICosmosWriteRepository<Story> _storyWriteRepository;
 
@@ -42,7 +45,9 @@ namespace Infrastructure.Services
             _storyWriteRepository = storyWriteRepository;
             _blobCredentialOptions = options.Value;
 
-            blobServiceClient = new BlobServiceClient(Environment.GetEnvironmentVariable("BlobCredentialOptions:ConnectionString", EnvironmentVariableTarget.Process));
+            keyVaultService = new KeyVaultService();
+
+            blobServiceClient = new BlobServiceClient(keyVaultService.GetSecretValue("BlobStorageConnectionString").GetAwaiter().GetResult());
             containerClient = blobServiceClient.GetBlobContainerClient(Environment.GetEnvironmentVariable("BlobCredentialOptions:ContainerName", EnvironmentVariableTarget.Process));
         }
 
