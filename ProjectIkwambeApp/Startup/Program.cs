@@ -3,6 +3,7 @@ using Infrastructure.DBContext;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
 using Infrastructure.Services.Clients;
+using Infrastructure.Services.KeyVault;
 using Infrastructure.Services.Transactions;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Extensions.OpenApi;
@@ -16,6 +17,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ProjectIkwambe.ErrorHandlerMiddleware;
 using ProjectIkwambe.Security;
+using ProjectIkwambe.Utils;
 using System;
 
 namespace ProjectIkwambe.Startup {
@@ -59,6 +61,7 @@ namespace ProjectIkwambe.Startup {
             Services.AddScoped<IWaterpumpProjectService, WaterpumpProjectService>();
 			Services.AddScoped<ITransactionService, TransactionService>();
 			Services.AddScoped<IPaypalClientService, PaypalClientService>();
+			Services.AddScoped<IKeyVaultService, KeyVaultService>();
 
 			Services.AddHttpClient<PaypalClientService>();
 
@@ -79,7 +82,6 @@ namespace ProjectIkwambe.Startup {
 
 			return cosmosDbKey;
 		}
-
 	}
 }
 

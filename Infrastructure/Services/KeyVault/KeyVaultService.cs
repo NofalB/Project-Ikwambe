@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Services.KeyVault
 {
-    public class KeyVaultService
+    public class KeyVaultService : IKeyVaultService
     {
         public async Task<string> GetSecretValue(string secretName)
         {

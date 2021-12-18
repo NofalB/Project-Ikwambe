@@ -26,7 +26,7 @@ namespace Infrastructure.Services
         private BlobContainerClient containerClient;
         private readonly BlobCredentialOptions _blobCredentialOptions;
 
-        private KeyVaultService keyVaultService;
+        private readonly IKeyVaultService _keyVaultService;
 
         private readonly ICosmosReadRepository<Story> _storyReadRepository;
         private readonly ICosmosWriteRepository<Story> _storyWriteRepository;
@@ -39,15 +39,16 @@ namespace Infrastructure.Services
         }
 
         public StoryService(ICosmosReadRepository<Story> storyReadRepository,
-            ICosmosWriteRepository<Story> storyWriteRepository, IOptions<BlobCredentialOptions> options)
+            ICosmosWriteRepository<Story> storyWriteRepository, IOptions<BlobCredentialOptions> options,
+            IKeyVaultService keyVaultService)
         {
             _storyReadRepository = storyReadRepository;
             _storyWriteRepository = storyWriteRepository;
             _blobCredentialOptions = options.Value;
 
-            keyVaultService = new KeyVaultService();
+            _keyVaultService = keyVaultService;
 
-            blobServiceClient = new BlobServiceClient(keyVaultService.GetSecretValue("BlobStorageConnectionString").GetAwaiter().GetResult());
+            blobServiceClient = new BlobServiceClient(_keyVaultService.GetSecretValue("BlobStorageConnectionString").GetAwaiter().GetResult());
             containerClient = blobServiceClient.GetBlobContainerClient(Environment.GetEnvironmentVariable("BlobCredentialOptions:ContainerName", EnvironmentVariableTarget.Process));
         }
 
