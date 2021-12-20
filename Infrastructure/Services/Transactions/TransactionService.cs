@@ -143,16 +143,6 @@ namespace Infrastructure.Services.Transactions
                         };
                         await AddTransaction(transaction);
                         await _donationService.AddDonation(NewDonationDTO);
-                        //var donationDb = await _donationService.AddDonation(NewDonationDTO);
-
-                        /*var donationCheck = await _donationService.GetDonationByIdAsync(donationDb.DonationId.ToString());
-                        if (donationCheck != null)
-                        {
-                            project.CurrentTotal += donationDb.Amount;
-                            //check with the guys about this.
-                            project.TotalNumbOfDonators += 1;
-                            await _waterpumpProjectService.UpdateWaterPumpProject(project);
-                        }*/
                     }
                 }
             }

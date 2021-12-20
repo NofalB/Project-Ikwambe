@@ -108,7 +108,7 @@ namespace IntegrationTests
         public void CreateDonationSuccess()
         {
             // setup
-            DonationDTO donationDTO = new DonationDTO(Guid.Parse(_userId), Guid.Parse(_projectId), "1Y7311651B552625V", 4000, "Ronald McDonald", "I hope this small donation helps");
+            DonationDTO donationDTO = new DonationDTO(Guid.Parse(_userId), Guid.Parse(_projectId), "1Y7311651B552625V", "Ronald McDonald", "I hope this small donation helps");
             donationDTO.UserId = null;
             HttpContent donationData = new StringContent(JsonConvert.SerializeObject(donationDTO), Encoding.UTF8, "application/json");
 
@@ -182,7 +182,7 @@ namespace IntegrationTests
         public void CreateDonationFailure()
         {
             // setup
-            DonationDTO donationDTO = new DonationDTO(Guid.Empty, Guid.Empty, "", 0, "", "");
+            DonationDTO donationDTO = new DonationDTO(Guid.Empty, Guid.Empty, "", "", "");
             HttpContent donationData = new StringContent(JsonConvert.SerializeObject(donationDTO), Encoding.UTF8, "application/json");
             
             // run request

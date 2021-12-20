@@ -94,7 +94,7 @@ namespace ProjectIkwambe.Controllers
          
         }
 
-        [Function(nameof(TransactionHttpTrigger.CompleteTransaction))]
+        /*[Function(nameof(TransactionHttpTrigger.CompleteTransaction))]
         [OpenApiOperation(operationId: "completeTransaction", tags: new[] { "PaypalTransactions" }, Summary = "Complete the transaction and create the donation.", Description = "This will capture the transaction, create a donation and update the project.", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiParameter(name: "transactionId", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "ID of transaction to return", Description = "Retrieves a specific transaction by ID", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiParameter(name: "projectId", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "ID of project to donate to", Description = "Donates to this project", Visibility = OpenApiVisibilityType.Important)]
@@ -117,7 +117,7 @@ namespace ProjectIkwambe.Controllers
             await response.WriteStringAsync("Transaction done successfully!");
             return response;
 
-        }
+        }*/
 
 
         [Function(nameof(TransactionHttpTrigger.CompleteTransaction1))]

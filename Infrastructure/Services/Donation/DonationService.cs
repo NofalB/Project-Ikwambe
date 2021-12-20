@@ -128,12 +128,10 @@ namespace Infrastructure.Services
                     UserId = donationDTO.UserId,
                     ProjectId = donationDTO.ProjectId != Guid.Empty ? donationDTO.ProjectId : throw new InvalidOperationException($"Invalid {nameof(donationDTO.ProjectId)} provided."),
                     TransactionId = donationDTO.TransactionId ?? throw new ArgumentNullException($"Invalid {nameof(donationDTO.TransactionId)} provided"),
-                    //issue here when user can add their own donation.
                     //Amount = donationDTO.Amount != 0 ? donationDTO.Amount : throw new InvalidOperationException($"Invalid {nameof(donationDTO.Amount)} provided."),
                     Amount = double.Parse(transaction.PurchaseUnits[0].Amount.Value, CultureInfo.InvariantCulture),
                     Comment = donationDTO.Comment,
                     Name = donationDTO.Name,
-                    //DonationDate = donationDTO.DonationDate != default(DateTime) ? donationDTO.DonationDate : throw new InvalidOperationException($"Invalid {nameof(donationDTO.DonationDate)} provided."),
                     PartitionKey = donationDTO.ProjectId.ToString() ?? throw new ArgumentNullException($"Invalid {nameof(donationDTO.ProjectId)} provided")
                 };
 
@@ -148,7 +146,6 @@ namespace Infrastructure.Services
         }
 
         //update and add 1 for every new donation to the specific project.
-        //still need to call this method somewhere.
         private async Task UpdateProject(Donation donation)
         {
             var waterpumpProject = await _waterpumpProjectService.GetWaterPumpProjectById(donation.ProjectId.ToString());
@@ -159,7 +156,6 @@ namespace Infrastructure.Services
                 waterpumpProject.TotalNumbOfDonators += 1;
                 await _waterpumpProjectService.UpdateWaterPumpProject(waterpumpProject);
             }
-            //throw new InvalidOperationException("The project ID provided does not exist.");
         }
     }
 }

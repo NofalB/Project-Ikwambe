@@ -78,7 +78,7 @@ namespace ProjectIkwambe.Controllers
 			});
 		}
 
-		[Function(nameof(DonationHttpTrigger.MakeDonation))]
+		/*[Function(nameof(DonationHttpTrigger.MakeDonation))]
 		[OpenApiOperation(operationId: "MakeDonation", tags: new[] { "Donations" }, Summary = "Make a donation", Description = "This will make a donation", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(DonationDTO), Required = true, Description = "Donation object for donation details")]
 		[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(DonationDTO), Summary = "New donation details included", Description = "New donation details included", Example = typeof(DummyDonationDTOExample))]
@@ -95,7 +95,7 @@ namespace ProjectIkwambe.Controllers
 			response.StatusCode = HttpStatusCode.Created;
 
 			return response;
-		}
+		}*/
 
 
 		[Function(nameof(DonationHttpTrigger.GetDonationsByUser))]
