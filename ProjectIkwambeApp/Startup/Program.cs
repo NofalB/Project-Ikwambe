@@ -1,9 +1,9 @@
 using Domain;
 using Infrastructure.DBContext;
+using Infrastructure.Helpers;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
 using Infrastructure.Services.Clients;
-using Infrastructure.Services.KeyVault;
 using Infrastructure.Services.Transactions;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Extensions.OpenApi;
@@ -45,7 +45,7 @@ namespace ProjectIkwambe.Startup {
             {
                 option.UseCosmos(
 					Environment.GetEnvironmentVariable("CosmosDb:Account", EnvironmentVariableTarget.Process),
-					GetCosmosDbKey(),
+					"CosmosDbkey".GetSecretValue().GetAwaiter().GetResult(),
 					Environment.GetEnvironmentVariable("CosmosDb:DatabaseName", EnvironmentVariableTarget.Process)
 				);
 			});
@@ -61,8 +61,7 @@ namespace ProjectIkwambe.Startup {
             Services.AddScoped<IWaterpumpProjectService, WaterpumpProjectService>();
 			Services.AddScoped<ITransactionService, TransactionService>();
 			Services.AddScoped<IPaypalClientService, PaypalClientService>();
-			Services.AddScoped<IKeyVaultService, KeyVaultService>();
-
+			
 			Services.AddHttpClient<PaypalClientService>();
 
 			Services.AddOptions<BlobCredentialOptions>()
@@ -70,17 +69,6 @@ namespace ProjectIkwambe.Startup {
 			   {
 				   configuration.GetSection(nameof(BlobCredentialOptions)).Bind(settings);
 			   });
-		}
-
-		private static string GetCosmosDbKey()
-        {
-			AzureServiceTokenProvider azureServiceTokenProvider = new AzureServiceTokenProvider();
-			var keyVaultClient = new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(azureServiceTokenProvider.KeyVaultTokenCallback));
-
-			var cosmosDbKey = keyVaultClient.GetSecretAsync(
-				Environment.GetEnvironmentVariable("KeyVaultUri") + "CosmosDbkey").GetAwaiter().GetResult().Value;
-
-			return cosmosDbKey;
 		}
 	}
 }

@@ -5,8 +5,8 @@ using Azure.Storage.Sas;
 using Domain;
 using Domain.DTO;
 using HttpMultipartParser;
+using Infrastructure.Helpers;
 using Infrastructure.Repositories;
-using Infrastructure.Services.KeyVault;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System;
@@ -26,8 +26,6 @@ namespace Infrastructure.Services
         private BlobContainerClient containerClient;
         private readonly BlobCredentialOptions _blobCredentialOptions;
 
-        private readonly IKeyVaultService _keyVaultService;
-
         private readonly ICosmosReadRepository<Story> _storyReadRepository;
         private readonly ICosmosWriteRepository<Story> _storyWriteRepository;
 
@@ -39,16 +37,13 @@ namespace Infrastructure.Services
         }
 
         public StoryService(ICosmosReadRepository<Story> storyReadRepository,
-            ICosmosWriteRepository<Story> storyWriteRepository, IOptions<BlobCredentialOptions> options,
-            IKeyVaultService keyVaultService)
+            ICosmosWriteRepository<Story> storyWriteRepository, IOptions<BlobCredentialOptions> options)
         {
             _storyReadRepository = storyReadRepository;
             _storyWriteRepository = storyWriteRepository;
             _blobCredentialOptions = options.Value;
 
-            _keyVaultService = keyVaultService;
-
-            blobServiceClient = new BlobServiceClient(_keyVaultService.GetSecretValue("BlobStorageConnectionString").GetAwaiter().GetResult());
+            blobServiceClient = new BlobServiceClient("BlobStorageConnectionString".GetSecretValue().GetAwaiter().GetResult());
             containerClient = blobServiceClient.GetBlobContainerClient(Environment.GetEnvironmentVariable("BlobCredentialOptions:ContainerName", EnvironmentVariableTarget.Process));
         }
 

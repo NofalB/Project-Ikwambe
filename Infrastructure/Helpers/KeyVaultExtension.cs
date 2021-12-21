@@ -6,18 +6,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Services.KeyVault
+namespace Infrastructure.Helpers
 {
-    public class KeyVaultService : IKeyVaultService
+    public static class KeyVaultExtension
     {
-        public async Task<string> GetSecretValue(string secretName)
+        public static async Task<string> GetSecretValue(this string secretName)
         {
             AzureServiceTokenProvider azureServiceTokenProvider = new AzureServiceTokenProvider();
-            
+
             var keyVaultClient = new KeyVaultClient(new KeyVaultClient.AuthenticationCallback(azureServiceTokenProvider.KeyVaultTokenCallback));
-            
+
             var secret = await keyVaultClient.GetSecretAsync(Environment.GetEnvironmentVariable("KeyVaultUri") + secretName);
-            
+
             return secret.Value;
         }
     }
