@@ -118,7 +118,7 @@ namespace Infrastructure.Services.Transactions
             Guid? userNumb = null;
             if (!string.IsNullOrEmpty(donationDTO.UserId.ToString()))
             {
-                userNumb = Guid.Parse(donationDTO.ToString());
+                userNumb = Guid.Parse(donationDTO.UserId.ToString());
             }
 
             if (project != null)

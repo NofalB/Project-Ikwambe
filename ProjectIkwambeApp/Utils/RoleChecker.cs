@@ -29,6 +29,7 @@ namespace ProjectIkwambe.Utils
             {
 				ClaimsPrincipal User = ExecutionContext.GetUser();
 				bool allowedRole = CheckUserRole(User, accessLevel);
+
 				HttpResponseData reponse = Request.CreateResponse(HttpStatusCode.Forbidden);
 
 				if (allowedRole == true)
@@ -44,7 +45,10 @@ namespace ProjectIkwambe.Utils
 							return await executeDefault(Request, ExecutionContext, User, Delegate);
 						}
 					}
-					return await executeDefault(Request, ExecutionContext, User, Delegate);
+                    else
+                    {
+						return await executeDefault(Request, ExecutionContext, User, Delegate);
+					}
 				}
 				return reponse;
 
