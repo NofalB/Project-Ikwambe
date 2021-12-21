@@ -1,4 +1,5 @@
-﻿using Domain;
+﻿using BCrypt.Net;
+using Domain;
 using Domain.DTO;
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BCryptNet = BCrypt.Net.BCrypt;
 
 namespace Infrastructure.Services
 {
@@ -63,19 +65,19 @@ namespace Infrastructure.Services
         public User UserCheck(string email, string password)
         {
             User user = _userReadRepository.GetAll().FirstOrDefault(u => u.Email == email);
-            if(user== null)
+            if (user == null)
             {
                 throw new InvalidOperationException("The email you have provided does not exist");
             }
             else
             {
-                if (user.Password == password)
+                if(BCryptNet.Verify(password, user.Password))
                 {
                     return user;
                 }
                 else
                 {
-                    throw new InvalidOperationException("Please check your credentials");
+                    throw new InvalidOperationException("Please check your credentials password issue");
                 }
             }
         }
@@ -145,7 +147,8 @@ namespace Infrastructure.Services
                     FirstName = !string.IsNullOrEmpty(userDTO.FirstName) ? userDTO.FirstName : throw new ArgumentNullException($"Invalid {nameof(userDTO.FirstName)} provided"),
                     LastName = !string.IsNullOrEmpty(userDTO.LastName) ? userDTO.LastName : throw new ArgumentNullException($"Invalid {nameof(userDTO.LastName)} provided"),
                     Email = !string.IsNullOrEmpty(userDTO.Email) ? userDTO.Email : throw new ArgumentNullException($"Invalid {nameof(userDTO.Email)} provided"),
-                    Password = !string.IsNullOrEmpty(userDTO.Password) ? userDTO.Password : throw new ArgumentNullException($"Invalid {nameof(userDTO.Password)} provided"),
+                    Password = !string.IsNullOrEmpty(userDTO.Password) ? BCrypt.Net.BCrypt.HashPassword(userDTO.Password) : throw new ArgumentNullException($"Invalid {nameof(userDTO.Password)} provided"),
+                    //Password = BCrypt.Net.BCrypt.HashPassword(userDTO.Password),
                     Subscription = !string.IsNullOrEmpty(userDTO.Subscription.ToString()) ? bool.Parse(userDTO.Subscription.ToString()) : throw new ArgumentNullException($"Invalid {nameof(userDTO.Subscription)} provided"),
                     Role = Role.User,
                     PartitionKey = userDTO.Subscription.ToString()
