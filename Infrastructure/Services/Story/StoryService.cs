@@ -123,7 +123,6 @@ namespace Infrastructure.Services
             Story newStory = new Story(
                 Guid.NewGuid(),
                 storyDTO.Title,
-                !string.IsNullOrEmpty(storyDTO.ImageURL) ? storyDTO.ImageURL : throw new InvalidOperationException($"Invalid {nameof(storyDTO.ImageURL)} provided."),
                 storyDTO.PublishDate != default(DateTime) ? storyDTO.PublishDate : DateTime.Now,
                 !string.IsNullOrEmpty(storyDTO.Summary) ? storyDTO.Summary : throw new InvalidOperationException($"Invalid {nameof(storyDTO.Summary)} provided."),
                 !string.IsNullOrEmpty(storyDTO.Description) ? storyDTO.Description : throw new InvalidOperationException($"Invalid {nameof(storyDTO.Description)} provided."),
@@ -144,7 +143,6 @@ namespace Infrastructure.Services
             if (existingStory != null)
             {
                 existingStory.Title = !string.IsNullOrEmpty(storyDto.Title) ? storyDto.Title : throw new InvalidOperationException($"Invalid {nameof(storyDto.Title)} provided.");
-                existingStory.ImageURL = !string.IsNullOrEmpty(storyDto.ImageURL) ? storyDto.ImageURL : throw new InvalidOperationException($"Invalid {nameof(storyDto.ImageURL)} provided.");
                 existingStory.PublishDate = storyDto.PublishDate != default(DateTime) ? storyDto.PublishDate : throw new InvalidOperationException($"Invalid {nameof(storyDto.PublishDate)} provided.");
                 existingStory.Summary = !string.IsNullOrEmpty(storyDto.Summary) ? storyDto.Summary : throw new InvalidOperationException($"Invalid {nameof(storyDto.Summary)} provided.");
                 existingStory.Description = !string.IsNullOrEmpty(storyDto.Description) ? storyDto.Description : throw new InvalidOperationException($"Invalid {nameof(storyDto.Description)} provided.");
@@ -182,9 +180,9 @@ namespace Infrastructure.Services
                 var blobUrl = blobClient.Uri.AbsoluteUri;
 
                 var story = await GetStoryById(storyId);
-
-                //set the new url for the existing story
-                story.ImageURL = blobUrl;
+               
+                var storyImage = new StoryImage(file.Name, blobUrl);
+                story.StoryImages.Add(storyImage);
 
                 await UpdateStory(story);
             }

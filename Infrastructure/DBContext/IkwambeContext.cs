@@ -53,7 +53,8 @@ namespace Infrastructure.DBContext
                .ToContainer(nameof(Story))
                .HasNoDiscriminator()
                .HasPartitionKey(s => s.PartitionKey)
-               .UseETagConcurrency();
+               .UseETagConcurrency()
+               .OwnsMany(s => s.StoryImages);
 
 
             //waterpump and coordinates
