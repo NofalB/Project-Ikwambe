@@ -120,15 +120,17 @@ namespace Infrastructure.Services
                 throw new InvalidOperationException($"This story with title '{storyDTO.Title}' already exists.");
             }
 
-            Story newStory = new Story(
-                Guid.NewGuid(),
-                storyDTO.Title,
-                storyDTO.PublishDate != default(DateTime) ? storyDTO.PublishDate : DateTime.Now,
-                !string.IsNullOrEmpty(storyDTO.Summary) ? storyDTO.Summary : throw new InvalidOperationException($"Invalid {nameof(storyDTO.Summary)} provided."),
-                !string.IsNullOrEmpty(storyDTO.Description) ? storyDTO.Description : throw new InvalidOperationException($"Invalid {nameof(storyDTO.Description)} provided."),
-                !string.IsNullOrEmpty(storyDTO.Author) ? storyDTO.Author : throw new InvalidOperationException($"Invalid {nameof(storyDTO.Author)} provided.")
-            );
-
+            Story newStory = new Story();
+            newStory.StoryId = Guid.NewGuid();
+            newStory.Title = storyDTO.Title;
+            //StoryImages = !string.IsNullOrEmpty(storyDTO.StoryImages) ? storyDTO.StoryImages : throw new InvalidOperationException($"Invalid {nameof(storyDTO.StoryImages)} provided."),
+            newStory.StoryImages = storyDTO.StoryImages;
+            newStory.PublishDate = storyDTO.PublishDate != default(DateTime) ? storyDTO.PublishDate : DateTime.Now;
+            newStory.Summary = !string.IsNullOrEmpty(storyDTO.Summary) ? storyDTO.Summary : throw new InvalidOperationException($"Invalid {nameof(storyDTO.Summary)} provided.");
+            newStory.Description = !string.IsNullOrEmpty(storyDTO.Description) ? storyDTO.Description : throw new InvalidOperationException($"Invalid {nameof(storyDTO.Description)} provided.");
+            newStory.Author = !string.IsNullOrEmpty(storyDTO.Author) ? storyDTO.Author : throw new InvalidOperationException($"Invalid {nameof(storyDTO.Author)} provided.");
+            newStory.PartitionKey = storyDTO.Author;
+            
             return await _storyWriteRepository.AddAsync(newStory);
         }
 
@@ -181,7 +183,7 @@ namespace Infrastructure.Services
 
                 var story = await GetStoryById(storyId);
                
-                var storyImage = new StoryImage(file.Name, blobUrl);
+                var storyImage = new StoryImage(/*file.Name,*/ blobUrl);
                 story.StoryImages.Add(storyImage);
 
                 await UpdateStory(story);
