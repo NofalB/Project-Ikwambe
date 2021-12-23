@@ -18,7 +18,7 @@ namespace IntegrationTests
 
         #region Test IDs
         private string _userId = "3fa85f64-5717-4562-b3fc-2c963f66afa6";
-        private string _donationId = "74018e11-3d5c-46e6-96f5-e400c4aa8366";
+        private string _donationId = "1f08f287-21dc-47c7-8e4b-3516cd893053";
         private string _projectId = "4ae756ac-b37f-4651-b718-9d6b916b7f1e";
         private string _donationDate = "2021-10-22";
 
@@ -104,25 +104,6 @@ namespace IntegrationTests
             donations.ForEach(x => Assert.Matches(_userId, x.UserId.ToString()));
         }
 
-        [Fact]
-        public void CreateDonationSuccess()
-        {
-            // setup
-            DonationDTO donationDTO = new DonationDTO(Guid.Parse(_userId), Guid.Parse(_projectId), "1Y7311651B552625V", "Ronald McDonald", "I hope this small donation helps");
-            donationDTO.UserId = null;
-            HttpContent donationData = new StringContent(JsonConvert.SerializeObject(donationDTO), Encoding.UTF8, "application/json");
-
-            // run request
-            HttpResponseMessage response = _httpClient.PostAsync($"api/donations", donationData).Result;
-
-            // process response
-            var responseData = response.Content.ReadAsStringAsync().Result;
-            var donation = JsonConvert.DeserializeObject<Donation>(responseData);
-
-            // verify results
-            Assert.Equal(HttpStatusCode.Created, response.StatusCode);
-            Assert.IsType<Donation>(donation);
-        }
         #endregion
 
 

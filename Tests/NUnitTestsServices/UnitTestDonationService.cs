@@ -36,6 +36,7 @@ namespace NUnitTestsServices
 
             _donationReadRepositoryMock = new Mock<ICosmosReadRepository<Donation>>();
             _donationWriteRepositoryMock = new Mock<ICosmosWriteRepository<Donation>>();
+            _paypalClientServiceMock = new Mock<IPaypalClientService>();
 
             _donationService = new DonationService(_donationReadRepositoryMock.Object, _donationWriteRepositoryMock.Object, _paypalClientServiceMock.Object,
                 _userServiceMock.Object, _waterpumpProjectServiceMock.Object);
