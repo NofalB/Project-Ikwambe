@@ -148,7 +148,6 @@ namespace Infrastructure.Services
                     LastName = !string.IsNullOrEmpty(userDTO.LastName) ? userDTO.LastName : throw new ArgumentNullException($"Invalid {nameof(userDTO.LastName)} provided"),
                     Email = !string.IsNullOrEmpty(userDTO.Email) ? userDTO.Email : throw new ArgumentNullException($"Invalid {nameof(userDTO.Email)} provided"),
                     Password = !string.IsNullOrEmpty(userDTO.Password) ? BCrypt.Net.BCrypt.HashPassword(userDTO.Password) : throw new ArgumentNullException($"Invalid {nameof(userDTO.Password)} provided"),
-                    //Password = BCrypt.Net.BCrypt.HashPassword(userDTO.Password),
                     Subscription = !string.IsNullOrEmpty(userDTO.Subscription.ToString()) ? bool.Parse(userDTO.Subscription.ToString()) : throw new ArgumentNullException($"Invalid {nameof(userDTO.Subscription)} provided"),
                     Role = Role.User,
                     PartitionKey = userDTO.Subscription.ToString()
