@@ -8,7 +8,8 @@
     "CosmosDb:DatabaseName": "ProjectIkwambeDB",
     "BlobCredentialOptions:ContainerName": "ikwambe-container",
     "BlobCredentialOptions:ConnectionString": "DefaultEndpointsProtocol=https;AccountName=ikwambe2storage;AccountKey=5ebhRJYEmf2mNeNaV9ORpSr2M7TW+rGXUYIMMiprlHNp9SavfFn+peaIHxpMb+LyZ+YmfeWY/HGNM5E88R9rBw==;EndpointSuffix=core.windows.net",
-    "BaseAddress": "https://paypalmicroserviceikwambe.azurewebsites.net/api/"
+    "BaseAddress": "https://paypalmicroserviceikwambe.azurewebsites.net/api/",
+    "KeyVaultUri": "https://ikwambe-v.vault.azure.net/secrets/"
   },
   "Host": {
     "LocalHttpPort": 7071,
