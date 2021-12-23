@@ -111,8 +111,16 @@ namespace NUnitTestsRepositories
 
             // stories
             _mockListStories = new List<Story> {
-                new Story () { StoryId = _testId, Title = "story of story1", ImageURL = "owf4fzify7by.jpg", PublishDate = DateTime.Now, Summary = "this is the story",  Description = "this should be a long description", Author ="stephen" },
-                new Story() { StoryId = Guid.NewGuid(), Title = "story of story2", ImageURL = "randomImage.jpg", PublishDate = DateTime.Now, Summary = "this is the second story", Description = "this should be a long second description", Author ="stephen"}
+                new Story () { StoryId = _testId, Title = "story of story1", StoryImages = new List<StoryImage>()
+                {
+                    new StoryImage("Image 1", "owf4fzify7by.jpg"),
+                    new StoryImage("Image 2", "22owf4fzify7by22.jpg"),
+                },  PublishDate = DateTime.Now, Summary = "this is the story",  Description = "this should be a long description", Author ="stephen" },
+                new Story() { StoryId = Guid.NewGuid(), Title = "story of story2", StoryImages = new List<StoryImage>()
+                {
+                    new StoryImage("Image 1", "owf4fzify7by.jpg"),
+                    new StoryImage("Image 2", "22owf4fzify7by22.jpg"),
+                },  PublishDate = DateTime.Now, Summary = "this is the second story", Description = "this should be a long second description", Author ="stephen"}
             };
             _storyReadMock.Setup(m => m.GetAll()).Returns(_mockListStories.AsQueryable());
 
@@ -224,7 +232,13 @@ namespace NUnitTestsRepositories
             // Arrange
             Donation testDonation = new Donation(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "1Y7311651B552625V", 200);
             User testUser = new User(Guid.NewGuid(), "Jumbo", "Kratos", "bruh@gmail.com", "tEst12345", false);
-            Story testStory = new Story() { StoryId = Guid.NewGuid(), Title = "story of story1", ImageURL = "owf4fzify7by.jpg", PublishDate = DateTime.Now, Summary = "this is the story", Description = "this should be a long description", Author = "hamza" };
+            Story testStory = new Story() { StoryId = Guid.NewGuid(), Title = "story of story1",
+                StoryImages = new List<StoryImage>()
+                {
+                    new StoryImage("Image 1", "owf4fzify7by.jpg"),
+                    new StoryImage("Image 2", "22owf4fzify7by22.jpg"),
+                },
+                PublishDate = DateTime.Now, Summary = "this is the story", Description = "this should be a long description", Author = "hamza" };
             WaterpumpProject testWaterpumpProject = new WaterpumpProject()
             {
                 ProjectId = Guid.NewGuid(),
@@ -265,7 +279,13 @@ namespace NUnitTestsRepositories
         {
             // Arrange
             User testUser = new User(_testId, "Jumbo2", "Kratos3", "bruh@gmail.com4", "tEst123455", false);
-            Story testStory = new Story() { StoryId = _testId, Title = "new story of story1 v2", ImageURL = "owf4fzify7by.jpg", PublishDate = DateTime.Now, Summary = "this is the story", Description = "this should be a long description", Author = "hamza" };
+            Story testStory = new Story() { StoryId = _testId, Title = "new story of story1 v2",
+                StoryImages = new List<StoryImage>()
+                {
+                    new StoryImage("Image 1", "owf4fzify7by.jpg"),
+                    new StoryImage("Image 2", "22owf4fzify7by22.jpg"),
+                },
+                PublishDate = DateTime.Now, Summary = "this is the story", Description = "this should be a long description", Author = "hamza" };
             WaterpumpProject testWaterpumpProject = new WaterpumpProject()
             {
                 ProjectId = _testId,
