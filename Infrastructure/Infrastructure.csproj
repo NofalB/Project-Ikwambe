@@ -11,7 +11,9 @@
   </ItemGroup>
 
   <ItemGroup>
+	<PackageReference Include="BCrypt.Net-Next" Version="4.0.2" />	  
     <PackageReference Include="Azure.Storage.Blobs" Version="12.10.0" />
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.2" />
     <PackageReference Include="HttpMultipartParser" Version="5.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />

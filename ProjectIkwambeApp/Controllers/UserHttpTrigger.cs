@@ -73,7 +73,7 @@ namespace ProjectIkwambe.Controllers
 				HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 				await response.WriteAsJsonAsync(await _userService.GetUserById(userId));
 				return response;
-			});
+			}, userId);
 		}
 
 		[Function(nameof(UserHttpTrigger.AddUser))]
@@ -110,7 +110,7 @@ namespace ProjectIkwambe.Controllers
 				await response.WriteAsJsonAsync(await _userService.UpdateUser(userDTO, userId));
 				return response;
 
-			});
+			}, userId);
 		}
 
 		

@@ -104,25 +104,6 @@ namespace IntegrationTests
             donations.ForEach(x => Assert.Matches(_userId, x.UserId.ToString()));
         }
 
-        [Fact]
-        public void CreateDonationSuccess()
-        {
-            // setup
-            DonationDTO donationDTO = new DonationDTO(Guid.Parse(_userId), Guid.Parse(_projectId), "1Y7311651B552625V", 4000);
-            donationDTO.UserId = null;
-            HttpContent donationData = new StringContent(JsonConvert.SerializeObject(donationDTO), Encoding.UTF8, "application/json");
-
-            // run request
-            HttpResponseMessage response = _httpClient.PostAsync($"api/donations", donationData).Result;
-
-            // process response
-            var responseData = response.Content.ReadAsStringAsync().Result;
-            var donation = JsonConvert.DeserializeObject<Donation>(responseData);
-
-            // verify results
-            Assert.Equal(HttpStatusCode.Created, response.StatusCode);
-            Assert.IsType<Donation>(donation);
-        }
         #endregion
 
 
@@ -182,7 +163,7 @@ namespace IntegrationTests
         public void CreateDonationFailure()
         {
             // setup
-            DonationDTO donationDTO = new DonationDTO(Guid.Empty, Guid.Empty, "", 0);
+            DonationDTO donationDTO = new DonationDTO(Guid.Empty, Guid.Empty, "", "", "");
             HttpContent donationData = new StringContent(JsonConvert.SerializeObject(donationDTO), Encoding.UTF8, "application/json");
             
             // run request

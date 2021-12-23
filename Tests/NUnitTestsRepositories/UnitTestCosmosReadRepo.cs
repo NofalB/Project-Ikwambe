@@ -52,8 +52,8 @@ namespace NUnitTestsRepositories
         private void SetupMockData()
         {
             _mockListDonations = new List<Donation> {
-                new Donation(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "1Y7311651B552625V", 4000),
-                new Donation(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "2Y7311651B552625W", 599)
+                new Donation(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "1Y7311651B552625V", 4000, "Ronald McDonald", "I hope this small donation helps"),
+                new Donation(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "2Y7311651B552625W", 599, "Ronald McDonald", "I hope this small donation helps")
             };
 
             _mockListUsers = new List<User> {
