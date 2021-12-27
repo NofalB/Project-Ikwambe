@@ -17,7 +17,7 @@ namespace IntegrationTests
         private HttpClient _httpClient { get; }
 
         #region Test IDs
-        private string _userId = "3fa85f64-5717-4562-b3fc-2c963f66afa6";
+        private string _userId = "36c98532-f489-4790-a02c-81e88a689950";
         private string _donationId = "267ddc35-1529-4052-9beb-e2cce641ce33";
         private string _projectId = "4ae756ac-b37f-4651-b718-9d6b916b7f1e";
         private string _donationDate = "2021-10-22";
@@ -85,11 +85,11 @@ namespace IntegrationTests
             Assert.Matches(_donationId, donation.DonationId.ToString());
         }*/
 
-        /*[Fact]
+        [Fact]
         public void GetAllDonationsByUserIdSuccess()
         {
             // setup
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _adminToken);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _userToken);
             
             // run request
             HttpResponseMessage response = _httpClient.GetAsync($"api/donations/user/{_userId}").Result;
@@ -102,7 +102,7 @@ namespace IntegrationTests
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.IsType<List<Donation>>(donations);
             donations.ForEach(x => Assert.Matches(_userId, x.UserId.ToString()));
-        }*/
+        }
 
         #endregion
 
@@ -158,25 +158,6 @@ namespace IntegrationTests
             Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
             //Assert.NotNull(donations);
         }
-
-       /* [Fact]
-        public void CreateDonationFailure()
-        {
-            // setup
-            DonationDTO donationDTO = new DonationDTO(Guid.Empty, Guid.Empty, "", "", "");
-            HttpContent donationData = new StringContent(JsonConvert.SerializeObject(donationDTO), Encoding.UTF8, "application/json");
-            
-            // run request
-            HttpResponseMessage response = _httpClient.PostAsync($"api/donations", donationData).Result;
-
-            // process response
-            var responseData = response.Content.ReadAsStringAsync().Result;
-            var donation = JsonConvert.DeserializeObject<Donation>(responseData);
-
-            // verify results
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-            Assert.Contains(Guid.Empty.ToString(), donation.DonationId.ToString());
-        }*/
         #endregion
     }
 }
