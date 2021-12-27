@@ -70,7 +70,7 @@ namespace IntegrationTests
             donationsByDate.ForEach(x => Assert.Matches(_donationDate, x.DonationDate.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)));
         }
 
-        /*[Fact]
+        [Fact]
         public void GetDonationByDonationIdSuccess()
         {
             // run request
@@ -83,7 +83,7 @@ namespace IntegrationTests
             // verify results
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.Matches(_donationId, donation.DonationId.ToString());
-        }*/
+        }
 
         [Fact]
         public void GetAllDonationsByUserIdSuccess()
@@ -137,7 +137,7 @@ namespace IntegrationTests
             var donation = JsonConvert.DeserializeObject<Donation>(responseData);
 
             // verify results
-            Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
             //Assert.Matches(donation.DonationId.ToString(), Guid.Empty.ToString());
         }
 
