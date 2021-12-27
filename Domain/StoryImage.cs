@@ -2,7 +2,7 @@
 {
     public class StoryImage
     {
-        //public string Title { get; set; }
+        public string Title { get; set; }
 
         public string ImageLink { get; set; }
 
@@ -11,9 +11,9 @@
 
         }
 
-        public StoryImage(/*string title,*/ string imageLink)
+        public StoryImage(string title, string imageLink)
         {
-            //Title = title;
+            Title = title;
             ImageLink = imageLink;
         }
     }

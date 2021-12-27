@@ -111,8 +111,8 @@ namespace IntegrationTests
                 Author = "Test User",
                 StoryImages = new List<StoryImage>()
                 {
-                    new StoryImage(/*"Image 1",*/ "owf4fzify7by.jpg"),
-                    new StoryImage(/*"Image 2",*/ "22owf4fzify7by22.jpg"),
+                    new StoryImage("Image 1", "owf4fzify7by.jpg"),
+                    new StoryImage("Image 2", "22owf4fzify7by22.jpg"),
                 }
             };
 
@@ -145,8 +145,8 @@ namespace IntegrationTests
                 Author = "stephen",
                 StoryImages = new List<StoryImage>()
                 {
-                    new StoryImage(/*"Image 1",*/ "owf4fzify7by.jpg"),
-                    new StoryImage(/*"Image 2",*/ "22owf4fzify7by22.jpg"),
+                    new StoryImage("Image 1", "owf4fzify7by.jpg"),
+                    new StoryImage("Image 2", "22owf4fzify7by22.jpg"),
                 }
             };
 
@@ -223,8 +223,8 @@ namespace IntegrationTests
                 Author = "",
                 StoryImages = new List<StoryImage>()
                 {
-                    new StoryImage(/*"Image 1",*/ "owf4fzify7by.jpg"),
-                    new StoryImage(/*"Image 2",*/ "22owf4fzify7by22.jpg"),
+                    new StoryImage("Image 1", "owf4fzify7by.jpg"),
+                    new StoryImage("Image 2", "22owf4fzify7by22.jpg"),
                 }
             };
 
@@ -256,8 +256,8 @@ namespace IntegrationTests
                 Author = "stephen",
                 StoryImages = new List<StoryImage>()
                 {
-                    new StoryImage(/*"Image 1",*/ "owf4fzify7by.jpg"),
-                    new StoryImage(/*"Image 2",*/ "22owf4fzify7by22.jpg"),
+                    new StoryImage("Image 1", "owf4fzify7by.jpg"),
+                    new StoryImage("Image 2", "22owf4fzify7by22.jpg"),
                 }
             };
 

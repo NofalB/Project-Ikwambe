@@ -183,7 +183,7 @@ namespace Infrastructure.Services
 
                 var story = await GetStoryById(storyId);
                
-                var storyImage = new StoryImage(/*file.Name,*/ blobUrl);
+                var storyImage = new StoryImage(file.Name, blobUrl);
                 story.StoryImages.Add(storyImage);
 
                 await UpdateStory(story);
