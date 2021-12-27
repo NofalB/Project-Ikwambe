@@ -1,4 +1,5 @@
 using Domain;
+using Domain.DTO;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -103,15 +104,22 @@ namespace IntegrationTests
             Assert.Matches("Here is the link to make the payment:", checkoutUrl.Message);
         }
 
-        /*[Fact]
+        [Fact]
         public void CompleteTransactionSuccess()
         {
             // setup
-            string newTransactionId = "7H726527DP790725L";
+            DonationDTO TestDonation = new DonationDTO()
+            {
+                ProjectId = Guid.Parse("4ae756ac-b37f-4651-b718-9d6b916b7f1e"),
+                TransactionId = "7H726527DP790725L",
+                Comment = "Test donation",
+                Name = "someone"
+            };
 
+            HttpContent donationData = new StringContent(JsonConvert.SerializeObject(TestDonation), Encoding.UTF8, "application/json");
+            
             // run request
-            HttpResponseMessage response = _httpClient.GetAsync($"api/transactions/paypal/complete?" +
-                $"transactionId={newTransactionId}&projectId={_testProjectId}&userId={_testUserId}").Result;
+            HttpResponseMessage response = _httpClient.PostAsync($"api/transactions/paypal/complete1", donationData).Result;
 
             // process response
             var responseData = response.Content.ReadAsStringAsync().Result;
@@ -119,7 +127,7 @@ namespace IntegrationTests
             // verify results
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
             Assert.Matches("Transaction done successfully!", responseData);
-        }*/
+        }
         #endregion
 
         #region Failed Tests

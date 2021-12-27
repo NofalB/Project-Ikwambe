@@ -65,17 +65,17 @@ namespace ProjectIkwambe.Controllers
 		public async Task<HttpResponseData> GetDonationsById([HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "donations/{donationId}")] HttpRequestData req, string donationId, FunctionContext executionContext)
 		{
 
-			Role[] roles = { Role.User };
+			//Role[] roles = { };
 
-			return await RoleChecker.ExecuteForUser(roles, req,  executionContext, async (ClaimsPrincipal User)  =>
-			{
+			//return await RoleChecker.ExecuteForUser(roles, req,  executionContext, async (ClaimsPrincipal User)  =>
+			//{
 				HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
 				await response.WriteAsJsonAsync(await _donationService.GetDonationByIdAsync(donationId));
 
 				return response;
 
-			});
+			//});
 		}
 
 		[Function(nameof(DonationHttpTrigger.GetDonationsByUser))]
