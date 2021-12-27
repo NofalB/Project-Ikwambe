@@ -149,7 +149,6 @@ namespace Infrastructure.Services
         private async Task UpdateProject(Donation donation)
         {
             var waterpumpProject = await _waterpumpProjectService.GetWaterPumpProjectById(donation.ProjectId.ToString());
-            //?? throw new InvalidOperationException($"Project {donationDTO.ProjectId} does not exist.");
             if (waterpumpProject != null)
             {
                 waterpumpProject.CurrentTotal += donation.Amount;

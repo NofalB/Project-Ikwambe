@@ -101,7 +101,6 @@ namespace Infrastructure.Services
 
                 return storyResultList.Count != 0 ? storyResultList : new List<Story>();
             }
-
             return storyResultList.Count !=0 ? storyResultList : story;
         }
 
@@ -123,7 +122,6 @@ namespace Infrastructure.Services
             Story newStory = new Story();
             newStory.StoryId = Guid.NewGuid();
             newStory.Title = storyDTO.Title;
-            //StoryImages = !string.IsNullOrEmpty(storyDTO.StoryImages) ? storyDTO.StoryImages : throw new InvalidOperationException($"Invalid {nameof(storyDTO.StoryImages)} provided."),
             newStory.StoryImages = storyDTO.StoryImages;
             newStory.PublishDate = storyDTO.PublishDate != default(DateTime) ? storyDTO.PublishDate : DateTime.Now;
             newStory.Summary = !string.IsNullOrEmpty(storyDTO.Summary) ? storyDTO.Summary : throw new InvalidOperationException($"Invalid {nameof(storyDTO.Summary)} provided.");
@@ -149,7 +147,6 @@ namespace Infrastructure.Services
                 existingStory.Summary = !string.IsNullOrEmpty(storyDto.Summary) ? storyDto.Summary : throw new InvalidOperationException($"Invalid {nameof(storyDto.Summary)} provided.");
                 existingStory.Description = !string.IsNullOrEmpty(storyDto.Description) ? storyDto.Description : throw new InvalidOperationException($"Invalid {nameof(storyDto.Description)} provided.");
                 existingStory.Author = !string.IsNullOrEmpty(storyDto.Author) ? storyDto.Author : throw new InvalidOperationException($"Invalid {nameof(storyDto.Author)} provided.");
-                //existingStory.PartitionKey = storyDto.Author;
 
                 return await _storyWriteRepository.Update(existingStory);
             }
@@ -157,7 +154,6 @@ namespace Infrastructure.Services
             {
                 throw new InvalidOperationException("The story ID provided does not exist");
             }
-
         }
 
         public async Task DeleteStory(string storyId)
@@ -166,7 +162,6 @@ namespace Infrastructure.Services
             
             await _storyWriteRepository.Delete(story);
         }
-
 
         public async Task UploadImage(string storyId, FilePart file)
         {
@@ -192,8 +187,6 @@ namespace Infrastructure.Services
             {
                 throw new InvalidOperationException("Invalid content type. Media type not supported. Upload a valid image of type jpeg,bmp or png.");
             }
-
         }
-
     }
 }
