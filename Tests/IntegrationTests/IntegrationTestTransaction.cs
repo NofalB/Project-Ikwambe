@@ -1,5 +1,4 @@
 using Domain;
-using Domain.DTO;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -108,18 +107,11 @@ namespace IntegrationTests
         public void CompleteTransactionSuccess()
         {
             // setup
-            DonationDTO TestDonation = new DonationDTO()
-            {
-                ProjectId = Guid.Parse("4ae756ac-b37f-4651-b718-9d6b916b7f1e"),
-                TransactionId = "7H726527DP790725L",
-                Comment = "Test donation",
-                Name = "someone"
-            };
+            string newTransactionId = "7H726527DP790725L";
 
-            HttpContent donationData = new StringContent(JsonConvert.SerializeObject(TestDonation), Encoding.UTF8, "application/json");
-            
             // run request
-            HttpResponseMessage response = _httpClient.PostAsync($"api/transactions/paypal/complete1", donationData).Result;
+            HttpResponseMessage response = _httpClient.GetAsync($"api/transactions/paypal/complete?" +
+                $"transactionId={newTransactionId}&projectId={_testProjectId}&userId={_testUserId}").Result;
 
             // process response
             var responseData = response.Content.ReadAsStringAsync().Result;

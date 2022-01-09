@@ -40,10 +40,6 @@ namespace Domain
 		[JsonRequired]
 		public DateTime EndDate { get; set; }
 
-		[OpenApiProperty(Description = "Get or sets the number of the donators.")]
-		[JsonRequired]
-		public int TotalNumbOfDonators { get; set; }
-
 		public ProjectType ProjectType { get; set; }
 
 		public string PartitionKey { get; set; }

@@ -21,43 +21,33 @@ namespace Domain.DTO
         [OpenApiProperty(Description = "Gets or sets the transaction ID.")]
         public string TransactionId { get; set; }
 
-        /*[OpenApiProperty(Description = "Gets or sets the amount.")]
-        public double Amount { get; set; }*/
+        [OpenApiProperty(Description = "Gets or sets the amount.")]
+        public double Amount { get; set; }
 
-        //update for the front end
-        [OpenApiProperty(Description = "Gets or sets the input comment of the donor.")]
-        public string Comment { get; set; }
-
-        [OpenApiProperty(Description = "Gets or sets the input name of the anonymous donor.")]
-        public string Name { get; set; }
-        //update for the front end
-
-        /*[OpenApiProperty(Description = "Gets or sets the date the donation was made.")]
-        public DateTime DonationDate { get; set; }*/
+        [OpenApiProperty(Description = "Gets or sets the date the donation was made.")]
+        public DateTime DonationDate { get; set; }
 
         public DonationDTO()
         {
-            //DonationDate = DateTime.Now;
+            DonationDate = DateTime.Now;
         }
 
-        public DonationDTO(Guid userId, Guid projectId, string transactionId, /*double amount,*/ string comment, string name)
+        public DonationDTO(Guid userId, Guid projectId, string transactionId, double amount)
         {
             UserId = userId;
             ProjectId = projectId;
             TransactionId = transactionId;
-            //Amount = amount;
-            Comment = comment;
-            Name = name;
-            //DonationDate = DateTime.Now;
+            Amount = amount;
+            DonationDate = DateTime.Now;
         }
     }
     public class DummyDonationDTOExample : OpenApiExample<DonationDTO>
     {
         public override IOpenApiExample<DonationDTO> Build(NamingStrategy NamingStrategy = null)
         {
-            Examples.Add(OpenApiExampleResolver.Resolve("Donation 1", new Donation(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "1Y7311651B552625V", 4000, "This is a comment", "Anonnymous donator"), NamingStrategy));
-            Examples.Add(OpenApiExampleResolver.Resolve("Donation 2", new Donation(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "1Y7311651B552625V", 599, "For the good cause", "Anonnymous donator"), NamingStrategy));
-            Examples.Add(OpenApiExampleResolver.Resolve("Donation 3", new Donation(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "1Y7311651B552625V", 200, "Donation from my family", "Franklin George"), NamingStrategy));
+            Examples.Add(OpenApiExampleResolver.Resolve("DonationDTO 1", new DonationDTO(Guid.NewGuid(), Guid.NewGuid(), "1Y7311651B552625V", 4000), NamingStrategy));
+            Examples.Add(OpenApiExampleResolver.Resolve("DonationDTO 2", new DonationDTO(Guid.NewGuid(), Guid.NewGuid(), "1Y7311651B552625V", 599), NamingStrategy));
+            Examples.Add(OpenApiExampleResolver.Resolve("DonationDTO 3", new DonationDTO(Guid.NewGuid(), Guid.NewGuid(), "1Y7311651B552625V", 200), NamingStrategy));
 
             return this;
         }
@@ -68,9 +58,9 @@ namespace Domain.DTO
         public override IOpenApiExample<List<DonationDTO>> Build(NamingStrategy NamingStrategy = null)
         {
             Examples.Add(OpenApiExampleResolver.Resolve("DonationDTOs", new List<DonationDTO> {
-                    new DonationDTO(Guid.NewGuid(), Guid.NewGuid(), "1Y7311651B552625V", /*4000,*/ "Donation from my family", "Franklin George"),
-                    new DonationDTO(Guid.NewGuid(), Guid.NewGuid(), "1Y7311651B552625V", /*599,*/ "Donation from my family", "Franklin George"),
-                    new DonationDTO(Guid.NewGuid(), Guid.NewGuid(), "1Y7311651B552625V", /*200,*/ "Donation from my family", "Franklin George")
+                    new DonationDTO(Guid.NewGuid(), Guid.NewGuid(), "1Y7311651B552625V", 4000),
+                    new DonationDTO(Guid.NewGuid(), Guid.NewGuid(), "1Y7311651B552625V", 599),
+                    new DonationDTO(Guid.NewGuid(), Guid.NewGuid(), "1Y7311651B552625V", 200)
                 }));
 
             return this;

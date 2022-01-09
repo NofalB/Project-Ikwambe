@@ -3,7 +3,6 @@ using Domain;
 using Domain.DTO;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
-using Infrastructure.Services.Clients;
 using MockQueryable.Moq;
 using Moq;
 using NUnit.Framework;
@@ -24,7 +23,6 @@ namespace NUnitTestsServices
         private Mock<IWaterpumpProjectService> _waterpumpProjectServiceMock;
         private Mock<ICosmosReadRepository<Donation>> _donationReadRepositoryMock;
         private Mock<ICosmosWriteRepository<Donation>> _donationWriteRepositoryMock;
-        private Mock<IPaypalClientService> _paypalClientServiceMock;
 
         [SetUp]
         public void Setup()
@@ -36,16 +34,15 @@ namespace NUnitTestsServices
 
             _donationReadRepositoryMock = new Mock<ICosmosReadRepository<Donation>>();
             _donationWriteRepositoryMock = new Mock<ICosmosWriteRepository<Donation>>();
-            _paypalClientServiceMock = new Mock<IPaypalClientService>();
 
-            _donationService = new DonationService(_donationReadRepositoryMock.Object, _donationWriteRepositoryMock.Object, _paypalClientServiceMock.Object,
+            _donationService = new DonationService(_donationReadRepositoryMock.Object, _donationWriteRepositoryMock.Object,
                 _userServiceMock.Object, _waterpumpProjectServiceMock.Object);
 
             // set up mock donation data
             _mockListDonations = new List<Donation>()
             {
-                new Donation(Guid.NewGuid(), Guid.Parse(_testUserId), Guid.NewGuid(), "1Y7311651B552625V", 4000, "Ronald McDonald", "I hope this small donation helps"),
-                new Donation(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "2Y7311651B552625W", 599, "Ronald McDonald", "I hope this small donation helps")
+                new Donation(Guid.NewGuid(), Guid.Parse(_testUserId), Guid.NewGuid(), "1Y7311651B552625V", 4000),
+                new Donation(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "2Y7311651B552625W", 599)
             };
         }
 

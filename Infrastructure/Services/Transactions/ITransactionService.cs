@@ -16,6 +16,5 @@ namespace Infrastructure.Services
 
         Task<Transaction> AddTransaction(Transaction transaction);
         Task CompleteTransaction(string transactionId, string projectId, string userId);
-        Task CompleteTransaction1(DonationDTO donationDTO);
     }
 }
