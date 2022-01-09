@@ -5,6 +5,7 @@ using Azure.Storage.Sas;
 using Domain;
 using Domain.DTO;
 using HttpMultipartParser;
+using Infrastructure.Helpers;
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -42,7 +43,7 @@ namespace Infrastructure.Services
             _storyWriteRepository = storyWriteRepository;
             _blobCredentialOptions = options.Value;
 
-            blobServiceClient = new BlobServiceClient(Environment.GetEnvironmentVariable("BlobCredentialOptions:ConnectionString", EnvironmentVariableTarget.Process));
+            blobServiceClient = new BlobServiceClient("BlobStorageConnectionString".GetSecretValue().GetAwaiter().GetResult());
             containerClient = blobServiceClient.GetBlobContainerClient(Environment.GetEnvironmentVariable("BlobCredentialOptions:ContainerName", EnvironmentVariableTarget.Process));
         }
 
@@ -100,7 +101,6 @@ namespace Infrastructure.Services
 
                 return storyResultList.Count != 0 ? storyResultList : new List<Story>();
             }
-
             return storyResultList.Count !=0 ? storyResultList : story;
         }
 
@@ -119,16 +119,16 @@ namespace Infrastructure.Services
                 throw new InvalidOperationException($"This story with title '{storyDTO.Title}' already exists.");
             }
 
-            Story newStory = new Story(
-                Guid.NewGuid(),
-                storyDTO.Title,
-                !string.IsNullOrEmpty(storyDTO.ImageURL) ? storyDTO.ImageURL : throw new InvalidOperationException($"Invalid {nameof(storyDTO.ImageURL)} provided."),
-                storyDTO.PublishDate != default(DateTime) ? storyDTO.PublishDate : DateTime.Now,
-                !string.IsNullOrEmpty(storyDTO.Summary) ? storyDTO.Summary : throw new InvalidOperationException($"Invalid {nameof(storyDTO.Summary)} provided."),
-                !string.IsNullOrEmpty(storyDTO.Description) ? storyDTO.Description : throw new InvalidOperationException($"Invalid {nameof(storyDTO.Description)} provided."),
-                !string.IsNullOrEmpty(storyDTO.Author) ? storyDTO.Author : throw new InvalidOperationException($"Invalid {nameof(storyDTO.Author)} provided.")
-            );
-
+            Story newStory = new Story();
+            newStory.StoryId = Guid.NewGuid();
+            newStory.Title = storyDTO.Title;
+            newStory.StoryImages = storyDTO.StoryImages;
+            newStory.PublishDate = storyDTO.PublishDate != default(DateTime) ? storyDTO.PublishDate : DateTime.Now;
+            newStory.Summary = !string.IsNullOrEmpty(storyDTO.Summary) ? storyDTO.Summary : throw new InvalidOperationException($"Invalid {nameof(storyDTO.Summary)} provided.");
+            newStory.Description = !string.IsNullOrEmpty(storyDTO.Description) ? storyDTO.Description : throw new InvalidOperationException($"Invalid {nameof(storyDTO.Description)} provided.");
+            newStory.Author = !string.IsNullOrEmpty(storyDTO.Author) ? storyDTO.Author : throw new InvalidOperationException($"Invalid {nameof(storyDTO.Author)} provided.");
+            newStory.PartitionKey = storyDTO.Author;
+            
             return await _storyWriteRepository.AddAsync(newStory);
         }
 
@@ -143,12 +143,10 @@ namespace Infrastructure.Services
             if (existingStory != null)
             {
                 existingStory.Title = !string.IsNullOrEmpty(storyDto.Title) ? storyDto.Title : throw new InvalidOperationException($"Invalid {nameof(storyDto.Title)} provided.");
-                existingStory.ImageURL = !string.IsNullOrEmpty(storyDto.ImageURL) ? storyDto.ImageURL : throw new InvalidOperationException($"Invalid {nameof(storyDto.ImageURL)} provided.");
                 existingStory.PublishDate = storyDto.PublishDate != default(DateTime) ? storyDto.PublishDate : throw new InvalidOperationException($"Invalid {nameof(storyDto.PublishDate)} provided.");
                 existingStory.Summary = !string.IsNullOrEmpty(storyDto.Summary) ? storyDto.Summary : throw new InvalidOperationException($"Invalid {nameof(storyDto.Summary)} provided.");
                 existingStory.Description = !string.IsNullOrEmpty(storyDto.Description) ? storyDto.Description : throw new InvalidOperationException($"Invalid {nameof(storyDto.Description)} provided.");
                 existingStory.Author = !string.IsNullOrEmpty(storyDto.Author) ? storyDto.Author : throw new InvalidOperationException($"Invalid {nameof(storyDto.Author)} provided.");
-                //existingStory.PartitionKey = storyDto.Author;
 
                 return await _storyWriteRepository.Update(existingStory);
             }
@@ -156,7 +154,6 @@ namespace Infrastructure.Services
             {
                 throw new InvalidOperationException("The story ID provided does not exist");
             }
-
         }
 
         public async Task DeleteStory(string storyId)
@@ -165,7 +162,6 @@ namespace Infrastructure.Services
             
             await _storyWriteRepository.Delete(story);
         }
-
 
         public async Task UploadImage(string storyId, FilePart file)
         {
@@ -181,9 +177,9 @@ namespace Infrastructure.Services
                 var blobUrl = blobClient.Uri.AbsoluteUri;
 
                 var story = await GetStoryById(storyId);
-
-                //set the new url for the existing story
-                story.ImageURL = blobUrl;
+               
+                var storyImage = new StoryImage(file.Name, blobUrl);
+                story.StoryImages.Add(storyImage);
 
                 await UpdateStory(story);
             }
@@ -191,8 +187,6 @@ namespace Infrastructure.Services
             {
                 throw new InvalidOperationException("Invalid content type. Media type not supported. Upload a valid image of type jpeg,bmp or png.");
             }
-
         }
-
     }
 }

@@ -52,8 +52,8 @@ namespace NUnitTestsRepositories
         private void SetupMockData()
         {
             _mockListDonations = new List<Donation> {
-                new Donation(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "1Y7311651B552625V", 4000),
-                new Donation(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "2Y7311651B552625W", 599)
+                new Donation(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "1Y7311651B552625V", 4000, "Ronald McDonald", "I hope this small donation helps"),
+                new Donation(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), "2Y7311651B552625W", 599, "Ronald McDonald", "I hope this small donation helps")
             };
 
             _mockListUsers = new List<User> {
@@ -62,8 +62,18 @@ namespace NUnitTestsRepositories
             };
 
             _mockListStories = new List<Story> {
-                new Story () { StoryId = Guid.NewGuid(), Title = "story of story1", ImageURL = "owf4fzify7by.jpg", PublishDate = DateTime.Now, Summary = "this is the story",  Description = "this should be a long description", Author ="stephen" },
-                new Story() { StoryId = Guid.NewGuid(), Title = "story of story2", ImageURL = "randomImage.jpg", PublishDate = DateTime.Now, Summary = "this is the second story", Description = "this should be a long second description", Author ="stephen"}
+                new Story () { StoryId = Guid.NewGuid(), Title = "story of story1", StoryImages = new List<StoryImage>()
+                {
+                    new StoryImage("Image 1", "owf4fzify7by.jpg"),
+                    new StoryImage("Image 2", "22owf4fzify7by22.jpg"),
+                }, 
+                PublishDate = DateTime.Now, Summary = "this is the story",  Description = "this should be a long description", Author ="stephen" },
+                new Story() { StoryId = Guid.NewGuid(), Title = "story of story2", StoryImages = new List<StoryImage>()
+                {
+                    new StoryImage("Image 1", "owf4fzify7by.jpg"),
+                    new StoryImage("Image 2", "22owf4fzify7by22.jpg"),
+                }, 
+                PublishDate = DateTime.Now, Summary = "this is the second story", Description = "this should be a long second description", Author ="stephen"}
             };
 
             _mockListWaterpumpProject = new List<WaterpumpProject> {
