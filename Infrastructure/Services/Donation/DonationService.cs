@@ -1,7 +1,6 @@
 ﻿using Domain;
 using Domain.DTO;
 using Infrastructure.Repositories;
-using Infrastructure.Services.Clients;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -20,17 +19,14 @@ namespace Infrastructure.Services
         
         private readonly IUserService _userService;
         private readonly IWaterpumpProjectService _waterpumpProjectService;
-        private readonly IPaypalClientService _paypalClientService;
-
 
         public DonationService(ICosmosReadRepository<Donation> donationReadRepository, ICosmosWriteRepository<Donation> donationWriteRepository,
-            IPaypalClientService paypalClientService, IUserService userService, IWaterpumpProjectService waterpumpProjectService)
+            IUserService userService, IWaterpumpProjectService waterpumpProjectService)
         {
             _donationReadRepository = donationReadRepository;
             _donationWriteRepository = donationWriteRepository;
             _userService = userService;
             _waterpumpProjectService = waterpumpProjectService;
-            _paypalClientService = paypalClientService;
         }
 
         public async Task<Donation> GetDonationByIdAsync(string donationId)
@@ -103,7 +99,6 @@ namespace Infrastructure.Services
 
         public async Task<Donation> AddDonation(DonationDTO donationDTO)
         {
-            var transaction = await _paypalClientService.GetTransaction(donationDTO.TransactionId);
             if (donationDTO == null)
             {
                 throw new NullReferenceException($"{nameof(DonationDTO)} cannot be null.");
@@ -121,40 +116,21 @@ namespace Infrastructure.Services
             if (donationDTO.ProjectId != Guid.Empty)
             {
                 var waterpumpProject = await _waterpumpProjectService.GetWaterPumpProjectById(donationDTO.ProjectId.ToString()) ?? throw new InvalidOperationException($"Project {donationDTO.ProjectId} does not exist.");
-
+                
                 Donation donation = new Donation()
                 {
                     DonationId = Guid.NewGuid(),
                     UserId = donationDTO.UserId,
                     ProjectId = donationDTO.ProjectId != Guid.Empty ? donationDTO.ProjectId : throw new InvalidOperationException($"Invalid {nameof(donationDTO.ProjectId)} provided."),
                     TransactionId = donationDTO.TransactionId ?? throw new ArgumentNullException($"Invalid {nameof(donationDTO.TransactionId)} provided"),
-                    //Amount = donationDTO.Amount != 0 ? donationDTO.Amount : throw new InvalidOperationException($"Invalid {nameof(donationDTO.Amount)} provided."),
-                    Amount = double.Parse(transaction.PurchaseUnits[0].Amount.Value, CultureInfo.InvariantCulture),
-                    Comment = donationDTO.Comment,
-                    Name = donationDTO.Name,
+                    Amount = donationDTO.Amount != 0 ? donationDTO.Amount : throw new InvalidOperationException($"Invalid {nameof(donationDTO.Amount)} provided."),
+                    DonationDate = donationDTO.DonationDate != default(DateTime) ? donationDTO.DonationDate : throw new InvalidOperationException($"Invalid {nameof(donationDTO.DonationDate)} provided."),
                     PartitionKey = donationDTO.ProjectId.ToString() ?? throw new ArgumentNullException($"Invalid {nameof(donationDTO.ProjectId)} provided")
                 };
-
-                //the updates
-                Console.WriteLine(donation.DonationId);
-                await UpdateProject(donation);
-                //the updates
                 return await _donationWriteRepository.AddAsync(donation);
             }
 
             throw new ArgumentNullException($"Invalid {nameof(donationDTO.ProjectId)} provided.");
-        }
-
-        //update and add 1 for every new donation to the specific project.
-        private async Task UpdateProject(Donation donation)
-        {
-            var waterpumpProject = await _waterpumpProjectService.GetWaterPumpProjectById(donation.ProjectId.ToString());
-            if (waterpumpProject != null)
-            {
-                waterpumpProject.CurrentTotal += donation.Amount;
-                waterpumpProject.TotalNumbOfDonators += 1;
-                await _waterpumpProjectService.UpdateWaterPumpProject(waterpumpProject);
-            }
         }
     }
 }
