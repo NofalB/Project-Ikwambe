@@ -51,7 +51,7 @@ namespace IntegrationTests
         [Fact]
         public void FilterStoryByAuthorSuccess()
         {
-            string author = "string";
+            string author = "Feliciana";
 
             HttpResponseMessage responseWithStoryAuthor = _httpClient.GetAsync($"api/stories?author={author}").Result;
 
