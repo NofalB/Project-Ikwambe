@@ -25,8 +25,9 @@ namespace IntegrationTests
             string hostname = Environment.GetEnvironmentVariable("functionHostName");
 
             if (hostname == null)
-                hostname = $"https://stichtingikwambe.azurewebsites.net/";
-            _httpClient = new HttpClient();
+                hostname = $"http://localhost:7071/";
+
+                _httpClient = new HttpClient();
             _httpClient.BaseAddress = new Uri(hostname);
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _adminToken);
         }
@@ -116,7 +117,7 @@ namespace IntegrationTests
         }
         public void CreateUserSuccess()
         {
-            UserDTO newUser = new UserDTO("John", "Doe", "John@email.com", "john123", false);
+            UserDTO newUser = new UserDTO("John", "Doe", "John@email.com", "John@123", false);
 
 
             HttpContent userData = new StringContent(JsonConvert.SerializeObject(newUser), Encoding.UTF8, "application/json");
@@ -223,7 +224,6 @@ namespace IntegrationTests
         [Fact]
         public void CreateUserFailure()
         {
-
             UserDTO newUser = new UserDTO("John", "Doe", "stephen@email.com", "john123", false);
 
             HttpContent userData = new StringContent(JsonConvert.SerializeObject(newUser), Encoding.UTF8, "application/json");
@@ -257,7 +257,6 @@ namespace IntegrationTests
             //validate response
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
             //Assert.IsType<User>(user);
-
 
         }
 

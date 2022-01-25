@@ -75,7 +75,7 @@ namespace Infrastructure.Services
                 return new LoginResult(Token);
             }
 
-            throw new Exception("user does not exist");
+            throw new Exception("Credentials is incorrect");
         }
 
         public async Task<ClaimsPrincipal> ValidateToken(string Value)

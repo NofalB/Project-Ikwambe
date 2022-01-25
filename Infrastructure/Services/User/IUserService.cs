@@ -12,7 +12,7 @@ namespace Infrastructure.Services
     {
         Task<IEnumerable<User>> GetAllUsers();
 
-        Task<User> GetUserById(string userId);
+        Task<User> GetUserById(string userId, bool fullData = false);
 
         Task<User> AddUser(UserDTO userDTO);
 
@@ -20,7 +20,7 @@ namespace Infrastructure.Services
 
         Task DeleteUserAsync(string userId);
 
-        List<User> GetUserByQueryOrGetAll(string firstname, string lastname, string subcribe);
+        List<UserResponseDTO> GetUserByQueryOrGetAll(string firstname, string lastname, string subcribe);
 
         User UserCheck(string email, string password);
 

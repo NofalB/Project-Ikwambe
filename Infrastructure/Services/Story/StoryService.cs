@@ -165,7 +165,7 @@ namespace Infrastructure.Services
 
         public async Task UploadImage(string storyId, FilePart file)
         {
-            if (file.ContentType == "image/jpeg" || file.ContentType == "image/bmp" || file.ContentType == "image/png")
+            if (file.ContentType == "image/jpeg" || file.ContentType == "image/bmp" || file.ContentType == "image/png" || file.Data.Length == 800000)
             {
                 // Get a reference to a blob
                 BlobClient blobClient = containerClient.GetBlobClient(file.Name);
