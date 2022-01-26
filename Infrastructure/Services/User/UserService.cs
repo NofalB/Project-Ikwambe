@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using BCryptNet = BCrypt.Net.BCrypt;
 
@@ -28,7 +29,7 @@ namespace Infrastructure.Services
             return await _userReadRepository.GetAll().ToListAsync();
         }
 
-        public async Task<User> GetUserById(string userId)
+        public async Task<User> GetUserById(string userId, bool fullData = false)
         {
             try
             {
@@ -38,23 +39,22 @@ namespace Infrastructure.Services
 
                 if (user == null)
                 {
-                    throw new InvalidOperationException($"The User ID {userId} provided does not exist");
+                    throw new InvalidOperationException($"Invalid User ID {userId} provided.");
                 }
-                return user;
+
+                return fullData == true ? user : new UserResponseDTO(user.UserId, user.FirstName, user.LastName, user.Subscription);
             }
             catch
             {
                 throw new InvalidOperationException($"Invalid User ID {userId} provided.");
             }
-
-            
         }
 
         private async Task<User> GetUserByEmail(string email)
         {
-            email=!string.IsNullOrEmpty(email) ? email : throw new ArgumentNullException("No email was provided.");
+            email  =  !string.IsNullOrEmpty(email) ? email : throw new ArgumentNullException("No email was provided.");
             var user = await _userReadRepository.GetAll().FirstOrDefaultAsync(u => u.Email == email);
-            
+
             if (user != null)
             {
                 throw new InvalidOperationException($"The User Email {user.Email} provided already exist");
@@ -67,24 +67,35 @@ namespace Infrastructure.Services
             User user = _userReadRepository.GetAll().FirstOrDefault(u => u.Email == email);
             if (user == null)
             {
-                throw new InvalidOperationException("The email you have provided does not exist");
+                throw new InvalidOperationException("Please check your credentials");
             }
             else
             {
-                if(BCryptNet.Verify(password, user.Password))
+                if  (BCryptNet.Verify(password, user.Password))
                 {
                     return user;
                 }
                 else
                 {
-                    throw new InvalidOperationException("Please check your credentials password issue");
+                    throw new InvalidOperationException("Please check your credentials");
                 }
             }
         }
 
-        public List<User> GetUserByQueryOrGetAll(string firstname, string lastname, string subcribe)
+        public List<UserResponseDTO> GetUserByQueryOrGetAll(string firstname, string lastname, string subcribe)
         {
-            List<User> resultList = _userReadRepository.GetAll().ToList();
+            var resultList = new List<UserResponseDTO>();
+            _userReadRepository.GetAll().ToList()
+            .ForEach(
+                u => resultList.Add(
+                    new UserResponseDTO(
+                        u.UserId,
+                        u.FirstName,
+                        u.LastName,
+                        u.Subscription
+                    )
+                )
+            );
 
             if (firstname != null)
             {
@@ -129,7 +140,7 @@ namespace Infrastructure.Services
                 }).ToList();
             }
 
-            return resultList.Count != 0 ? resultList: new List<User>();
+            return resultList.Count != 0 ? resultList : new List<UserResponseDTO>();
         }
 
         public async Task<User> AddUser(UserDTO userDTO)
@@ -146,13 +157,12 @@ namespace Infrastructure.Services
                     UserId = Guid.NewGuid(),
                     FirstName = !string.IsNullOrEmpty(userDTO.FirstName) ? userDTO.FirstName : throw new ArgumentNullException($"Invalid {nameof(userDTO.FirstName)} provided"),
                     LastName = !string.IsNullOrEmpty(userDTO.LastName) ? userDTO.LastName : throw new ArgumentNullException($"Invalid {nameof(userDTO.LastName)} provided"),
-                    Email = !string.IsNullOrEmpty(userDTO.Email) ? userDTO.Email : throw new ArgumentNullException($"Invalid {nameof(userDTO.Email)} provided"),
-                    Password = !string.IsNullOrEmpty(userDTO.Password) ? BCrypt.Net.BCrypt.HashPassword(userDTO.Password) : throw new ArgumentNullException($"Invalid {nameof(userDTO.Password)} provided"),
+                    Email = IsValidEmail(userDTO.Email),
+                    Password = ValidateEncryptPassword(userDTO.Password),
                     Subscription = !string.IsNullOrEmpty(userDTO.Subscription.ToString()) ? bool.Parse(userDTO.Subscription.ToString()) : throw new ArgumentNullException($"Invalid {nameof(userDTO.Subscription)} provided"),
                     Role = Role.User,
                     PartitionKey = userDTO.Subscription.ToString()
                 };
-
                 return await _userWriteRepository.AddAsync(user);
             }
             else
@@ -163,19 +173,16 @@ namespace Infrastructure.Services
 
         public async Task<User> UpdateUserRoleToAdmin(string userId)
         {
-            var id = !string.IsNullOrEmpty(userId) ? userId : throw new ArgumentNullException($"{userId} cannot be null or empty string."); 
-            User userData = await GetUserById(userId);
+            var id = !string.IsNullOrEmpty(userId) ? userId : throw new ArgumentNullException($"{userId} cannot be null or empty string.");
+            User userData = await GetUserById(userId, true);
             if (userData != null)
             {
                 //update user to be an admin
                 userData.Role = Role.Admin;
-
                 return await _userWriteRepository.Update(userData);
             }
             throw new InvalidOperationException($"The user ID {userId} provided is invalid.");
-
         }
-
 
         public async Task<User> UpdateUser(UserDTO userDTO, string userId)
         {
@@ -184,35 +191,64 @@ namespace Infrastructure.Services
                 throw new NullReferenceException($"{nameof(userDTO)} cannot be null.");
             }
 
-            User userData = await GetUserById(userId);
+            User userData = await GetUserById(userId, true);
             if (userData != null)
             {
                 //update user info
                 userData.FirstName = userDTO.FirstName;
                 userData.LastName = userDTO.LastName;
                 userData.Email = userDTO.Email;
-                userData.Password = userDTO.Password;
+                userData.Password = ValidateEncryptPassword(userDTO.Password);
                 userData.Subscription = bool.Parse(userDTO.Subscription.ToString());
 
                 return await _userWriteRepository.Update(userData);
             }
-            throw new InvalidOperationException("The user ID provided does not exist.");
-
+            throw new InvalidOperationException("Please check your User ID again");
         }
 
         public async Task DeleteUserAsync(string userId)
         {
             var id = !string.IsNullOrEmpty(userId) ? userId : throw new ArgumentNullException($"{userId} cannot be null or empty string.");
-            User user = await GetUserById(id);
+            User user = await GetUserById(id, true);
 
             if (user != null)
             {
                 await _userWriteRepository.Delete(user);
             }
-            else 
+            else
             {
                 throw new InvalidOperationException($"The user ID {userId} provided is invalid.");
             }
         }
+
+        public string ValidateEncryptPassword(string password)
+        {
+            string patternPassword = @"^(?=(.*\d){2})(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z\d]).{8,20}$";
+            if (!string.IsNullOrEmpty(password))
+            {
+                if (!Regex.IsMatch(password, patternPassword))
+                {
+                    throw new InvalidOperationException(" Password must be at least 8 characters, no more than 20 characters, and must include at least one upper case letter, one lower case letter, and one numeric digit.");
+                }
+            }
+            return BCrypt.Net.BCrypt.HashPassword(password);
+        }
+
+        private string IsValidEmail(string email)
+        {
+            //string patternEmail = @"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z";
+            string patternEmail = @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$";
+            if (!string.IsNullOrEmpty(email))
+            {
+                if (!Regex.IsMatch(email, patternEmail))
+                {
+                    throw new InvalidOperationException("Invalid email");
+                }
+            }
+            return email;
+        }
     }
+        
+    
 }
+
