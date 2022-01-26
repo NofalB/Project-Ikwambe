@@ -128,6 +128,7 @@ namespace Infrastructure.Services
                     UserId = donationDTO.UserId,
                     ProjectId = donationDTO.ProjectId != Guid.Empty ? donationDTO.ProjectId : throw new InvalidOperationException($"Invalid {nameof(donationDTO.ProjectId)} provided."),
                     TransactionId = donationDTO.TransactionId ?? throw new ArgumentNullException($"Invalid {nameof(donationDTO.TransactionId)} provided"),
+                    DonationDate = DateTime.Now,
                     Amount = double.Parse(transaction.PurchaseUnits[0].Amount.Value, CultureInfo.InvariantCulture),
                     Comment = donationDTO.Comment,
                     Name = donationDTO.Name,
