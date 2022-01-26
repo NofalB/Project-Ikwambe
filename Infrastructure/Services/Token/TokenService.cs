@@ -71,10 +71,8 @@ namespace Infrastructure.Services
                 new Claim(ClaimTypes.Name, userExist.UserId.ToString()), //using claimTypes.name to represent Id.
                 new Claim(ClaimTypes.NameIdentifier, userExist.UserId.ToString())
                 });
-
                 return new LoginResult(Token);
             }
-
             throw new Exception("Credentials is incorrect");
         }
 

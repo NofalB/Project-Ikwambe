@@ -128,20 +128,17 @@ namespace Infrastructure.Services
                     UserId = donationDTO.UserId,
                     ProjectId = donationDTO.ProjectId != Guid.Empty ? donationDTO.ProjectId : throw new InvalidOperationException($"Invalid {nameof(donationDTO.ProjectId)} provided."),
                     TransactionId = donationDTO.TransactionId ?? throw new ArgumentNullException($"Invalid {nameof(donationDTO.TransactionId)} provided"),
-                    //Amount = donationDTO.Amount != 0 ? donationDTO.Amount : throw new InvalidOperationException($"Invalid {nameof(donationDTO.Amount)} provided."),
                     Amount = double.Parse(transaction.PurchaseUnits[0].Amount.Value, CultureInfo.InvariantCulture),
                     Comment = donationDTO.Comment,
                     Name = donationDTO.Name,
                     PartitionKey = donationDTO.ProjectId.ToString() ?? throw new ArgumentNullException($"Invalid {nameof(donationDTO.ProjectId)} provided")
                 };
-
                 //the updates
                 Console.WriteLine(donation.DonationId);
                 await UpdateProject(donation);
                 //the updates
                 return await _donationWriteRepository.AddAsync(donation);
             }
-
             throw new ArgumentNullException($"Invalid {nameof(donationDTO.ProjectId)} provided.");
         }
 

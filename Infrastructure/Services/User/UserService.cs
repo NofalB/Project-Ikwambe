@@ -158,13 +158,11 @@ namespace Infrastructure.Services
                     FirstName = !string.IsNullOrEmpty(userDTO.FirstName) ? userDTO.FirstName : throw new ArgumentNullException($"Invalid {nameof(userDTO.FirstName)} provided"),
                     LastName = !string.IsNullOrEmpty(userDTO.LastName) ? userDTO.LastName : throw new ArgumentNullException($"Invalid {nameof(userDTO.LastName)} provided"),
                     Email = IsValidEmail(userDTO.Email),
-                    //Email = !string.IsNullOrEmpty(userDTO.Email) ? userDTO.Email : throw new ArgumentNullException($"Invalid {nameof(userDTO.Email)} provided"),
                     Password = ValidateEncryptPassword(userDTO.Password),
                     Subscription = !string.IsNullOrEmpty(userDTO.Subscription.ToString()) ? bool.Parse(userDTO.Subscription.ToString()) : throw new ArgumentNullException($"Invalid {nameof(userDTO.Subscription)} provided"),
                     Role = Role.User,
                     PartitionKey = userDTO.Subscription.ToString()
                 };
-
                 return await _userWriteRepository.AddAsync(user);
             }
             else
@@ -181,11 +179,9 @@ namespace Infrastructure.Services
             {
                 //update user to be an admin
                 userData.Role = Role.Admin;
-
                 return await _userWriteRepository.Update(userData);
             }
             throw new InvalidOperationException($"The user ID {userId} provided is invalid.");
-
         }
 
         public async Task<User> UpdateUser(UserDTO userDTO, string userId)
@@ -208,7 +204,6 @@ namespace Infrastructure.Services
                 return await _userWriteRepository.Update(userData);
             }
             throw new InvalidOperationException("Please check your User ID again");
-
         }
 
         public async Task DeleteUserAsync(string userId)
