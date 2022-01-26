@@ -241,7 +241,8 @@ namespace Infrastructure.Services
 
         private string IsValidEmail(string email)
         {
-            string patternEmail = @"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z";
+            //string patternEmail = @"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z";
+            string patternEmail = @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$";
             if (!string.IsNullOrEmpty(email))
             {
                 if (!Regex.IsMatch(email, patternEmail))
@@ -249,7 +250,7 @@ namespace Infrastructure.Services
                     throw new InvalidOperationException("Invalid email");
                 }
             }
-            return patternEmail;
+            return email;
         }
     }
         

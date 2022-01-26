@@ -40,11 +40,13 @@ namespace IntegrationTests
 
             //responses
             var dataList = responseResult.Content.ReadAsStringAsync().Result;
-            var users = JsonConvert.DeserializeObject<List<User>>(dataList);
-
+            //var users = JsonConvert.DeserializeObject<List<dynamic>>(dataList);
+            var users = JsonConvert.DeserializeObject<List<Object.UserTest>>(dataList);
+            
             //check results
             Assert.Equal(HttpStatusCode.OK, responseResult.StatusCode);
-            Assert.IsType<List<User>>(users);
+            Assert.IsType<List<Object.UserTest>>(users);
+            //Assert.IsType<List<UserResponseDTO>>(users);
         }
 
         [Fact]
@@ -101,24 +103,25 @@ namespace IntegrationTests
             EditUserSuccess();
             DeleteUserSuccess();
         }
-
+        
         public void GetUserbyIdSuccess()
         {
             string userId = _testUser;
+            //string userId = "70b62b44-bbb6-4696-a60e-5d3cf9ce6746";
 
             HttpResponseMessage responseResult = _httpClient.GetAsync($"api/users/{userId}").Result;
-            
+
             var dataList = responseResult.Content.ReadAsStringAsync().Result;
-            var user = JsonConvert.DeserializeObject<User>(dataList);
+            var user = JsonConvert.DeserializeObject<Object.UserTest>(dataList);
 
             //check result
             Assert.Equal(HttpStatusCode.OK, responseResult.StatusCode);
             Assert.Matches(userId, user.UserId.ToString());
         }
+        
         public void CreateUserSuccess()
         {
-            UserDTO newUser = new UserDTO("John", "Doe", "John@email.com", "John@123", false);
-
+            UserDTO newUser = new UserDTO("John", "Doe", "John@gmail.com", "John@123!", false);
 
             HttpContent userData = new StringContent(JsonConvert.SerializeObject(newUser), Encoding.UTF8, "application/json");
 
@@ -135,11 +138,13 @@ namespace IntegrationTests
             //add the user id
             _testUser = user.UserId.ToString();
         }
+        
         public void EditUserSuccess()
         {
             string userId = _testUser;
+            //string userId = "71379f8f-b2e1-4b2f-a19b-e12d6f7f63d1";
 
-            UserDTO editUser = new UserDTO("John", "DoeThings", "John@email.com", "strongerPassword", true);
+            UserDTO editUser = new UserDTO("John", "DoeThings", "John@gmail.com", "John@123!", true);
 
             HttpContent updatedUserData = new StringContent(JsonConvert.SerializeObject(editUser), Encoding.UTF8, "application/json");
 
@@ -152,8 +157,6 @@ namespace IntegrationTests
             //validate response
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.IsType<User>(user);
-
-
         }
         public void DeleteUserSuccess()
         {

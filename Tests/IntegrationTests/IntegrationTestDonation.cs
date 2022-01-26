@@ -36,7 +36,7 @@ namespace IntegrationTests
             string hostname = Environment.GetEnvironmentVariable("functionHostName");
 
             if (hostname == null)
-                hostname = $"https://stichtingikwambe.azurewebsites.net/";
+                hostname = $"http://localhost:{7071}";
             _httpClient = new HttpClient();
             _httpClient.BaseAddress = new Uri(hostname);
 

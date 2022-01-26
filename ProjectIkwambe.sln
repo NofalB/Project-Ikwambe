@@ -13,9 +13,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{12FE48D7
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationTests", "Tests\IntegrationTests\IntegrationTests.csproj", "{4C3EAC7E-469E-46B0-B6D3-6167801100B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NUnitTestsServices", "Tests\NUnitTestsServices\NUnitTestsServices.csproj", "{DCAC21BF-34EA-4C4A-B57C-FF1FEC33B186}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NUnitTestsServices", "Tests\NUnitTestsServices\NUnitTestsServices.csproj", "{DCAC21BF-34EA-4C4A-B57C-FF1FEC33B186}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NUnitTestsRepositories", "Tests\NUnitTestsRepositories\NUnitTestsRepositories.csproj", "{93E9E0C0-E843-451F-B400-86A38D0AF257}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NUnitTestsRepositories", "Tests\NUnitTestsRepositories\NUnitTestsRepositories.csproj", "{93E9E0C0-E843-451F-B400-86A38D0AF257}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 
 namespace Domain.DTO
 {
-    public class UserResponseDTO : User
+	public class UserResponseDTO : User
     {
-        public UserResponseDTO(Guid id, string firstName, string lastName, bool subscription)
+		public UserResponseDTO(Guid id, string firstName, string lastName, bool subscription)
 		{
 			base.UserId = id;
 			base.FirstName = firstName;
