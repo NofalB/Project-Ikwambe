@@ -123,6 +123,7 @@ namespace Infrastructure.Services
                         TargetGoal = waterpumpProjectDTO.TargetGoal != 0 ? waterpumpProjectDTO.TargetGoal : throw new ArgumentException($"Invalid {nameof(waterpumpProjectDTO.TargetGoal)} provided"),
                         StartDate = waterpumpProjectDTO.StartDate,
                         EndDate = waterpumpProjectDTO.EndDate,
+                        TotalNumbOfDonators = 0,
                         ProjectType = waterpumpProjectDTO.ProjectType,
                         PartitionKey = waterpumpProjectDTO.ProjectType.ToString()
                     };

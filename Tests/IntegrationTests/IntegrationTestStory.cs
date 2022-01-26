@@ -80,7 +80,7 @@ namespace IntegrationTests
         [Fact]
         public void GetStoryByIdSuccess()
         {
-            string storyId = "fbf38ffa-d7f6-477b-9400-51182ad14376";
+            string storyId = "0fb4faf8-9a02-448a-8931-0e0f63ef19e6";
             HttpResponseMessage responseResult = _httpClient.GetAsync($"api/stories/{storyId}").Result;
             //response
             var responseData = responseResult.Content.ReadAsStringAsync().Result;
@@ -108,8 +108,12 @@ namespace IntegrationTests
                 Summary = "This is the summary of the test story",
                 Description = "This is Description of the test story",
                 PublishDate = DateTime.Now,
-                Author = "stephen",
-                ImageURL = "Rubber Duckies"
+                Author = "Test User",
+                StoryImages = new List<StoryImage>()
+                {
+                    new StoryImage("Image 1", "owf4fzify7by.jpg"),
+                    new StoryImage("Image 2", "22owf4fzify7by22.jpg"),
+                }
             };
 
             HttpContent storyData = new StringContent(JsonConvert.SerializeObject(TestStoryData), Encoding.UTF8, "application/json");
@@ -139,7 +143,11 @@ namespace IntegrationTests
                 Description = "This is Description of the test story",
                 PublishDate = DateTime.Now,
                 Author = "stephen",
-                ImageURL = "Rubber Duckies"
+                StoryImages = new List<StoryImage>()
+                {
+                    new StoryImage("Image 1", "owf4fzify7by.jpg"),
+                    new StoryImage("Image 2", "22owf4fzify7by22.jpg"),
+                }
             };
 
             HttpContent storyUpdateData = new StringContent(JsonConvert.SerializeObject(UpdateStoryData), Encoding.UTF8, "application/json");
@@ -213,7 +221,11 @@ namespace IntegrationTests
                 Description = "This is Description of the test story",
                 PublishDate = DateTime.Now,
                 Author = "",
-                ImageURL = "Rubber Duckies"
+                StoryImages = new List<StoryImage>()
+                {
+                    new StoryImage("Image 1", "owf4fzify7by.jpg"),
+                    new StoryImage("Image 2", "22owf4fzify7by22.jpg"),
+                }
             };
 
             HttpContent storyData = new StringContent(JsonConvert.SerializeObject(TestStoryData), Encoding.UTF8, "application/json");
@@ -242,7 +254,11 @@ namespace IntegrationTests
                 Description = "This is Description of the test story",
                 PublishDate = DateTime.Now,
                 Author = "stephen",
-                ImageURL = "Rubber Duckies"
+                StoryImages = new List<StoryImage>()
+                {
+                    new StoryImage("Image 1", "owf4fzify7by.jpg"),
+                    new StoryImage("Image 2", "22owf4fzify7by22.jpg"),
+                }
             };
 
             HttpContent storyUpdateData = new StringContent(JsonConvert.SerializeObject(UpdateStoryData), Encoding.UTF8, "application/json");

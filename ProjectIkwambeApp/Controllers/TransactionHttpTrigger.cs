@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using Domain;
+using Domain.DTO;
 using Infrastructure.Services;
 using Infrastructure.Services.Clients;
 using Microsoft.Azure.Functions.Worker;
@@ -93,31 +94,23 @@ namespace ProjectIkwambe.Controllers
          
         }
 
-        [Function(nameof(TransactionHttpTrigger.CompleteTransaction))]
-        [OpenApiOperation(operationId: "completeTransaction", tags: new[] { "PaypalTransactions" }, Summary = "Complete the transaction and create the donation.", Description = "This will capture the transaction, create a donation and update the project.", Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiParameter(name: "transactionId", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "ID of transaction to return", Description = "Retrieves a specific transaction by ID", Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiParameter(name: "projectId", In = ParameterLocation.Query, Required = true, Type = typeof(string), Summary = "ID of project to donate to", Description = "Donates to this project", Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiParameter(name: "userId", In = ParameterLocation.Query, Required = false, Type = typeof(string), Summary = "ID of project to donate to", Description = "Donates to this project", Visibility = OpenApiVisibilityType.Important)]
+        [Function(nameof(TransactionHttpTrigger.CompleteTransaction1))]
+        [OpenApiOperation(operationId: "completeTransaction1", tags: new[] { "PaypalTransactions" }, Summary = "Complete the transaction and create the donation.", Description = "This will capture the transaction, create a donation and update the project.", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(DonationDTO), Required = true, Description = "Donation object for donation details")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Invalid input", Description = "Invalid input")]
-        public async Task<HttpResponseData> CompleteTransaction([HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "transactions/paypal/complete")] HttpRequestData req, FunctionContext executionContext)
+        public async Task<HttpResponseData> CompleteTransaction1([HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "transactions/paypal/complete1")] HttpRequestData req, FunctionContext executionContext)
         {
-            string transactionId = HttpUtility.ParseQueryString(req.Url.Query).Get("transactionId");
-            string projectId = HttpUtility.ParseQueryString(req.Url.Query).Get("projectId");
-            string userId = HttpUtility.ParseQueryString(req.Url.Query).Get("userId");
+            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
-            //get this from user who logs in
-            //project id we get from the query param
-            //transaction id is got from the frontend when payment is made
-            
-            await _transactionService.CompleteTransaction(transactionId,projectId,userId);
+            DonationDTO donationDTO = JsonConvert.DeserializeObject<DonationDTO>(requestBody);
 
+            await _transactionService.CompleteTransaction1(donationDTO);
             // Generate output
             HttpResponseData response = req.CreateResponse(HttpStatusCode.Created);
             await response.WriteStringAsync("Transaction done successfully!");
             return response;
 
         }
-
     }
 }
 

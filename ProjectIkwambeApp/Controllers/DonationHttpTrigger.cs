@@ -65,38 +65,18 @@ namespace ProjectIkwambe.Controllers
 		public async Task<HttpResponseData> GetDonationsById([HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "donations/{donationId}")] HttpRequestData req, string donationId, FunctionContext executionContext)
 		{
 
-			Role[] roles = { Role.User };
+			//Role[] roles = { };
 
-			return await RoleChecker.ExecuteForUser(roles, req,  executionContext, async (ClaimsPrincipal User)  =>
-			{
+			//return await RoleChecker.ExecuteForUser(roles, req,  executionContext, async (ClaimsPrincipal User)  =>
+			//{
 				HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
 				await response.WriteAsJsonAsync(await _donationService.GetDonationByIdAsync(donationId));
 
 				return response;
 
-			});
+			//});
 		}
-
-		[Function(nameof(DonationHttpTrigger.MakeDonation))]
-		[OpenApiOperation(operationId: "MakeDonation", tags: new[] { "Donations" }, Summary = "Make a donation", Description = "This will make a donation", Visibility = OpenApiVisibilityType.Important)]
-		[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(DonationDTO), Required = true, Description = "Donation object for donation details")]
-		[OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(DonationDTO), Summary = "New donation details included", Description = "New donation details included", Example = typeof(DummyDonationDTOExample))]
-		[OpenApiResponseWithoutBody(statusCode: HttpStatusCode.MethodNotAllowed, Summary = "Invalid input", Description = "Invalid input")]
-		public async Task<HttpResponseData> MakeDonation([HttpTrigger(AuthorizationLevel.Anonymous, "POST", Route = "donations")] HttpRequestData req, FunctionContext executionContext)
-		{
-			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-			
-			DonationDTO donationDTO = JsonConvert.DeserializeObject<DonationDTO>(requestBody);
-			
-			HttpResponseData response = req.CreateResponse();
-
-			await response.WriteAsJsonAsync(await _donationService.AddDonation(donationDTO));
-			response.StatusCode = HttpStatusCode.Created;
-
-			return response;
-		}
-
 
 		[Function(nameof(DonationHttpTrigger.GetDonationsByUser))]
 		[Auth]
