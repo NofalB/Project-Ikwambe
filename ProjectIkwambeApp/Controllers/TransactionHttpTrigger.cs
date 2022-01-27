@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using Domain;
@@ -16,6 +17,8 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using ProjectIkwambe.Attributes;
+using ProjectIkwambe.Utils;
 
 namespace ProjectIkwambe.Controllers
 {
@@ -32,20 +35,24 @@ namespace ProjectIkwambe.Controllers
 
         }
 
+        [Auth]
         [Function(nameof(TransactionHttpTrigger.GetTransactions))]
         [OpenApiOperation(tags: new[] { "DBTransactions" }, Summary = "Get all transactions from the db", Description = "This will retrieve all transactions", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Transaction), Summary = "Successfully fetched transactions", Description = "transactions successfully retrieved")]
         public async Task<HttpResponseData> GetTransactions([HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "transactions/db")] HttpRequestData req, FunctionContext executionContext)
         {
+            Role[] roles = { Role.Admin };
+            return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) =>
             {
                 HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
 
                 await response.WriteAsJsonAsync(await _transactionService.GetAllTransactions());
 
                 return response;
-            }
+            });
         }
 
+        [Auth]
         [Function(nameof(TransactionHttpTrigger.GetTransactionsById))]
         [OpenApiOperation(tags: new[] { "DBTransactions" }, Summary = "Get a specific transactions from db", Description = "This will retrieve a specific transaction from db", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiParameter(name: "transactionId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Summary = "ID of transaction to return", Description = "Retrieves a specific transaction by ID", Visibility = OpenApiVisibilityType.Important)]
@@ -53,11 +60,13 @@ namespace ProjectIkwambe.Controllers
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Summary = "Invalid transaction ID", Description = "Invalid transaction ID was provided")]
         public async Task<HttpResponseData> GetTransactionsById([HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "transactions/db/{transactionId}")] HttpRequestData req, string transactionId,FunctionContext executionContext)
         {
-
-            HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
-            await response.WriteAsJsonAsync(await _transactionService.GetTransactionById(transactionId));
-            return response;
-            
+            Role[] roles = { Role.Admin };
+            return await RoleChecker.ExecuteForUser(roles, req, executionContext, async (ClaimsPrincipal User) =>
+            {
+                HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
+                await response.WriteAsJsonAsync(await _transactionService.GetTransactionById(transactionId));
+                return response;
+            });
         }
 
         [Function(nameof(TransactionHttpTrigger.GetTransactionsPayPal))]
@@ -85,7 +94,7 @@ namespace ProjectIkwambe.Controllers
             string currencyCode = HttpUtility.ParseQueryString(req.Url.Query).Get("currency");
             string value = HttpUtility.ParseQueryString(req.Url.Query).Get("value");
 
-            var checkoutUrl =await _paypalClientService.GetCheckoutUrl(currencyCode, value);
+            var checkoutUrl = await _paypalClientService.GetCheckoutUrl(currencyCode, value);
             
             // Generate output
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
